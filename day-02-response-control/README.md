@@ -59,16 +59,6 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 Затем откройте `C:\Projects\ai-advent-9\android-app` в Android Studio и запустите
 `app` на Android Emulator.
 
-## Сценарий для видео
-
-1. Оставить prompt `Составь рецепт греческого салата.`.
-2. Выбрать COMPARE и включить Structured JSON, Length limit = 600 и Finish instruction.
-3. Нажать Generate.
-4. Показать, что FREE сам выбирает текстовый формат и не имеет controls.
-5. Показать для CONTROLLED стабильный JSON-рецепт, metadata и применённые FORMAT /
-   LENGTH / STOP controls.
-6. По очереди выключить controls и повторить Generate, демонстрируя их независимость.
-
 Реализация следует актуальному механизму
 [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
 и [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
