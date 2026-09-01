@@ -1,5 +1,6 @@
 .env
 .env.*
+!.env.example
 .venv/
 venv/
 __pycache__/
@@ -9,4 +10,7 @@ __pycache__/
 .ruff_cache/
 .idea/
 .vscode/
-
+.gradle/
+local.properties
+build/
+**/build/
