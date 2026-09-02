@@ -29,8 +29,17 @@ interface ResponseControlApi {
   suspend fun generate(@Body request: GenerateRequestDto): GenerateResponseDto
 }
 
+interface ReasoningLabApi {
+  @POST("api/v1/reasoning-lab/run")
+  suspend fun run(@Body request: ReasoningLabRunRequestDto): ReasoningLabBatchResponseDto
+}
+
 interface ResponseRepository {
   suspend fun generate(prompt: String, controls: GenerationControlsDto): GenerateResponseDto
+}
+
+interface ReasoningLabRepository {
+  suspend fun run(): ReasoningLabBatchResponseDto
 }
 
 class DefaultResponseRepository(private val api: ResponseControlApi) : ResponseRepository {
@@ -40,15 +49,21 @@ class DefaultResponseRepository(private val api: ResponseControlApi) : ResponseR
   ): GenerateResponseDto = api.generate(GenerateRequestDto(prompt = prompt, controls = controls))
 }
 
+class DefaultReasoningLabRepository(private val api: ReasoningLabApi) : ReasoningLabRepository {
+  override suspend fun run(): ReasoningLabBatchResponseDto = api.run(ReasoningLabRunRequestDto())
+}
+
 class AppContainer {
   private val json = Json { ignoreUnknownKeys = true }
-  private val api =
+  private val retrofit =
     Retrofit.Builder()
       .baseUrl(EMULATOR_BACKEND_URL)
       .client(createBackendHttpClient())
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
-      .create(ResponseControlApi::class.java)
 
-  val responseRepository: ResponseRepository = DefaultResponseRepository(api)
+  val responseRepository: ResponseRepository =
+    DefaultResponseRepository(retrofit.create(ResponseControlApi::class.java))
+  val reasoningLabRepository: ReasoningLabRepository =
+    DefaultReasoningLabRepository(retrofit.create(ReasoningLabApi::class.java))
 }

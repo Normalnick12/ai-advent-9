@@ -4,6 +4,11 @@
 поддерживает режимы FREE, CONTROLLED и COMPARE, а OpenAI API key в приложение не
 передаётся.
 
+В том же `app` module доступен экран
+[Day 03 Reasoning Lab](../day-03-reasoning-strategies/README.md). Нижняя
+навигация переключает «Управление ответом» и «Лаборатория рассуждений» без
+дополнительной navigation library.
+
 ## Открытие и сборка
 
 1. Откройте папку `C:\Projects\ai-advent-9\android-app` в Android Studio.
@@ -33,6 +38,11 @@ Android не делает; `retryOnConnectionFailure=false` не дублиру�
 клиентский timeout всё же сработает, UI показывает отдельное
 сообщение `Android timeout`; timeout upstream возвращается как `openai_timeout`.
 
+Для Reasoning Lab тот же 190-секундный budget покрывает два последовательных
+75-секундных META_PROMPT-вызова без SDK retries. Один tap отправляет один batch
+request; во время loading повторная кнопка отключена. Частичная ошибка остаётся
+в карточке своей стратегии.
+
 ## Проверка COMPARE
 
 1. Оставьте prompt `Составь рецепт греческого салата.`.
@@ -41,3 +51,12 @@ Android не делает; `retryOnConnectionFailure=false` не дублиру�
 4. Нажмите Generate.
 5. Сравните обычный FREE-текст и предсказуемый CONTROLLED JSON, а также status,
    request id, output tokens и фактически применённые controls.
+
+## Проверка Reasoning Lab
+
+1. Выберите «Лаборатория рассуждений» в нижней навигации.
+2. Нажмите «Запустить все стратегии».
+3. Проверьте четыре русские карточки, их correctness и метрики.
+4. У «Мета-промпт» проверьте два API-вызова и раскрытие/скрытие generated prompt.
+5. Полный emulator checklist находится в
+   [README Day 03](../day-03-reasoning-strategies/README.md#ручная-end-to-end-проверка).

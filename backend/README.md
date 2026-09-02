@@ -4,6 +4,12 @@
 вызывает OpenAI Responses API на модели `gpt-5.6` и возвращает единый контракт для
 Android-клиента. API-ключ используется только здесь.
 
+Backend также обслуживает
+[Day 03 Reasoning Lab](../day-03-reasoning-strategies/README.md) через
+`POST /api/v1/reasoning-lab/run`. Endpoint запускает четыре стратегии на одной
+фиксированной задаче и возвращает частичные результаты, если отдельный OpenAI
+вызов завершился ошибкой.
+
 ## Зависимости и окружение
 
 - Python 3.11+;
@@ -46,6 +52,16 @@ Invoke-RestMethod `
 Swagger UI доступен по адресу `http://127.0.0.1:8000/docs`, health check —
 `http://127.0.0.1:8000/health`.
 
+Reasoning Lab принимает строгий пустой объект:
+
+```powershell
+Invoke-RestMethod `
+  -Method Post `
+  -Uri http://127.0.0.1:8000/api/v1/reasoning-lab/run `
+  -ContentType "application/json" `
+  -Body '{}'
+```
+
 ## Timeout и диагностика
 
 - OpenAI SDK: connect timeout `5 с`, остальные операции `75 с` на попытку;
@@ -59,6 +75,11 @@ Swagger UI доступен по адресу `http://127.0.0.1:8000/docs`, heal
 изменений: он действует между запросами и не ограничивает время выполнения endpoint.
 Для более подробной диагностики самого SDK можно временно запустить backend с
 `$env:OPENAI_LOG = "info"`.
+
+Retry-настройки выше относятся к Day 02. Reasoning Lab использует тот же timeout
+75 секунд, но `max_retries=0`; META_PROMPT выполняет не более двух
+последовательных вызовов. Prompt и generated prompt не записываются в application
+logs.
 
 ## Проверки
 
