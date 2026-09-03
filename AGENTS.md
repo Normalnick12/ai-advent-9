@@ -61,6 +61,9 @@
 
 ## README
 
+Day README — concise submission/overview document, not an implementation/design dump.
+Detailed architecture, edge cases and internal contracts belong in OpenSpec or component README.
+
 При выполнении каждого задания поддерживайте `README.md` соответствующей папки в актуальном состоянии. Укажите:
 
 - что делает программа;

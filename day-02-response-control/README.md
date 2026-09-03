@@ -1,64 +1,57 @@
-# Day 02 — Response Control
+# Day 02 — Управление ответом
 
 ## Цель
 
-Один и тот же prompt отправляется с разным уровнем контроля, чтобы наглядно
-сравнить свободный ответ модели и предсказуемый контракт для приложения.
+Сравнить свободный ответ модели и ответ с ограничениями на одном и том же
+запросе. Изучить управление форматом, длиной и завершением ответа.
 
-- **FORMAT** — Structured Outputs задаёт строгую JSON Schema рецепта с обязательными
-  полями, фиксированными типами и `additionalProperties: false`.
-- **LENGTH** — необязательный `max_output_tokens` ограничивает ответ; статус
-  `incomplete` и причина `max_output_tokens` отображаются без падения.
-- **STOP** — современный Responses API получает явную developer instruction завершить
-  ответ сразу после результата. Устаревший API и stop sequence не используются.
+## Что реализовано
 
-Structured Outputs выбран вместо prompt-only просьбы «ответь JSON», потому что схема
-становится машинно проверяемым контрактом, а не пожеланием в естественном языке.
+- Android-экран с режимами `FREE`, `CONTROLLED` и `COMPARE`.
+- Независимые переключатели `FORMAT`, `LENGTH` и `STOP`.
+- Сравнение ответов, статуса завершения и расхода токенов.
+
+## Эксперимент
+
+В `FREE` запрос отправляется без дополнительных ограничений. В `CONTROLLED`
+тот же prompt получает выбранные настройки:
+
+| Контроль | Механизм |
+|---|---|
+| `FORMAT` | Structured Outputs: ответ по строгой JSON Schema рецепта |
+| `LENGTH` | `max_output_tokens`: ограничение числа выходных токенов |
+| `STOP` | Finish instruction: инструкция завершить ответ сразу после результата |
+
+`COMPARE` выполняет два вызова для одного prompt и показывает ответы рядом.
+Чтобы изучить отдельный механизм, меняйте только соответствующий переключатель.
+
+## Результаты и выводы
+
+Structured Outputs задаёт проверяемую структуру ответа вместо просьбы «ответь
+JSON». Лимит токенов может прервать ответ — это видно по статусу `incomplete`.
+Finish instruction задаёт желаемое завершение через инструкцию модели; это
+не API-параметр `stop` и не жёсткая граница длины.
 
 ## Архитектура
 
-```text
-Android Compose
-      |
-      | POST /api/v1/generate
-      v
-FastAPI backend
-      |
-      | OPENAI_API_KEY (только здесь)
-      v
-OpenAI Responses API (gpt-5.6)
-```
-
-Android-проект находится в [`android-app/`](../android-app/README.md), backend — в
-[`backend/`](../backend/README.md). Требуются Python 3.11+, Android Studio/JDK 17+
-и Android SDK. Единственная секретная переменная — `OPENAI_API_KEY` на backend.
-
-## Timeout budget
-
-Android ждёт ответ backend до `190 с` (`read=180 с`). Backend ограничивает одну
-попытку OpenAI `75 с` и разрешает максимум один retry. До исправления Retrofit
-неявно использовал OkHttp `readTimeout=10 с`, тогда как OpenAI SDK ожидал до
-`600 с` и мог сделать два retry. Поэтому нормальный ответ дольше 10 секунд
-обрывался только на Android, особенно заметно в COMPARE с двумя параллельными
-запросами. Backend теперь логирует `request_id`, длительность и отдельный
-`openai_timeout`, не записывая prompt или секреты.
+`Android (Compose) → FastAPI → OpenAI Responses API`.
+API-ключ хранится только на backend.
 
 ## Запуск
 
-Backend:
+Подготовьте окружение и `OPENAI_API_KEY` по [инструкции backend](../backend/README.md).
+В активированном Python-окружении из корня репозитория:
 
 ```powershell
-cd C:\Projects\ai-advent-9\backend
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-$env:OPENAI_API_KEY = "your-key-here"
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+cd backend
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-Затем откройте `C:\Projects\ai-advent-9\android-app` в Android Studio и запустите
-`app` на Android Emulator.
+Запустите приложение на эмуляторе по [инструкции Android](../android-app/README.md).
+На экране «Управление ответом» оставьте запрос о греческом салате, выберите
+`COMPARE` и нажмите Generate. Сравните FREE-текст и CONTROLLED JSON.
 
-Реализация следует актуальному механизму
-[Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
-и [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create).
+## Код
+
+- [Android-приложение](../android-app/)
+- [Backend](../backend/)
