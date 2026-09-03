@@ -12,11 +12,17 @@ from app.openai_service import (
 )
 from app.reasoning_models import ReasoningLabBatchResponse, ReasoningLabRunRequest
 from app.reasoning_service import ReasoningLabService
+from app.temperature_models import (
+    TemperatureLabBatchResponse,
+    TemperatureLabRunRequest,
+)
+from app.temperature_service import TemperatureLabService
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0")
 
 _service = OpenAIResponseService()
 _reasoning_service = ReasoningLabService()
+_temperature_service = TemperatureLabService()
 logger = logging.getLogger("uvicorn.error")
 
 
@@ -26,6 +32,10 @@ def get_openai_service() -> OpenAIResponseService:
 
 def get_reasoning_lab_service() -> ReasoningLabService:
     return _reasoning_service
+
+
+def get_temperature_lab_service() -> TemperatureLabService:
+    return _temperature_service
 
 
 @app.get("/health")
@@ -90,5 +100,29 @@ async def run_reasoning_lab(
         round((time.monotonic() - started_at) * 1000),
         len(result.results),
         sum(item.correct for item in result.results),
+    )
+    return result
+
+@app.post(
+    "/api/v1/temperature-lab/run",
+    response_model=TemperatureLabBatchResponse,
+)
+async def run_temperature_lab(
+    request: TemperatureLabRunRequest,
+    response: Response,
+    service: TemperatureLabService = Depends(get_temperature_lab_service),
+) -> TemperatureLabBatchResponse:
+    request_id = uuid4().hex[:12]
+    response.headers["X-Request-ID"] = request_id
+    started_at = time.monotonic()
+    logger.info("temperature_batch_started request_id=%s", request_id)
+    result = await service.run(request=request, request_id=request_id)
+    if result.request_id != request_id:
+        result = result.model_copy(update={"request_id": request_id})
+    logger.info(
+        "temperature_batch_finished request_id=%s duration_ms=%s result_count=%s",
+        request_id,
+        round((time.monotonic() - started_at) * 1000),
+        len(result.results),
     )
     return result

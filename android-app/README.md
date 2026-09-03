@@ -60,3 +60,10 @@ request; во время loading повторная кнопка отключе�
 4. У «Мета-промпт» проверьте два API-вызова и раскрытие/скрытие generated prompt.
 5. Полный emulator checklist находится в
    [README Day 03](../day-03-reasoning-strategies/README.md#ручная-end-to-end-проверка).
+
+## Day 04 Temperature Lab
+
+Третья вкладка — [Лаборатория температуры](../day-04-temperature-lab/README.md):
+русскоязычный экран сравнения temperature 0 / 0.7 / 1.2, редактируемый prompt,
+read-only параметры, session-only история максимум трёх прогонов текущего prompt
+и benchmark-счётчики уникальных названий. Полный сценарий проверки — в README Day 04.

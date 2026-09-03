@@ -9,3 +9,8 @@
 - [День 3 — сравнение reasoning-стратегий](day-03-reasoning-strategies/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.
+
+## Day 04
+
+[Лаборатория температуры](day-04-temperature-lab/README.md) — сравнение одного
+запроса при temperature 0 / 0.7 / 1.2 в существующих backend и Android app.

@@ -87,3 +87,12 @@ logs.
 python -m pip install -r requirements-dev.txt
 python -m pytest
 ```
+
+## Day 04 Temperature Lab
+
+[README Day 04](../day-04-temperature-lab/README.md) — точка входа для лаборатории.
+`POST /api/v1/temperature-lab/run` принимает только `{"prompt":"…"}`. Три
+конкурентных вызова отличаются только temperature (0 / 0.7 / 1.2): none/standard,
+600 tokens, default top_p, zero retries. Benchmark получает strict variants и
+пять formal checks; произвольный prompt — обычный текст без benchmark-оценки.
+Для локального `.env` используйте `uvicorn ... --env-file .env`.

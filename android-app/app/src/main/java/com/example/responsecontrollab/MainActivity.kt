@@ -13,6 +13,7 @@ import com.example.responsecontrollab.theme.ResponseControlLabTheme
 import com.example.responsecontrollab.ui.AppRoot
 import com.example.responsecontrollab.ui.main.ResponseControlViewModel
 import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
+import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,11 +26,14 @@ class MainActivity : ComponentActivity() {
         viewModel(factory = ResponseControlViewModel.factory(container.responseRepository))
       val reasoningLabViewModel: ReasoningLabViewModel =
         viewModel(factory = ReasoningLabViewModel.factory(container.reasoningLabRepository))
+      val temperatureLabViewModel: TemperatureLabViewModel =
+        viewModel(factory = TemperatureLabViewModel.factory(container.temperatureLabRepository))
       ResponseControlLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
             responseControlViewModel = viewModel,
             reasoningLabViewModel = reasoningLabViewModel,
+            temperatureLabViewModel = temperatureLabViewModel,
           )
         }
       }

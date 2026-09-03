@@ -34,12 +34,21 @@ interface ReasoningLabApi {
   suspend fun run(@Body request: ReasoningLabRunRequestDto): ReasoningLabBatchResponseDto
 }
 
+interface TemperatureLabApi {
+  @POST("api/v1/temperature-lab/run")
+  suspend fun run(@Body request: TemperatureLabRunRequestDto): TemperatureLabBatchResponseDto
+}
+
 interface ResponseRepository {
   suspend fun generate(prompt: String, controls: GenerationControlsDto): GenerateResponseDto
 }
 
 interface ReasoningLabRepository {
   suspend fun run(): ReasoningLabBatchResponseDto
+}
+
+interface TemperatureLabRepository {
+  suspend fun run(prompt: String): TemperatureLabBatchResponseDto
 }
 
 class DefaultResponseRepository(private val api: ResponseControlApi) : ResponseRepository {
@@ -51,6 +60,12 @@ class DefaultResponseRepository(private val api: ResponseControlApi) : ResponseR
 
 class DefaultReasoningLabRepository(private val api: ReasoningLabApi) : ReasoningLabRepository {
   override suspend fun run(): ReasoningLabBatchResponseDto = api.run(ReasoningLabRunRequestDto())
+}
+
+class DefaultTemperatureLabRepository(private val api: TemperatureLabApi) :
+  TemperatureLabRepository {
+  override suspend fun run(prompt: String): TemperatureLabBatchResponseDto =
+    api.run(TemperatureLabRunRequestDto(prompt = prompt))
 }
 
 class AppContainer {
@@ -66,4 +81,6 @@ class AppContainer {
     DefaultResponseRepository(retrofit.create(ResponseControlApi::class.java))
   val reasoningLabRepository: ReasoningLabRepository =
     DefaultReasoningLabRepository(retrofit.create(ReasoningLabApi::class.java))
+  val temperatureLabRepository: TemperatureLabRepository =
+    DefaultTemperatureLabRepository(retrofit.create(TemperatureLabApi::class.java))
 }
