@@ -35,4 +35,6 @@
     <string name="no">нет</string>
     <string name="no_limit">без ограничения</string>
     <string name="controls_summary">структурированный JSON: %1$s; максимум токенов: %2$s; инструкция завершения: %3$s</string>
+    <string name="day_05_title">Лаборатория моделей</string>
+    <string name="day_05_description">Сравните качество, время и стоимость моделей на одинаковых задачах</string>
 </resources>

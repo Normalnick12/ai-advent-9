@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.responsecontrollab.theme.ResponseControlLabTheme
 import com.example.responsecontrollab.ui.AppRoot
+import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkViewModel
 import com.example.responsecontrollab.ui.main.ResponseControlViewModel
 import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
 import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
@@ -28,12 +29,15 @@ class MainActivity : ComponentActivity() {
         viewModel(factory = ReasoningLabViewModel.factory(container.reasoningLabRepository))
       val temperatureLabViewModel: TemperatureLabViewModel =
         viewModel(factory = TemperatureLabViewModel.factory(container.temperatureLabRepository))
+      val modelBenchmarkViewModel: ModelBenchmarkViewModel =
+        viewModel(factory = ModelBenchmarkViewModel.factory(container.modelBenchmarkRepository))
       ResponseControlLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
             responseControlViewModel = viewModel,
             reasoningLabViewModel = reasoningLabViewModel,
             temperatureLabViewModel = temperatureLabViewModel,
+            modelBenchmarkViewModel = modelBenchmarkViewModel,
           )
         }
       }

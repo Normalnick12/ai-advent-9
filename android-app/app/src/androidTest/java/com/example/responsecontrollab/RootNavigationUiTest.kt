@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.responsecontrollab.data.*
+import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkViewModel
 import com.example.responsecontrollab.ui.main.ResponseControlViewModel
 import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
 import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
@@ -23,6 +24,7 @@ class RootNavigationUiTest {
   private val responseCalls = mutableListOf<Pair<String, GenerationControlsDto>>()
   private var reasoningCalls = 0
   private var temperatureCalls = 0
+  private var benchmarkCalls = 0
   private val temperatureResult = CompletableDeferred<TemperatureLabBatchResponseDto>()
   private lateinit var response: ResponseControlViewModel
   private lateinit var temperature: TemperatureLabViewModel
@@ -60,6 +62,15 @@ class RootNavigationUiTest {
           }
         }
       ))[TemperatureLabViewModel::class.java]
+      ViewModelProvider(activity, ModelBenchmarkViewModel.factory(
+        object : ModelBenchmarkRepository {
+          override suspend fun catalog() = modelBenchmarkCatalogFixture()
+          override suspend fun run(models: Map<String, String>): ModelBenchmarkBatchDto {
+            benchmarkCalls++
+            return modelBenchmarkBatchFixture()
+          }
+        }
+      ))[ModelBenchmarkViewModel::class.java]
     }
     composeRule.activityRule.scenario.recreate()
   }
@@ -68,7 +79,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04")) {
+    for (day in listOf("02", "03", "04", "05")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -80,6 +91,7 @@ class RootNavigationUiTest {
       assertTrue(responseCalls.isEmpty())
       assertEquals(0, reasoningCalls)
       assertEquals(0, temperatureCalls)
+      assertEquals(0, benchmarkCalls)
     }
   }
 

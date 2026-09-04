@@ -3,6 +3,7 @@ import time
 from uuid import uuid4
 
 from fastapi import Depends, FastAPI, Response
+from app.model_benchmark_api import router as model_benchmark_router
 
 from app.models import GenerateRequest, GenerateResponse
 from app.openai_service import (
@@ -19,6 +20,7 @@ from app.temperature_models import (
 from app.temperature_service import TemperatureLabService
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0")
+app.include_router(model_benchmark_router)
 
 _service = OpenAIResponseService()
 _reasoning_service = ReasoningLabService()

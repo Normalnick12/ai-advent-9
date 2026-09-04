@@ -77,6 +77,8 @@ class AppContainer {
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
 
+  val modelBenchmarkRepository: ModelBenchmarkRepository = createModelBenchmarkRepository()
+
   val responseRepository: ResponseRepository =
     DefaultResponseRepository(retrofit.create(ResponseControlApi::class.java))
   val reasoningLabRepository: ReasoningLabRepository =

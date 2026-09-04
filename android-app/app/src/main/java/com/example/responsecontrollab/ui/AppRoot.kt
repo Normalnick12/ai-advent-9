@@ -1,6 +1,8 @@
 package com.example.responsecontrollab.ui
 
 import androidx.activity.compose.BackHandler
+import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkScreen
+import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,13 +16,14 @@ import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
 import com.example.responsecontrollab.ui.temperature.TemperatureLabScreen
 import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB }
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK }
 
 @Composable
 fun AppRoot(
   responseControlViewModel: ResponseControlViewModel,
   reasoningLabViewModel: ReasoningLabViewModel,
   temperatureLabViewModel: TemperatureLabViewModel,
+  modelBenchmarkViewModel: ModelBenchmarkViewModel,
 ) {
   var destination by rememberSaveable { mutableStateOf(AppDestination.HOME) }
   val screenStates = rememberSaveableStateHolder()
@@ -33,6 +36,7 @@ fun AppRoot(
       AppDestination.RESPONSE_CONTROL -> ResponseControlScreen(responseControlViewModel, onBack)
       AppDestination.REASONING_LAB -> ReasoningLabScreen(reasoningLabViewModel, onBack)
       AppDestination.TEMPERATURE_LAB -> TemperatureLabScreen(temperatureLabViewModel, onBack)
+      AppDestination.MODEL_BENCHMARK -> ModelBenchmarkScreen(modelBenchmarkViewModel, onBack)
     }
   }
 }
