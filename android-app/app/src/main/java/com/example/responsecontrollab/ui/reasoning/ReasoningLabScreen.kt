@@ -2,19 +2,20 @@ package com.example.responsecontrollab.ui.reasoning
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -22,43 +23,47 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.responsecontrollab.data.StrategyResultDto
+import com.example.responsecontrollab.ui.LearningDay
+import com.example.responsecontrollab.ui.LearningDayTopBar
 
 private const val META_PROMPT_STRATEGY = "META_PROMPT"
 
 @Composable
-fun ReasoningLabScreen(viewModel: ReasoningLabViewModel) {
+fun ReasoningLabScreen(viewModel: ReasoningLabViewModel, onBack: () -> Unit) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
-  ReasoningLabContent(state = state, onRun = viewModel::runAllStrategies)
+  ReasoningLabContent(state = state, onRun = viewModel::runAllStrategies, onBack = onBack)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReasoningLabContent(
   state: ReasoningLabUiState,
   onRun: () -> Unit,
+  onBack: () -> Unit,
 ) {
   val isLoading = state is ReasoningLabUiState.Loading
   Scaffold(
     modifier = Modifier.fillMaxSize(),
-    topBar = { TopAppBar(title = { Text("Лаборатория рассуждений") }) },
+    contentWindowInsets = WindowInsets.safeDrawing,
+    topBar = { LearningDayTopBar(LearningDay.REASONING, onBack) },
   ) { innerPadding ->
     Column(
       modifier =
         Modifier.fillMaxSize()
           .padding(innerPadding)
-          .safeDrawingPadding()
+          .consumeWindowInsets(innerPadding)
+          .testTag("lesson_03")
           .verticalScroll(rememberScrollState())
           .padding(horizontal = 16.dp, vertical = 8.dp),
       verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -117,7 +122,7 @@ private fun BenchmarkSummaryCard() {
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
       )
-      Text("Выбрать набор фич A–H с максимальной ценностью при лимите 15 story points.")
+      Text("Выбрать набор фич A–H с максимальной ценностью при лимите 15 баллов трудоёмкости.")
       Text("Ограничения: B без E; C только с F; A без D; G без H.")
       Text(
         "Эталон полного перебора: A + C + F + G, стоимость 15, ценность 29.",

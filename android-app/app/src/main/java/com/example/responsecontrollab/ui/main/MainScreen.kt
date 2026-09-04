@@ -3,13 +3,15 @@ package com.example.responsecontrollab.ui.main
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -17,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
@@ -26,10 +27,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -37,37 +39,41 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.responsecontrollab.data.GenerateResponseDto
 import com.example.responsecontrollab.data.GenerationControlsDto
+import com.example.responsecontrollab.R
+import com.example.responsecontrollab.ui.LearningDay
+import com.example.responsecontrollab.ui.LearningDayTopBar
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private val prettyJson = Json { prettyPrint = true }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResponseControlScreen(viewModel: ResponseControlViewModel) {
+fun ResponseControlScreen(viewModel: ResponseControlViewModel, onBack: () -> Unit) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
   Scaffold(
     modifier = Modifier.fillMaxSize(),
-    topBar = { TopAppBar(title = { Text("Response Control Lab") }) },
+    contentWindowInsets = WindowInsets.safeDrawing,
+    topBar = { LearningDayTopBar(LearningDay.RESPONSE_CONTROL, onBack) },
   ) { innerPadding ->
     Column(
       modifier =
         Modifier.fillMaxSize()
           .padding(innerPadding)
-          .safeDrawingPadding()
+          .consumeWindowInsets(innerPadding)
+          .testTag("lesson_02")
           .verticalScroll(rememberScrollState())
           .padding(horizontal = 16.dp, vertical = 8.dp),
       verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Text(
-        "Один prompt — разные уровни контроля ответа.",
+        stringResource(R.string.response_intro),
         style = MaterialTheme.typography.bodyLarge,
       )
       OutlinedTextField(
         value = state.prompt,
         onValueChange = viewModel::setPrompt,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text("Prompt") },
+        label = { Text(stringResource(R.string.prompt_label)) },
         minLines = 2,
         enabled = !state.isLoading,
       )
@@ -80,13 +86,13 @@ fun ResponseControlScreen(viewModel: ResponseControlViewModel) {
         modifier = Modifier.fillMaxWidth(),
         enabled = !state.isLoading && state.prompt.isNotBlank(),
       ) {
-        Text(if (state.isLoading) "Generating…" else "Generate")
+        Text(stringResource(if (state.isLoading) R.string.generating else R.string.generate))
       }
 
       if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
       state.errorMessage?.let { ErrorCard(it) }
-      state.freeResult?.let { ResultCard("FREE", it) }
-      state.controlledResult?.let { ResultCard("CONTROLLED", it) }
+      state.freeResult?.let { ResultCard(stringResource(R.string.result_free), it) }
+      state.controlledResult?.let { ResultCard(stringResource(R.string.result_controlled), it) }
       Spacer(Modifier.height(12.dp))
     }
   }
@@ -99,7 +105,7 @@ private fun ModeSelector(
   disabled: Boolean,
 ) {
   Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-    Text("Режим", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+    Text(stringResource(R.string.response_mode), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
     Row(
       modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
       horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -108,7 +114,15 @@ private fun ModeSelector(
         FilterChip(
           selected = selected == mode,
           onClick = { onSelected(mode) },
-          label = { Text(mode.name) },
+          label = {
+            Text(stringResource(
+              when (mode) {
+                ResponseMode.FREE -> R.string.mode_free
+                ResponseMode.CONTROLLED -> R.string.mode_controlled
+                ResponseMode.COMPARE -> R.string.mode_compare
+              }
+            ))
+          },
           enabled = !disabled,
         )
       }
@@ -123,19 +137,19 @@ private fun ControlsCard(state: ResponseControlUiState, viewModel: ResponseContr
       modifier = Modifier.padding(12.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-      Text("Controls", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-      ControlSwitch("Structured JSON", state.structuredOutput, viewModel::setStructuredOutput)
-      ControlSwitch("Length limit", state.lengthLimit, viewModel::setLengthLimit)
+      Text(stringResource(R.string.response_controls), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+      ControlSwitch(stringResource(R.string.structured_json), state.structuredOutput, viewModel::setStructuredOutput)
+      ControlSwitch(stringResource(R.string.length_limit), state.lengthLimit, viewModel::setLengthLimit)
       OutlinedTextField(
         value = state.maxOutputTokens,
         onValueChange = viewModel::setMaxOutputTokens,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text("max_output_tokens") },
+        label = { Text(stringResource(R.string.max_output_tokens_label)) },
         enabled = state.lengthLimit && !state.isLoading,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
       )
-      ControlSwitch("Finish instruction", state.finishInstruction, viewModel::setFinishInstruction)
+      ControlSwitch(stringResource(R.string.finish_instruction), state.finishInstruction, viewModel::setFinishInstruction)
     }
   }
 }
@@ -180,13 +194,13 @@ private fun ResultCard(title: String, result: GenerateResponseDto) {
         )
       }
       HorizontalDivider()
-      Text("status: ${result.status}", style = MaterialTheme.typography.labelLarge)
-      Text("request id: ${result.request_id ?: "n/a"}")
-      Text("output tokens: ${result.output_tokens ?: "n/a"}")
-      Text("controls: ${result.controls.summary()}")
+      Text(stringResource(R.string.result_status, result.status), style = MaterialTheme.typography.labelLarge)
+      Text(stringResource(R.string.request_id, result.request_id ?: stringResource(R.string.no_data)))
+      Text(stringResource(R.string.output_tokens, result.output_tokens?.toString() ?: stringResource(R.string.no_data)))
+      Text(stringResource(R.string.result_controls, result.controls.summary()))
       result.incomplete_reason?.let {
         Text(
-          "Ответ incomplete: $it",
+          stringResource(R.string.answer_incomplete, it),
           color = MaterialTheme.colorScheme.error,
           fontWeight = FontWeight.SemiBold,
         )
@@ -198,10 +212,11 @@ private fun ResultCard(title: String, result: GenerateResponseDto) {
   }
 }
 
+@Composable
 private fun GenerationControlsDto.summary(): String =
-  listOf(
-      "structured=$structured_output",
-      max_output_tokens?.let { "max=$it" } ?: "max=none",
-      "finish=$finish_instruction",
-    )
-    .joinToString()
+  stringResource(
+    R.string.controls_summary,
+    stringResource(if (structured_output) R.string.yes else R.string.no),
+    max_output_tokens?.toString() ?: stringResource(R.string.no_limit),
+    stringResource(if (finish_instruction) R.string.yes else R.string.no),
+  )

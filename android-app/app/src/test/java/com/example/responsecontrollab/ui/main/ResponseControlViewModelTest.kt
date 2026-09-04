@@ -53,7 +53,7 @@ class ResponseControlViewModelTest {
     advanceUntilIdle()
 
     val error = viewModel.uiState.value.errorMessage.orEmpty()
-    assertTrue(error.startsWith("Android timeout:"))
+    assertTrue(error.startsWith("Время ожидания Android истекло:"))
     assertTrue(error.contains("190"))
     assertTrue(error.contains("FastAPI"))
   }

@@ -2,15 +2,14 @@ package com.example.responsecontrollab
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.responsecontrollab.data.OptimizationSolutionDto
 import com.example.responsecontrollab.data.ErrorInfoDto
+import com.example.responsecontrollab.data.OptimizationSolutionDto
 import com.example.responsecontrollab.data.ReasoningExperimentConfigDto
 import com.example.responsecontrollab.data.ReasoningLabBatchResponseDto
 import com.example.responsecontrollab.data.StrategyResultDto
@@ -20,25 +19,8 @@ import com.example.responsecontrollab.theme.ResponseControlLabTheme
 import com.example.responsecontrollab.ui.reasoning.ReasoningLabContent
 import com.example.responsecontrollab.ui.reasoning.ReasoningLabUiState
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
-
-@RunWith(AndroidJUnit4::class)
-class RootNavigationUiTest {
-  @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
-
-  @Test
-  fun bothDestinationsRender() {
-    composeRule.onNodeWithText("Response Control Lab").assertIsDisplayed()
-
-    composeRule.onNodeWithText("Лаборатория рассуждений").performClick()
-
-    composeRule.onNodeWithText("Фиксированная задача").assertIsDisplayed()
-    composeRule.onNodeWithText("Запустить все стратегии").assertIsDisplayed()
-    composeRule.onNodeWithText("Управление ответом").performClick()
-    composeRule.onNodeWithText("Response Control Lab").assertIsDisplayed()
-  }
-}
+import org.junit.Test
 
 @RunWith(AndroidJUnit4::class)
 class MetaPromptExpansionUiTest {
@@ -52,6 +34,7 @@ class MetaPromptExpansionUiTest {
         ReasoningLabContent(
           state = metaPromptContentState(generatedPrompt),
           onRun = {},
+          onBack = {},
         )
       }
     }
@@ -76,6 +59,7 @@ class MetaPromptExpansionUiTest {
         ReasoningLabContent(
           state = partialFailureContentState(),
           onRun = {},
+          onBack = {},
         )
       }
     }
@@ -93,7 +77,7 @@ class MetaPromptExpansionUiTest {
   }
 }
 
-private fun metaPromptContentState(generatedPrompt: String): ReasoningLabUiState.Content {
+internal fun metaPromptContentState(generatedPrompt: String): ReasoningLabUiState.Content {
   val solution =
     OptimizationSolutionDto(
       selected_features = listOf("A", "C", "F", "G"),

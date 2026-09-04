@@ -50,7 +50,7 @@ class ResponseControlViewModel(private val repository: ResponseRepository) : Vie
     val snapshot = _uiState.value
     val prompt = snapshot.prompt
     if (prompt.isBlank()) {
-      update { copy(errorMessage = "Введите prompt.") }
+      update { copy(errorMessage = "Введите запрос.") }
       return
     }
     val maxTokens =
@@ -144,7 +144,7 @@ private fun errorMessage(error: Throwable): String =
     error is SocketTimeoutException ||
       (error is InterruptedIOException &&
         error.message?.contains("timeout", ignoreCase = true) == true) ->
-      "Android timeout: backend не ответил за $BACKEND_CALL_TIMEOUT_SECONDS с. " +
-        "Проверьте FastAPI-логи: запрос мог продолжить выполняться на backend."
+      "Время ожидания Android истекло: сервер не ответил за $BACKEND_CALL_TIMEOUT_SECONDS с. " +
+        "Проверьте логи FastAPI: запрос мог продолжить выполняться на сервере."
     else -> error.message?.takeIf(String::isNotBlank) ?: error::class.java.simpleName
   }
