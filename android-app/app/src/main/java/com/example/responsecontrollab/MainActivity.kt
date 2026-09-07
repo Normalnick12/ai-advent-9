@@ -1,5 +1,6 @@
 package com.example.responsecontrollab
 
+import com.example.responsecontrollab.ui.chat.ChatViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,9 +32,11 @@ class MainActivity : ComponentActivity() {
         viewModel(factory = TemperatureLabViewModel.factory(container.temperatureLabRepository))
       val modelBenchmarkViewModel: ModelBenchmarkViewModel =
         viewModel(factory = ModelBenchmarkViewModel.factory(container.modelBenchmarkRepository))
+      val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModel.factory(container.chatRepository))
       ResponseControlLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
+            chatViewModel = chatViewModel,
             responseControlViewModel = viewModel,
             reasoningLabViewModel = reasoningLabViewModel,
             temperatureLabViewModel = temperatureLabViewModel,

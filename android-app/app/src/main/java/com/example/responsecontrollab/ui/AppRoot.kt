@@ -1,5 +1,7 @@
 package com.example.responsecontrollab.ui
 
+import com.example.responsecontrollab.ui.chat.ChatScreen
+import com.example.responsecontrollab.ui.chat.ChatViewModel
 import androidx.activity.compose.BackHandler
 import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkScreen
 import com.example.responsecontrollab.ui.benchmark.ModelBenchmarkViewModel
@@ -16,10 +18,11 @@ import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
 import com.example.responsecontrollab.ui.temperature.TemperatureLabScreen
 import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK }
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT }
 
 @Composable
 fun AppRoot(
+  chatViewModel: ChatViewModel,
   responseControlViewModel: ResponseControlViewModel,
   reasoningLabViewModel: ReasoningLabViewModel,
   temperatureLabViewModel: TemperatureLabViewModel,
@@ -32,6 +35,7 @@ fun AppRoot(
 
   screenStates.SaveableStateProvider(destination.name) {
     when (destination) {
+      AppDestination.FIRST_AGENT -> ChatScreen(chatViewModel, onBack)
       AppDestination.HOME -> LearningDaysHome(onOpenDay = { destination = it })
       AppDestination.RESPONSE_CONTROL -> ResponseControlScreen(responseControlViewModel, onBack)
       AppDestination.REASONING_LAB -> ReasoningLabScreen(reasoningLabViewModel, onBack)

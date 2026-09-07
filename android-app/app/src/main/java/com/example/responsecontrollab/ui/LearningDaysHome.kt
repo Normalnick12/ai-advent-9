@@ -47,6 +47,7 @@ enum class LearningDay(
   REASONING("03", AppDestination.REASONING_LAB, R.string.day_03_title, R.string.day_03_description),
   TEMPERATURE("04", AppDestination.TEMPERATURE_LAB, R.string.day_04_title, R.string.day_04_description),
   MODEL_BENCHMARK("05", AppDestination.MODEL_BENCHMARK, R.string.day_05_title, R.string.day_05_description),
+  FIRST_AGENT("06", AppDestination.FIRST_AGENT, R.string.day_06_title, R.string.day_06_description),
 }
 
 @Composable

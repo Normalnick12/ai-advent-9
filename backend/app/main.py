@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import logging
 import time
 from uuid import uuid4
@@ -19,7 +20,25 @@ from app.temperature_models import (
 )
 from app.temperature_service import TemperatureLabService
 
-app = FastAPI(title="Response Control Lab API", version="1.0.0")
+from app.agent import SimpleAgent
+from app.agent_api import router as agent_router
+from app.agent_sessions import AgentSessionManager
+from app.openai_responses_llm_client import OpenAIResponsesLlmClient
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    client = OpenAIResponsesLlmClient()
+    app.state.agent_sessions = AgentSessionManager()
+    app.state.agent = SimpleAgent(client)
+    try:
+        yield
+    finally:
+        await client.close()
+
+
+app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
+app.include_router(agent_router)
 app.include_router(model_benchmark_router)
 
 _service = OpenAIResponseService()

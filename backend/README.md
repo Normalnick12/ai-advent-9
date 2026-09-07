@@ -10,6 +10,17 @@ GET /api/v1/model-benchmark/catalog; POST /api/v1/model-benchmark/run прини
 три выбранных model id и возвращает независимую проверку пяти задач и метрики.
 Каталог не требует ключа. Запуск делает по одному вызову на слот без retries.
 
+[Day 06 — первый агент](../day-06-first-agent/README.md) добавляет изолированные
+диалоги: POST `/api/v1/agent/sessions` с `{}`, POST
+`/api/v1/agent/sessions/{session_id}/messages` с `{"message":"текст"}` и DELETE
+`/api/v1/agent/sessions/{session_id}`. SimpleAgent передаёт полную историю явно
+через отдельный OpenAIResponsesLlmClient. История и фиксированные настройки
+остаются на сервере; клиент получает текущий ответ и число завершённых ходов.
+Запускайте **один worker**: sessions находятся в памяти процесса и исчезают
+после restart. DELETE завершает session; новую клиент создаёт при следующей
+явной отправке. Create/delete не требуют ключа и не вызывают OpenAI.
+Одновременный turn или delete занятой session получает 409, потерянная session — 404.
+
 ## Требования
 
 Python 3.11+, зависимости из [requirements.txt](requirements.txt)

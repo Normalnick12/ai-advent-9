@@ -77,6 +77,8 @@ class AppContainer {
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
 
+  val chatRepository: ChatRepository = DefaultChatRepository(retrofit.create(ChatApi::class.java))
+
   val modelBenchmarkRepository: ModelBenchmarkRepository = createModelBenchmarkRepository()
 
   val responseRepository: ResponseRepository =

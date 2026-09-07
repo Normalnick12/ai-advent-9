@@ -37,4 +37,16 @@
     <string name="controls_summary">структурированный JSON: %1$s; максимум токенов: %2$s; инструкция завершения: %3$s</string>
     <string name="day_05_title">Лаборатория моделей</string>
     <string name="day_05_description">Сравните качество, время и стоимость моделей на одинаковых задачах</string>
+  <string name="day_06_title">Первый агент</string>
+  <string name="day_06_description">Диалог с агентом, который учитывает предыдущие сообщения</string>
+  <string name="chat_turn_count">Завершённых ходов: %1$d</string>
+  <string name="chat_empty">Сообщите агенту факт, затем спросите о нём. Новый диалог начнётся без прежнего контекста.</string>
+  <string name="chat_message">Сообщение</string>
+  <string name="chat_send">Отправить</string>
+  <string name="chat_reset">Новый диалог</string>
+  <string name="chat_user">Вы</string>
+  <string name="chat_agent">Агент</string>
+  <string name="chat_creating">Создаём диалог…</string>
+  <string name="chat_sending">Агент отвечает…</string>
+  <string name="chat_resetting">Сбрасываем диалог…</string>
 </resources>

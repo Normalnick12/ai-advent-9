@@ -1,5 +1,6 @@
 package com.example.responsecontrollab
 
+import com.example.responsecontrollab.ui.chat.ChatViewModel
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -24,6 +25,7 @@ class RootNavigationUiTest {
   private val responseCalls = mutableListOf<Pair<String, GenerationControlsDto>>()
   private var reasoningCalls = 0
   private var temperatureCalls = 0
+  private var chatCalls = 0
   private var benchmarkCalls = 0
   private val temperatureResult = CompletableDeferred<TemperatureLabBatchResponseDto>()
   private lateinit var response: ResponseControlViewModel
@@ -35,6 +37,11 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, ChatViewModel.factory(object : ChatRepository {
+        override suspend fun createSession(): ChatSessionDto { chatCalls++; error("Unexpected create") }
+        override suspend fun sendMessage(sessionId: String, message: String): ChatTurnDto { chatCalls++; error("Unexpected send") }
+        override suspend fun deleteSession(sessionId: String) { chatCalls++; error("Unexpected delete") }
+      }))[ChatViewModel::class.java]
       response = ViewModelProvider(activity, ResponseControlViewModel.factory(
         object : ResponseRepository {
           override suspend fun generate(prompt: String, controls: GenerationControlsDto): GenerateResponseDto {
@@ -79,7 +86,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05")) {
+    for (day in listOf("02", "03", "04", "05", "06")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -92,6 +99,7 @@ class RootNavigationUiTest {
       assertEquals(0, reasoningCalls)
       assertEquals(0, temperatureCalls)
       assertEquals(0, benchmarkCalls)
+      assertEquals(0, chatCalls)
     }
   }
 

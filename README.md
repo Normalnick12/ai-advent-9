@@ -9,5 +9,6 @@
 - [День 3 — сравнение reasoning-стратегий](day-03-reasoning-strategies/README.md)
 - [День 4 — лаборатория температуры](day-04-temperature-lab/README.md)
 - [День 5 — лаборатория моделей](day-05-model-benchmark/README.md)
+- [День 6 — первый агент](day-06-first-agent/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.
