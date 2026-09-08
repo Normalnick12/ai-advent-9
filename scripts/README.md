@@ -17,6 +17,27 @@ Backend для живых проверок оставьте в отдельно�
 
 Backend загружает локальный `backend/.env`, если он есть; альтернатива — `OPENAI_API_KEY` в окружении терминала. Значения ключей скрипт не выводит. Занятый порт 8000 блокирует второй запуск, существующий процесс не завершается. Автоперезагрузка не включена: после изменения backend остановите его Ctrl+C и запустите снова.
 
+## Ручной restart Day 07
+
+После подтверждённого ответа/count 1 остановите backend через Ctrl+C в его
+терминале. Во втором терминале выполните force-stop (путь SDK возьмите из `status`):
+
+```powershell
+& "$env:LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe" -s emulator-5554 shell am force-stop com.example.responsecontrollab
+```
+
+Не выполняйте `pm clear`, uninstall или очистку app data. Снова запустите
+`.\scripts\dev.ps1 backend` в управляемом терминале, проверьте `status`, затем:
+
+```powershell
+& "$env:LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe" -s emulator-5554 shell am start -n com.example.responsecontrollab/.MainActivity
+```
+
+Откройте Day 07, проверьте восстановление/count 1 и явно отправьте вопрос о факте.
+Зафиксируйте фактический ответ/count 2; `/health` и offline tests этого результата
+не доказывают. Остановка во время неопределённой HTTP-отправки в этот сценарий
+не входит. Платные запросы автоматически не повторяются.
+
 ## Выбор теста и устройства
 
 ```powershell

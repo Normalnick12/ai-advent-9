@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -15,6 +16,9 @@ interface ChatApi {
   @POST("api/v1/agent/sessions/{session_id}/messages")
   suspend fun send(@Path("session_id") sessionId: String, @Body body: ChatMessageRequestDto): Response<ChatTurnDto>
 
+  @GET("api/v1/agent/sessions/{session_id}")
+  suspend fun get(@Path("session_id") sessionId: String): Response<ChatSessionDto>
+
   @DELETE("api/v1/agent/sessions/{session_id}")
   suspend fun delete(@Path("session_id") sessionId: String): Response<Unit>
 }
@@ -23,6 +27,7 @@ class ChatRequestException(val code: String, override val message: String) : Exc
 
 interface ChatRepository {
   suspend fun createSession(): ChatSessionDto
+  suspend fun getSession(sessionId: String): ChatSessionDto
   suspend fun sendMessage(sessionId: String, message: String): ChatTurnDto
   suspend fun deleteSession(sessionId: String)
 }
@@ -46,7 +51,7 @@ class DefaultChatRepository(private val api: ChatApi) : ChatRepository {
       val expectedCode = mapOf(404 to "session_not_found", 409 to "session_busy", 422 to "validation_error")[code()]
       if (error != null && error.error.code == expectedCode) {
         throw ChatRequestException(error.error.code, when (expectedCode) {
-          "session_not_found" -> "Диалог потерян после перезапуска сервера. Начните новый диалог."
+          "session_not_found" -> "Диалог недоступен. Начните новый диалог."
           "session_busy" -> "Диалог занят. Дождитесь завершения отправки."
           else -> "Некорректный запрос. Проверьте сообщение."
         })
@@ -59,6 +64,12 @@ class DefaultChatRepository(private val api: ChatApi) : ChatRepository {
   override suspend fun createSession(): ChatSessionDto = request {
     val result = api.create(CreateChatSessionDto()).requireStatus(201).body()
     require(result != null && result.sessionId.isNotBlank() && result.historyTurnCount == 0)
+    result
+  }
+
+  override suspend fun getSession(sessionId: String): ChatSessionDto = request {
+    val result = api.get(sessionId).requireStatus(200).body()
+    require(result != null && result.sessionId == sessionId && result.historyTurnCount >= 0)
     result
   }
 

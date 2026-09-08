@@ -68,7 +68,8 @@ class DefaultTemperatureLabRepository(private val api: TemperatureLabApi) :
     api.run(TemperatureLabRunRequestDto(prompt = prompt))
 }
 
-class AppContainer {
+class AppContainer(context: android.content.Context) {
+  val currentSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context)
   private val json = Json { ignoreUnknownKeys = true }
   private val retrofit =
     Retrofit.Builder()

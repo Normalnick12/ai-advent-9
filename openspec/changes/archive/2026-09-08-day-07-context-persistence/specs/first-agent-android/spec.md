@@ -1,23 +1,4 @@
-# first-agent-android Specification
-
-## Purpose
-
-Определяет общие русскоязычные chat-компоненты Day 06–07 с независимыми состояниями лабораторий, явными ошибками и восстановлением Day 07 session identity после cold start без хранения или воссоздания LLM conversation history на Android.
-
-## Requirements
-
-### Requirement: Day 06 presents a simple Russian chat
-
-Экран «Первый агент» SHALL показывать сообщения в хронологическом порядке с подписями «Вы» и «Агент», поле «Сообщение», действия «Отправить» и «Новый диалог», ожидание и русские ошибки. Все статические пользовательские подписи SHALL быть русскими; фактический текст ответа SHALL не подменяться шаблонами или переводом. Экран SHALL быть доступен без backend и не показывать settings/model/instructions/API-key controls. Список SHALL прокручиваться, длинные сообщения переноситься; ввод и действия SHALL оставаться доступны при открытой клавиатуре и не перекрываться системными панелями.
-
-#### Scenario: Empty chat is available offline
-- **WHEN** пользователь открывает Day 06 при недоступном backend
-- **THEN** видит пустой чат и может набрать текст
-- **AND** открытие не отправляет сообщения и не вызывает LLM
-
-#### Scenario: Messages remain readable
-- **WHEN** длинные сообщения показаны на узком экране с увеличенным шрифтом и открыта клавиатура
-- **THEN** текст переносится и доступен прокруткой, а ввод и действия не перекрыты
+## MODIFIED Requirements
 
 ### Requirement: Android sends only the new message and session identity
 
@@ -118,6 +99,8 @@ UI SHALL показывать «Завершённых ходов: N» по back
 - **WHEN** пользователь покидает Day 06 или Day 07 во время отправки, посещает другой день и возвращается
 - **THEN** видит состояние той же попытки и тот же диалог без второго запроса
 - **AND** состояние другого дня не подменяется данными чата
+
+## ADDED Requirements
 
 ### Requirement: Day 07 restores only the current conversation identity
 

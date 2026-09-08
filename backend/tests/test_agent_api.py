@@ -91,7 +91,7 @@ async def test_http_busy_turn_and_delete(api):
     sid = (await client.post(BASE, json={})).json()["session_id"]
     task = asyncio.create_task(client.post(f"{BASE}/{sid}/messages", json={"message": "Первый"}))
     await started.wait()
-    for result in [await client.post(f"{BASE}/{sid}/messages", json={"message": "Второй"}), await client.delete(f"{BASE}/{sid}")]:
+    for result in [await client.post(f"{BASE}/{sid}/messages", json={"message": "Второй"}), await client.delete(f"{BASE}/{sid}"), await client.get(f"{BASE}/{sid}")]:
         assert result.status_code == 409 and result.json()["error"]["code"] == "session_busy"
     release.set()
     assert (await task).json()["history_turn_count"] == 1

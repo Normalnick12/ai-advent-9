@@ -32,11 +32,14 @@ class MainActivity : ComponentActivity() {
         viewModel(factory = TemperatureLabViewModel.factory(container.temperatureLabRepository))
       val modelBenchmarkViewModel: ModelBenchmarkViewModel =
         viewModel(factory = ModelBenchmarkViewModel.factory(container.modelBenchmarkRepository))
-      val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModel.factory(container.chatRepository))
+      val chatViewModel: ChatViewModel = viewModel(key = ChatViewModel.DAY_06_KEY, factory = ChatViewModel.factory(container.chatRepository))
+      val persistentChatViewModel: ChatViewModel = viewModel(key = ChatViewModel.DAY_07_KEY,
+        factory = ChatViewModel.factory(container.chatRepository, container.currentSessionStore))
       ResponseControlLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
             chatViewModel = chatViewModel,
+            persistentChatViewModel = persistentChatViewModel,
             responseControlViewModel = viewModel,
             reasoningLabViewModel = reasoningLabViewModel,
             temperatureLabViewModel = temperatureLabViewModel,

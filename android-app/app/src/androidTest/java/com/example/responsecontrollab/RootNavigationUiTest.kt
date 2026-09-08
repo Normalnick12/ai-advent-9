@@ -38,10 +38,21 @@ class RootNavigationUiTest {
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
       ViewModelProvider(activity, ChatViewModel.factory(object : ChatRepository {
+        override suspend fun getSession(sessionId: String): ChatSessionDto = error("Unexpected GET")
         override suspend fun createSession(): ChatSessionDto { chatCalls++; error("Unexpected create") }
         override suspend fun sendMessage(sessionId: String, message: String): ChatTurnDto { chatCalls++; error("Unexpected send") }
         override suspend fun deleteSession(sessionId: String) { chatCalls++; error("Unexpected delete") }
-      }))[ChatViewModel::class.java]
+      }))[ChatViewModel.DAY_06_KEY, ChatViewModel::class.java]
+      ViewModelProvider(activity, ChatViewModel.factory(object : ChatRepository {
+        override suspend fun getSession(sessionId: String): ChatSessionDto { chatCalls++; error("Unexpected GET") }
+        override suspend fun createSession(): ChatSessionDto { chatCalls++; error("Unexpected create") }
+        override suspend fun sendMessage(sessionId: String, message: String): ChatTurnDto { chatCalls++; error("Unexpected send") }
+        override suspend fun deleteSession(sessionId: String) { chatCalls++; error("Unexpected delete") }
+      }, object : CurrentSessionStore {
+        override suspend fun read(): String? = null
+        override suspend fun save(sessionId: String) = error("Unexpected save")
+        override suspend fun clear() = error("Unexpected clear")
+      }))[ChatViewModel.DAY_07_KEY, ChatViewModel::class.java]
       response = ViewModelProvider(activity, ResponseControlViewModel.factory(
         object : ResponseRepository {
           override suspend fun generate(prompt: String, controls: GenerationControlsDto): GenerateResponseDto {
@@ -86,7 +97,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()

@@ -23,7 +23,7 @@ class AgentRoute(APIRoute):
             try:
                 response = await handler(request)
             except SessionNotFound:
-                response = self._error(request, 404, "session_not_found", "Диалог потерян после перезапуска сервера. Начните новый диалог.")
+                response = self._error(request, 404, "session_not_found", "Диалог недоступен. Начните новый диалог.")
             except SessionBusy:
                 response = self._error(request, 409, "session_busy", "Диалог занят. Дождитесь завершения отправки.")
             except RequestValidationError:
@@ -68,6 +68,17 @@ async def create_session(
     request.state.agent_session_id = session.session_id
     request.state.agent_count = 0
     return SessionResponse(session_id=session.session_id, history_turn_count=0)
+
+
+@router.get("/{session_id}", response_model=SessionResponse)
+async def read_session(
+    session_id: UUID, request: Request, manager: AgentSessionManager = Depends(get_session_manager),
+) -> SessionResponse:
+    request.state.agent_session_id = str(session_id)
+    session = manager.get(str(session_id))
+    session.ensure_available()
+    request.state.agent_count = session.history_turn_count
+    return SessionResponse(session_id=session_id, history_turn_count=session.history_turn_count)
 
 
 @router.post("/{session_id}/messages", response_model=AgentTurnResponse)

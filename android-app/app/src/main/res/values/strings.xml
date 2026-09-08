@@ -49,4 +49,11 @@
   <string name="chat_creating">Создаём диалог…</string>
   <string name="chat_sending">Агент отвечает…</string>
   <string name="chat_resetting">Сбрасываем диалог…</string>
+  <string name="day_07_title">Сохранение контекста</string>
+  <string name="day_07_description">Продолжение того же диалога после перезапуска сервера и приложения</string>
+  <string name="chat_restoring">Восстанавливаем диалог…</string>
+  <string name="chat_saving_id">Сохраняем диалог…</string>
+  <string name="chat_restored">Диалог восстановлен. Предыдущие сообщения не отображаются</string>
+  <string name="chat_count_unknown">История диалога пока не подтверждена</string>
+  <string name="chat_restore_retry">Повторить восстановление</string>
 </resources>

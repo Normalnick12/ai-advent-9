@@ -16,10 +16,27 @@ GET /api/v1/model-benchmark/catalog; POST /api/v1/model-benchmark/run прини
 `/api/v1/agent/sessions/{session_id}`. SimpleAgent передаёт полную историю явно
 через отдельный OpenAIResponsesLlmClient. История и фиксированные настройки
 остаются на сервере; клиент получает текущий ответ и число завершённых ходов.
-Запускайте **один worker**: sessions находятся в памяти процесса и исчезают
-после restart. DELETE завершает session; новую клиент создаёт при следующей
-явной отправке. Create/delete не требуют ключа и не вызывают OpenAI.
-Одновременный turn или delete занятой session получает 409, потерянная session — 404.
+[Day 07 — сохранение контекста](../day-07-context-persistence/README.md) развивает
+тот же Agent subsystem: SQLite — источник сохранённой истории, AgentSession —
+восстановимый снимок в RAM. Успешная пара user/assistant сначала фиксируется
+одной транзакцией, затем обновляет RAM; ошибка записи не продвигает историю.
+После restart mapping пустой, известный ID лениво восстанавливается из SQLite.
+GET `/api/v1/agent/sessions/{session_id}` возвращает только `session_id` и
+`history_turn_count`. Create/GET/delete не требуют ключа и не вызывают OpenAI.
+Неизвестный ID даёт 404, одновременный turn/GET/delete занятой session — 409.
+DELETE сначала надёжно удаляет историю, затем закрывает runtime session;
+повторное удаление корректного ID возвращает 204.
+
+Запускайте **один worker**: busy защищает session внутри одного процесса.
+Стандартный Python `sqlite3` выполняет короткие синхронные операции в том же
+потоке; connection открывается/закрывается в lifespan. Явные BEGIN/COMMIT/ROLLBACK,
+foreign keys и обычный rollback journal обеспечивают атомарную запись пары.
+База `.local/agent/conversations.sqlite3` находится относительно корня проекта,
+независимо от shell cwd; файл и sidecars уже исключены из Git. Первый запуск
+создаёт schema. История старого RAM-only процесса Day 06 не переносится.
+Restart не очищает SQLite; используйте «Новый диалог» для явного удаления.
+Busy, locks и незавершённые запросы не сохраняются. Семантической памяти,
+сжатия истории, ORM, автоматического TTL и восстановления UI transcript нет.
 
 ## Требования
 
@@ -69,3 +86,10 @@ cd ..
 python -m pip install -r requirements-dev.txt
 python -m pytest
 ```
+
+Persistence-тесты открывают отдельные реальные SQLite-файлы в `tmp_path`,
+закрывают старые store/manager и восстанавливают history новым экземпляром.
+Пользовательская `.local` БД в pytest не открывается. Fake LLM проверяет точный
+контекст U1/A1/U2; fault injection проверяет rollback и ошибки commit.
+Живой restart обоих процессов проверяется отдельно, после завершённого ответа;
+потеря HTTP-ответа или crash посреди неопределённого turn вне гарантии Day 07.

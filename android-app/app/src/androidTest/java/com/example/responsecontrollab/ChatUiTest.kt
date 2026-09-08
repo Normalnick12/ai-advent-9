@@ -24,7 +24,7 @@ class ChatUiTest {
   @Before fun setup() {
     rule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
-      vm = ViewModelProvider(activity, ChatViewModel.factory(repo))[ChatViewModel::class.java]
+      vm = ViewModelProvider(activity, ChatViewModel.factory(repo))[ChatViewModel.DAY_06_KEY, ChatViewModel::class.java]
     }
     rule.activityRule.scenario.recreate()
     open("06")
@@ -56,7 +56,7 @@ class ChatUiTest {
       rule.onNodeWithText("Завершённых ходов: 0").assertIsDisplayed()
       if (status == "session_not_found") {
         rule.onNodeWithTag("chat_send").assertIsNotEnabled()
-        rule.onNodeWithText("Диалог потерян после перезапуска сервера. Начните новый диалог.").assertIsDisplayed()
+        rule.onNodeWithText("Диалог недоступен. Начните новый диалог.").assertIsDisplayed()
       }
     }
   }
@@ -117,6 +117,7 @@ private class UiChatRepository : ChatRepository {
   var longReply = false
   private var sessions = 0
   private var count = 0
+  override suspend fun getSession(sessionId: String): ChatSessionDto = error("Unexpected GET")
   override suspend fun createSession(): ChatSessionDto {
     calls += "create"; sessions++; count = 0
     return ChatSessionDto("s$sessions", 0)

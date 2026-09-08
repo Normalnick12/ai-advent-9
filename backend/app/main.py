@@ -24,20 +24,28 @@ from app.agent import SimpleAgent
 from app.agent_api import router as agent_router
 from app.agent_sessions import AgentSessionManager
 from app.openai_responses_llm_client import OpenAIResponsesLlmClient
+from app.sqlite_conversation_store import DEFAULT_DATABASE_PATH, SQLiteConversationStore
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = OpenAIResponsesLlmClient()
-    app.state.agent_sessions = AgentSessionManager()
-    app.state.agent = SimpleAgent(client)
+    store = None
     try:
+        store = SQLiteConversationStore(app.state.agent_database_path)
+        app.state.agent_sessions = AgentSessionManager(store)
+        app.state.agent = SimpleAgent(client)
         yield
     finally:
-        await client.close()
+        try:
+            if store is not None:
+                store.close()
+        finally:
+            await client.close()
 
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
+app.state.agent_database_path = DEFAULT_DATABASE_PATH
 app.include_router(agent_router)
 app.include_router(model_benchmark_router)
 

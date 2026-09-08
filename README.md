@@ -10,5 +10,6 @@
 - [День 4 — лаборатория температуры](day-04-temperature-lab/README.md)
 - [День 5 — лаборатория моделей](day-05-model-benchmark/README.md)
 - [День 6 — первый агент](day-06-first-agent/README.md)
+- [День 7 — сохранение контекста](day-07-context-persistence/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.

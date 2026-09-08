@@ -118,6 +118,7 @@ private class FakeChatRepository : ChatRepository {
   var gate: CompletableDeferred<Unit>? = null
   private var sessions = 0
   private var count = 0
+  override suspend fun getSession(sessionId: String): ChatSessionDto = error("Unexpected GET")
   override suspend fun createSession(): ChatSessionDto {
     calls += "create"
     if (createError) throw ChatRequestException("unknown", "Нет сети")

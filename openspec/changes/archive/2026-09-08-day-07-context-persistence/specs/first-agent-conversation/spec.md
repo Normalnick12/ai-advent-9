@@ -1,10 +1,4 @@
-# first-agent-conversation Specification
-
-## Purpose
-
-Определяет общее поведение backend-агента Day 06–07: полную явную историю конкретной session, durable context после restart, изоляцию и атомарность хода, lifecycle удаления и небольшой HTTP-контракт без semantic memory пользователя.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Sessions isolate state while sharing fixed agent behavior
 
@@ -47,23 +41,6 @@ Backend SHALL предоставлять одно фиксированное п�
 - **THEN** клиент получает безопасную ошибку вместо HTTP 201
 - **AND** незаписанная session не публикуется как рабочая runtime session
 
-### Requirement: Every turn explicitly sends the entire saved conversation
-
-`POST /api/v1/agent/sessions/{session_id}/messages` SHALL принимать только поле `message`: строку длиной 1–20000 символов с хотя бы одним непробельным символом. Backend SHALL передавать модели все сохранённые user/assistant messages данной session в исходном порядке, текущее сообщение с ролью user и фиксированные instructions при каждом вызове. Допустимый исходный текст SHALL не переписываться. Android SHALL NOT передавать history, instructions, model, LLM settings или API key. Conversations API и `previous_response_id` SHALL NOT использоваться. Compression, sliding window, summarization, embeddings и token-based trimming SHALL отсутствовать; переполнение контекста SHALL давать явную ошибку без скрытого удаления истории.
-
-#### Scenario: Second turn receives the first exchange
-- **WHEN** после успешного обмена U1/A1 приходит U2
-- **THEN** LLM input содержит ровно U1, A1, U2 с соответствующими ролями и порядком
-- **AND** инструкции агента передаются снова, а после успеха счётчик равен 2
-
-#### Scenario: Longer history is not shortened
-- **WHEN** session с несколькими успешными ходами принимает следующее сообщение
-- **THEN** все сохранённые сообщения входят в LLM input без обрезки или дополнительного вызова summarization
-
-#### Scenario: Invalid input cannot reach the model
-- **WHEN** message отсутствует, имеет неверный тип, состоит только из пробелов, длиннее 20000 символов или содержит лишние request fields
-- **THEN** backend возвращает HTTP 422 без LLM-вызова и изменения history
-
 ### Requirement: Only a completed text turn atomically commits history
 
 Принятый turn SHALL выполнять не более одного вызова OpenAI Responses API без автоматических SDK/application retries или fallback. Только завершённый непустой текст без refusal SHALL атомарно добавлять user + assistant в durable history. Успех SHALL подтверждаться только после persistent commit всей пары; runtime history SHALL обновляться после этого commit. Storage failure SHALL оставлять прежний RAM snapshot и SHALL NOT возвращать успешный turn. Incomplete, refusal, timeout, upstream error, некорректный ответ и отмена до commit SHALL оставлять persistent и runtime history неизменными и освобождать session. Ошибки SHALL NOT становиться assistant messages в LLM context; частичный текст SHALL NOT представляться успешным ходом. Прерванная запись пары SHALL NOT оставлять половину turn при последующем открытии storage. Успешный persistent commit не является гарантией доставки HTTP-ответа клиенту.
@@ -91,31 +68,6 @@ Backend SHALL предоставлять одно фиксированное п�
 #### Scenario: A pair write rolls back
 - **WHEN** запись завершается ошибкой после добавления user, но до commit пары
 - **THEN** повторное открытие storage показывает прежнюю history без обоих новых сообщений
-
-### Requirement: Responses expose outcomes without exporting internal context
-
-Завершившийся обработчик turn SHALL возвращать HTTP 200 с `session_id`, `request_id`, `status`, `reply`, `history_turn_count`, `incomplete_reason`, `error`. Статус SHALL быть `completed`, `incomplete`, `refused` или `error`. Только completed SHALL иметь непустой reply; прочие статусы SHALL иметь `reply=null` и безопасную русскую ошибку `{code, message}`. Счётчик SHALL учитывать только сохранённые пары и не увеличиваться при неуспехе. Session/validation HTTP-ошибки SHALL иметь безопасный код и сообщение. `X-Request-ID` SHALL связывать ответ с диагностикой. Контракт и логи SHALL NOT раскрывать ключ, внутренние instructions, snapshot истории, raw SDK objects или exception dumps. История SHALL оставаться внутренней частью backend.
-
-#### Scenario: Current reply and count are sufficient diagnostics
-- **WHEN** успешно завершён третий turn
-- **THEN** ответ содержит текущий reply и `history_turn_count=3`
-- **AND** не возвращает предыдущие сообщения, instructions или LLM settings
-
-#### Scenario: Incomplete is explicit
-- **WHEN** модель возвращает incomplete
-- **THEN** клиент получает `status=incomplete`, `reply=null`, безопасную причину и неизменный счётчик
-
-### Requirement: Only one turn per session can be active
-
-Конкурентная отправка в занятую session SHALL возвращать HTTP 409 `session_busy` без очереди, второго LLM-вызова или изменения истории. Занятость одной session SHALL NOT блокировать turn другой session.
-
-#### Scenario: A concurrent turn is rejected
-- **WHEN** LLM-вызов session A выполняется и приходит второе сообщение в A
-- **THEN** второе сообщение получает 409 `session_busy`, а только первый turn может сохранить пару
-
-#### Scenario: Another session can proceed
-- **WHEN** A ожидает LLM и поступает сообщение в свободную B
-- **THEN** B может начать свой turn до завершения A с независимым контекстом
 
 ### Requirement: Deletion removes context and invalidates the session ID
 
@@ -157,6 +109,8 @@ Day 07 SHALL сохранять HTTP contracts, prompts, controls, model selecti
 - **WHEN** тот же диалог продолжается до или после backend restart
 - **THEN** LLM получает всю подтверждённую history и только новое user message с прежними instructions/config
 - **AND** дополнительные LLM-вызовы для restore, summaries, memory extraction или reconstruction отсутствуют
+
+## ADDED Requirements
 
 ### Requirement: Stored history restores exactly or fails explicitly
 

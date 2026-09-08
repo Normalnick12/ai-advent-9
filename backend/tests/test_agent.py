@@ -9,11 +9,10 @@ from app.llm_client import LlmResult
 
 
 @pytest.mark.asyncio
-async def test_full_context_isolation_and_reset():
+async def test_full_context_isolation_and_reset(manager, store):
     client = AsyncMock()
     client.complete.return_value = LlmResult("completed", "Ответ")
     agent = SimpleAgent(client)
-    manager = AgentSessionManager()
     a, b = manager.create(), manager.create()
     assert a.session_id != b.session_id
     for message in [" Факт ", "Вопрос", "Ещё", "И ещё"]:
@@ -37,8 +36,7 @@ async def test_full_context_isolation_and_reset():
     c = manager.create()
     assert c.session_id not in {a.session_id, b.session_id}
     assert c.history == ()
-    with pytest.raises(SessionNotFound):
-        AgentSessionManager().get(b.session_id)
+    assert AgentSessionManager(store).get(b.session_id).history == b.history
 
 
 @pytest.mark.asyncio
@@ -48,10 +46,10 @@ async def test_full_context_isolation_and_reset():
     LlmResult("error", error_code="llm_timeout"),
     LlmResult("completed", " "), LlmResult("completed"),
 ])
-async def test_failure_does_not_commit(result):
+async def test_failure_does_not_commit(result, manager):
     client = AsyncMock()
     client.complete.return_value = LlmResult("completed", "A1")
-    agent, session = SimpleAgent(client), AgentSessionManager().create()
+    agent, session = SimpleAgent(client), manager.create()
     await agent.run_turn(session, "U1")
     history = session.history
     client.complete.return_value = result
@@ -63,7 +61,7 @@ async def test_failure_does_not_commit(result):
 
 
 @pytest.mark.asyncio
-async def test_busy_parallel_sessions_cancel_and_exception():
+async def test_busy_parallel_sessions_cancel_and_exception(manager, store):
     started, release = asyncio.Event(), asyncio.Event()
 
     async def complete(messages, config):
@@ -74,7 +72,7 @@ async def test_busy_parallel_sessions_cancel_and_exception():
 
     client = AsyncMock()
     client.complete.side_effect = complete
-    agent, manager = SimpleAgent(client), AgentSessionManager()
+    agent = SimpleAgent(client)
     a, b = manager.create(), manager.create()
     task = asyncio.create_task(agent.run_turn(a, "A"))
     await started.wait()
@@ -89,6 +87,7 @@ async def test_busy_parallel_sessions_cancel_and_exception():
     with pytest.raises(asyncio.CancelledError):
         await task
     assert a.history == ()
+    assert store.load_session(a.session_id).history == ()
     client.complete.side_effect = RuntimeError("private")
     with pytest.raises(RuntimeError):
         await agent.run_turn(a, "Ошибка")

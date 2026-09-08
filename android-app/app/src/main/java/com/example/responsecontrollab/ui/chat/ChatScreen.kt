@@ -18,22 +18,26 @@ import com.example.responsecontrollab.ui.LearningDay
 import com.example.responsecontrollab.ui.LearningDayTopBar
 
 @Composable
-fun ChatScreen(viewModel: ChatViewModel, onBack: () -> Unit) {
+fun ChatScreen(viewModel: ChatViewModel, onBack: () -> Unit, day: LearningDay = LearningDay.FIRST_AGENT) {
+  LaunchedEffect(viewModel) { viewModel.initialize() }
   val state by viewModel.uiState.collectAsStateWithLifecycle()
   val scroll = rememberSaveable(state.generation, saver = LazyListState.Saver) { LazyListState() }
   Scaffold(
-    topBar = { LearningDayTopBar(LearningDay.FIRST_AGENT, onBack) },
+    topBar = { LearningDayTopBar(day, onBack) },
     contentWindowInsets = WindowInsets.safeDrawing,
   ) { padding ->
+    val turnCount = state.historyTurnCount
     Column(Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding).imePadding().padding(horizontal = 16.dp).testTag("chat_screen")) {
-      Text(stringResource(R.string.chat_turn_count, state.historyTurnCount), Modifier.testTag("chat_count"))
+      Text(if (turnCount == null) stringResource(R.string.chat_count_unknown)
+        else stringResource(R.string.chat_turn_count, turnCount), Modifier.testTag("chat_count"))
+      if (state.restored) Text(stringResource(R.string.chat_restored), Modifier.testTag("chat_restored"))
       LazyColumn(
         state = scroll,
         modifier = Modifier.weight(1f).fillMaxWidth().testTag("chat_transcript"),
         contentPadding = PaddingValues(vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
       ) {
-        if (state.messages.isEmpty() && state.pendingUser == null) {
+        if (state.messages.isEmpty() && state.pendingUser == null && !state.restored && state.restoration == ChatRestoration.READY) {
           item { Text(stringResource(R.string.chat_empty)) }
         }
         itemsIndexed(state.messages) { index, message ->
@@ -49,10 +53,15 @@ fun ChatScreen(viewModel: ChatViewModel, onBack: () -> Unit) {
       if (state.busy) {
         LinearProgressIndicator(Modifier.fillMaxWidth())
         Text(stringResource(when (state.operation) {
+          ChatOperation.RESTORING -> R.string.chat_restoring
+          ChatOperation.SAVING_ID -> R.string.chat_saving_id
           ChatOperation.CREATING -> R.string.chat_creating
           ChatOperation.RESETTING -> R.string.chat_resetting
           else -> R.string.chat_sending
         }))
+      }
+      if (state.canRetryRestore) OutlinedButton(onClick = viewModel::retryRestore, modifier = Modifier.testTag("chat_restore_retry")) {
+        Text(stringResource(R.string.chat_restore_retry))
       }
       OutlinedTextField(
         value = state.draft,
@@ -67,7 +76,7 @@ fun ChatScreen(viewModel: ChatViewModel, onBack: () -> Unit) {
         Button(onClick = viewModel::send, enabled = state.canSend, modifier = Modifier.testTag("chat_send")) {
           Text(stringResource(R.string.chat_send))
         }
-        OutlinedButton(onClick = viewModel::newConversation, enabled = !state.busy, modifier = Modifier.testTag("chat_reset")) {
+        OutlinedButton(onClick = viewModel::newConversation, enabled = state.canReset, modifier = Modifier.testTag("chat_reset")) {
           Text(stringResource(R.string.chat_reset))
         }
       }
