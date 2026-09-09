@@ -93,3 +93,54 @@ Persistence-тесты открывают отдельные реальные SQ
 контекст U1/A1/U2; fault injection проверяет rollback и ошибки commit.
 Живой restart обоих процессов проверяется отдельно, после завершённого ответа;
 потеря HTTP-ответа или crash посреди неопределённого turn вне гарантии Day 07.
+
+
+## Day 08 — токены
+
+`/api/v1/token-lab/sessions` предоставляет отдельные create/GET/delete и
+`/{id}/messages` с тем же message limit 20000. Day 08 использует второй instance
+того же SimpleAgent: immutable `day08-gpt4o-mini-v1`, `gpt-4o-mini`,
+reasoning omitted, output budget 1200, Standard tier, truncation disabled.
+Отдельный manager и файл
+`.local/token-lab/day08-gpt4o-mini-v1/conversations.sqlite3` используют прежнюю
+schema sessions/messages. Одинаковые resolved DB paths блокируют startup.
+Identity — namespace + UUID; чужие get/send/prepare/execute дают 404, cross-delete
+безопасен. Metadata lifecycle не вызывает OpenAI. SQLite не хранит tokens/cost.
+
+Normal Send выполняет current-only count, history-only count (пустая history=0
+без запроса), full count с instructions, затем максимум одну generation.
+Counts относятся к одному immutable snapshot до commit и неаддитивны.
+Основная context utilization — full preflight/128000; reserve 1200 показывается
+отдельно. Timeout count: 15 секунд, connect 5; normal preflight deadline 45,
+generation deadline 75. SDK/application retries=0. Существующие Day 06/07
+не выполняют count calls и сохраняют прежние generation payload/HTTP DTO.
+
+Result возвращает outcome/attempt ID, committed count, diagnostics, nullable
+usage/model/tier и estimated cost. Ни history, ни instructions не возвращаются.
+Pricing использует Decimal и actual input/cached/output по rates
+0.15/0.075/0.60 USD/MTok, проверенным 2026-09-09; источник приходит в response.
+Reasoning входит в output, cache writes без отдельной надбавки.
+Unknown model/tier, missing или inconsistent usage дают unavailable; pricing
+failure не отменяет пригодный completed turn. Day 05 pricing не изменён.
+
+`POST /{id}/overflow/prepare` с `{}` выполняет только counts: максимум четыре
+full probes к target 140000, accepted 132000–160000, полный JSON <=2 MiB.
+Это resource cap, не model limit. Рецепт/образцы/digest/размеры видны клиенту;
+standalone current/history для probe не считаются. Подготовка хранится только
+в RAM 10 минут, одна на session, максимум 16. Новый prepare, успешный normal
+commit/reset или restart инвалидирует старое разрешение.
+
+`POST /{id}/overflow/execute` принимает только
+`{"preparation_id":"…","confirm":true}` после отдельного подтверждения.
+Session/history/config/digest/expiry проверяются, ID потребляется до generation.
+Probe никогда не commit'ится, даже при unexpected provider acceptance.
+Только structured generation `context_length_exceeded` считается доказательством
+переполнения; count rejection, 400 без этого code, 413/429/timeout — другие исходы.
+Не повторяйте execute после unknown response: проверьте доступность/count через
+GET, затем обычный turn допустим; это не подтверждение отсутствия расходов.
+
+[Фактический provider-count smoke](../openspec/changes/archive/2026-09-09-day-08-token-lab/provider-count-smoke.md)
+сохраняет первоначальный failed baseline, transient timeout и успешную проверку
+новой схемы. Offline pytest использует mocks и временные SQLite-файлы, а не
+платную generation. Реальный short/long/overflow acceptance выполняется отдельно
+из Android; один live overflow требует отдельного явного подтверждения.

@@ -1,6 +1,7 @@
 package com.example.responsecontrollab
 
 import com.example.responsecontrollab.ui.chat.ChatViewModel
+import com.example.responsecontrollab.ui.token.TokenLabViewModel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -35,9 +36,12 @@ class MainActivity : ComponentActivity() {
       val chatViewModel: ChatViewModel = viewModel(key = ChatViewModel.DAY_06_KEY, factory = ChatViewModel.factory(container.chatRepository))
       val persistentChatViewModel: ChatViewModel = viewModel(key = ChatViewModel.DAY_07_KEY,
         factory = ChatViewModel.factory(container.chatRepository, container.currentSessionStore))
+      val tokenLabViewModel: TokenLabViewModel = viewModel(key = TokenLabViewModel.KEY,
+        factory = TokenLabViewModel.factory(container.tokenLabRepository, container.tokenSessionStore))
       ResponseControlLabTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
+            tokenLabViewModel = tokenLabViewModel,
             chatViewModel = chatViewModel,
             persistentChatViewModel = persistentChatViewModel,
             responseControlViewModel = viewModel,

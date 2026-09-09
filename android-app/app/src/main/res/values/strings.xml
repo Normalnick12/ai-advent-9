@@ -56,4 +56,6 @@
   <string name="chat_restored">Диалог восстановлен. Предыдущие сообщения не отображаются</string>
   <string name="chat_count_unknown">История диалога пока не подтверждена</string>
   <string name="chat_restore_retry">Повторить восстановление</string>
+    <string name="day_08_title">Работа с токенами</string>
+    <string name="day_08_description">Токены и оценочная стоимость полной истории, предел контекста модели.</string>
 </resources>

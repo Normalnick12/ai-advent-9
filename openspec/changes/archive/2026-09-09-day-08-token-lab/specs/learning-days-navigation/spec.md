@@ -1,10 +1,4 @@
-# learning-days-navigation Specification
-
-## Purpose
-
-Определяет каталог доступных дней Android-приложения, предсказуемые переходы между каталогом и уроками и сохранение пользовательского состояния при навигации в текущей сессии.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Catalog is the application entry screen
 
@@ -35,22 +29,6 @@
 - **WHEN** пользователь открывает Day 08 при доступном или недоступном backend
 - **THEN** навигация работает и не запускает count, generation или overflow preparation
 - **AND** без ID доступен composer, с ID выполняется только metadata restore с явным retry при ошибке
-
-### Requirement: Back returns to the catalog
-Каждый урок SHALL предоставлять верхнюю кнопку с доступной подписью «Назад к дням». Эта кнопка и системное действие назад SHALL возвращать в каталог; системное закрытие клавиатуры SHALL сохранять стандартный приоритет перед возвратом. На главном экране системное действие назад SHALL передаваться стандартному поведению Android, без перехода в ранее открытый урок.
-
-#### Scenario: Toolbar back returns to catalog
-- **WHEN** пользователь нажимает верхнюю кнопку назад в любом уроке
-- **THEN** отображается каталог
-
-#### Scenario: System back returns to catalog
-- **WHEN** пользователь выполняет системное действие назад в уроке при закрытой клавиатуре
-- **THEN** отображается каталог
-
-#### Scenario: System back on home does not reopen a lesson
-- **WHEN** пользователь вернулся в каталог и выполняет системное действие назад
-- **THEN** приложение следует стандартному поведению Android для корневого экрана
-- **AND** ранее посещённый урок не открывается
 
 ### Requirement: Navigation preserves session state
 

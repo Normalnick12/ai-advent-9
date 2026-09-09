@@ -1,4 +1,5 @@
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, AsyncExitStack
+from pathlib import Path
 import logging
 import time
 from uuid import uuid4
@@ -20,6 +21,10 @@ from app.temperature_models import (
 )
 from app.temperature_service import TemperatureLabService
 
+from app.token_lab_api import router as token_lab_router
+from app.token_diagnostics import DAY08_CONFIG
+from app.openai_token_counter import OpenAIInputTokenCounter
+from app.token_overflow import OverflowPreparations
 from app.agent import SimpleAgent
 from app.agent_api import router as agent_router
 from app.agent_sessions import AgentSessionManager
@@ -29,23 +34,33 @@ from app.sqlite_conversation_store import DEFAULT_DATABASE_PATH, SQLiteConversat
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    client = OpenAIResponsesLlmClient()
-    store = None
-    try:
-        store = SQLiteConversationStore(app.state.agent_database_path)
+    old_path = Path(app.state.agent_database_path).resolve()
+    token_path = Path(app.state.token_database_path).resolve()
+    if old_path == token_path:
+        raise ValueError("Agent namespaces must use different database files")
+    async with AsyncExitStack() as resources:
+        client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(client.close)
+        store = SQLiteConversationStore(old_path)
+        resources.callback(store.close)
         app.state.agent_sessions = AgentSessionManager(store)
         app.state.agent = SimpleAgent(client)
+        token_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(token_client.close)
+        counter = OpenAIInputTokenCounter()
+        resources.push_async_callback(counter.close)
+        token_store = SQLiteConversationStore(token_path)
+        resources.callback(token_store.close)
+        app.state.token_sessions = AgentSessionManager(token_store)
+        app.state.token_agent = SimpleAgent(token_client, DAY08_CONFIG, counter)
+        app.state.token_overflow = OverflowPreparations(app.state.token_agent)
         yield
-    finally:
-        try:
-            if store is not None:
-                store.close()
-        finally:
-            await client.close()
 
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
+app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
+app.include_router(token_lab_router)
 app.include_router(agent_router)
 app.include_router(model_benchmark_router)
 

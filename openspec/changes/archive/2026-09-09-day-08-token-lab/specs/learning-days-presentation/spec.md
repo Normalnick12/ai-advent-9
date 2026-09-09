@@ -1,10 +1,4 @@
-# learning-days-presentation Specification
-
-## Purpose
-
-Определяет читаемое оформление каталога и общие заголовки дней обучения, а также единые русские пользовательские подписи существующих Android-экранов.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Catalog cards clearly identify each lesson
 
@@ -31,14 +25,6 @@ Day 08 SHALL называться «Работа с токенами» и опи
 #### Scenario: Token laboratory has its own identity
 - **WHEN** пользователь видит карточку Day 08 и открывает её
 - **THEN** карточка и общая верхняя область показывают номер 08 и название «Работа с токенами»
-
-### Requirement: Lesson headers use consistent Russian titles
-Все уроки SHALL показывать номер в формате «День NN», полное русское название, совпадающее с каталогом, и кнопку возврата в единой верхней области. Каталог и уроки SHALL иметь согласованные отступы и типографику; содержимое и элементы управления SHALL NOT перекрываться системными панелями.
-
-#### Scenario: Matching lesson identity
-- **WHEN** пользователь открывает любую карточку
-- **THEN** заголовок урока содержит соответствующий номер и то же русское название
-- **AND** верхняя область не дублируется второй панелью заголовка
 
 ### Requirement: User interface labels are Russian without changing experiment data
 

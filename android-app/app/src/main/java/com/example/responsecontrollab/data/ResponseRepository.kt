@@ -69,6 +69,7 @@ class DefaultTemperatureLabRepository(private val api: TemperatureLabApi) :
 }
 
 class AppContainer(context: android.content.Context) {
+  val tokenSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context, "day_08_current_session")
   val currentSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context)
   private val json = Json { ignoreUnknownKeys = true }
   private val retrofit =
@@ -77,6 +78,8 @@ class AppContainer(context: android.content.Context) {
       .client(createBackendHttpClient())
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
+
+  val tokenLabRepository: TokenLabRepository = DefaultTokenLabRepository(retrofit.create(TokenLabApi::class.java))
 
   val chatRepository: ChatRepository = DefaultChatRepository(retrofit.create(ChatApi::class.java))
 

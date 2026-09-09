@@ -63,36 +63,8 @@ fun ChatScreen(viewModel: ChatViewModel, onBack: () -> Unit, day: LearningDay = 
       if (state.canRetryRestore) OutlinedButton(onClick = viewModel::retryRestore, modifier = Modifier.testTag("chat_restore_retry")) {
         Text(stringResource(R.string.chat_restore_retry))
       }
-      OutlinedTextField(
-        value = state.draft,
-        onValueChange = viewModel::updateDraft,
-        label = { Text(stringResource(R.string.chat_message)) },
-        enabled = !state.busy,
-        minLines = 1, maxLines = 3,
-        modifier = Modifier.fillMaxWidth().testTag("chat_input"),
-      )
-      // A wrapping row keeps both actions accessible with large system fonts.
-      FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = viewModel::send, enabled = state.canSend, modifier = Modifier.testTag("chat_send")) {
-          Text(stringResource(R.string.chat_send))
-        }
-        OutlinedButton(onClick = viewModel::newConversation, enabled = state.canReset, modifier = Modifier.testTag("chat_reset")) {
-          Text(stringResource(R.string.chat_reset))
-        }
-      }
-    }
-  }
-}
-
-@Composable
-private fun ChatBubble(message: ChatMessage, modifier: Modifier = Modifier) {
-  Surface(
-    modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium,
-    color = if (message.isUser) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainer,
-  ) {
-    Column(Modifier.padding(12.dp)) {
-      Text(stringResource(if (message.isUser) R.string.chat_user else R.string.chat_agent), style = MaterialTheme.typography.labelLarge)
-      SelectionContainer { Text(message.text) }
+      ChatComposer(state.draft, viewModel::updateDraft, state.busy, state.canSend,
+        state.canReset, viewModel::send, viewModel::newConversation)
     }
   }
 }

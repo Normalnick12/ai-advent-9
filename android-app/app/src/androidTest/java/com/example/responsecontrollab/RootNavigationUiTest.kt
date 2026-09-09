@@ -1,6 +1,7 @@
 package com.example.responsecontrollab
 
 import com.example.responsecontrollab.ui.chat.ChatViewModel
+import com.example.responsecontrollab.ui.token.TokenLabViewModel
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -27,6 +28,7 @@ class RootNavigationUiTest {
   private var temperatureCalls = 0
   private var chatCalls = 0
   private var benchmarkCalls = 0
+  private val tokenRepository = TokenUiRepository()
   private val temperatureResult = CompletableDeferred<TemperatureLabBatchResponseDto>()
   private lateinit var response: ResponseControlViewModel
   private lateinit var temperature: TemperatureLabViewModel
@@ -37,6 +39,7 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, TokenLabViewModel.factory(tokenRepository, tokenUiStore()))[TokenLabViewModel.KEY, TokenLabViewModel::class.java]
       ViewModelProvider(activity, ChatViewModel.factory(object : ChatRepository {
         override suspend fun getSession(sessionId: String): ChatSessionDto = error("Unexpected GET")
         override suspend fun createSession(): ChatSessionDto { chatCalls++; error("Unexpected create") }
@@ -97,7 +100,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06", "07")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07", "08")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -111,6 +114,8 @@ class RootNavigationUiTest {
       assertEquals(0, temperatureCalls)
       assertEquals(0, benchmarkCalls)
       assertEquals(0, chatCalls)
+      assertEquals(0, tokenRepository.creates)
+      assertEquals(0, tokenRepository.executes)
     }
   }
 

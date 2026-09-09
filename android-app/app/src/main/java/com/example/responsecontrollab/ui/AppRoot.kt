@@ -18,10 +18,14 @@ import com.example.responsecontrollab.ui.reasoning.ReasoningLabViewModel
 import com.example.responsecontrollab.ui.temperature.TemperatureLabScreen
 import com.example.responsecontrollab.ui.temperature.TemperatureLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE }
+import com.example.responsecontrollab.ui.token.TokenLabScreen
+import com.example.responsecontrollab.ui.token.TokenLabViewModel
+
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB }
 
 @Composable
 fun AppRoot(
+  tokenLabViewModel: TokenLabViewModel,
   chatViewModel: ChatViewModel,
   persistentChatViewModel: ChatViewModel,
   responseControlViewModel: ResponseControlViewModel,
@@ -36,6 +40,7 @@ fun AppRoot(
 
   screenStates.SaveableStateProvider(destination.name) {
     when (destination) {
+      AppDestination.TOKEN_LAB -> TokenLabScreen(tokenLabViewModel, onBack)
       AppDestination.CONTEXT_PERSISTENCE -> ChatScreen(persistentChatViewModel, onBack, LearningDay.CONTEXT_PERSISTENCE)
       AppDestination.FIRST_AGENT -> ChatScreen(chatViewModel, onBack)
       AppDestination.HOME -> LearningDaysHome(onOpenDay = { destination = it })
