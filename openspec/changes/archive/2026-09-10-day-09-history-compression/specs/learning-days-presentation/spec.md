@@ -1,10 +1,4 @@
-# learning-days-presentation Specification
-
-## Purpose
-
-Определяет читаемое оформление каталога и общие заголовки дней обучения, а также единые русские пользовательские подписи существующих Android-экранов.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Catalog cards clearly identify each lesson
 

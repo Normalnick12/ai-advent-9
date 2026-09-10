@@ -11,6 +11,7 @@ def isolated_agent_database(tmp_path, monkeypatch):
     path = tmp_path / "api-conversations.sqlite3"
     monkeypatch.setattr(app.state, "agent_database_path", path)
     monkeypatch.setattr(app.state, "token_database_path", tmp_path / "token-lab.sqlite3")
+    monkeypatch.setattr(app.state, "compression_database_path", tmp_path / "compression-lab.sqlite3")
     return path
 
 

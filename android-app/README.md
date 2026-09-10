@@ -4,7 +4,7 @@
 backend. Позволяет отправлять запросы, сравнивать ответы и просматривать метрики.
 Все обращения к OpenAI выполняет backend; API-ключ в приложении не нужен.
 
-При запуске открывается каталог «AI Advent» с днями 02–07. Нажмите карточку,
+При запуске открывается каталог «AI Advent» с днями 02–09. Нажмите карточку,
 чтобы открыть урок; верхняя стрелка или системное действие назад возвращает
 к списку дней. Day 01 доступен отдельно как Python CLI.
 
@@ -25,7 +25,7 @@ session или неизвестного результата отправки т
 
 Day 07 — [сохранение контекста](../day-07-context-persistence/README.md): отдельная
 карточка «Сохранение контекста» использует общий chat UI с независимым от Day 06
-keyed ViewModel. Только Day 07 хранит `session_id` в private SharedPreferences
+keyed ViewModel. Day 07 хранит `session_id` в private SharedPreferences
 `day_07_current_session` через CurrentSessionStore. Чтение и проверяемый commit
 выполняются вне main thread. После create запись ID должна завершиться до send.
 
@@ -108,3 +108,56 @@ Unknown normal-send outcome требует явного «Новый диало�
 read-only проверки доступности диалога, без повтора использованного разрешения.
 Подготовка и реальные short/long/overflow результаты — разные стадии;
 offline UI tests используют fake repositories и не вызывают OpenAI.
+
+## Day 09 — Управление контекстом: сжатие истории
+
+[Лаборатория](../day-09-history-compression/README.md) имеет один
+CompressionLabViewModel на вложенные Chat/Details. Основной экран показывает
+chat, compact card последнего normal request (FULL/COMPRESSED, signed delta,
+summary count и фактический raw tail при fixed N=4), composer и кнопку
+«Статистика и сравнение». Details содержит context/phase diagnostics, раздельные
+расходы summarization/response/compare, раскрываемую durable summary и явное
+сравнение. На узком экране результаты идут вертикально, от 720dp — рядом.
+Back: Details → Chat → каталог; IME закрывается первым. Navigation/recreation
+сохраняют drafts/scroll/results и не запускают generation заново.
+
+ID записывается до первого send в отдельные config-versioned preferences
+`day_09_current_session_day09-gpt4o-mini-tail4-v1`, исключённые из backup.
+Cold start делает только metadata GET: восстанавливаются identity/count/summary
+metadata. Bubbles, observations и totals прошлого process не восстанавливаются.
+Summary читается явным раскрытием, без paid repair. Reset удаляет backend
+session и затем local ID/state. Unknown send требует явного reset; unknown
+compare — read-only refresh, без automatic replay. Отдельный client:
+read timeout 220s, call timeout 240s, retries=0; budgets Day 02–08 не меняются.
+
+Backend возвращает metrics отдельной операции. VM deduplicates attempt IDs
+и суммирует только observations текущего process, раздельно maintenance summary,
+chat replies, compare preparation и обе compare branches. Неполное покрытие
+usage/cost явно отмечается. Token saving не выдаётся за net денежную экономию.
+Current durable summary и local compare summary подписаны отдельно;
+compare result показывает snapshot freshness.
+
+Для одного live прогона начните новый Day 09 диалог. Четыре раза используйте
+«Вставить учебный шаг» и отдельно «Отправить»: identifier, limit, responsible,
+нейтральный запрос. Длинный текст виден в composer и доступен для полного чтения.
+Перед четвёртым turn впервые создаётся durable summary. В Details нажмите
+«Проверить три факта»: значения отсутствуют в comparison question.
+Результат N/3 проверяет только точное сохранение трёх фактов, не качество текста.
+Если assistant повторил ранний факт в raw tail, результат будет not applicable.
+Не повторяйте paid compare ради желаемого score или savings.
+
+Итоговый ручной live experiment записан в Day 09 README: FULL=2/3,
+COMPRESSED=1/3, actual input/output/cost обеих branches. Старые ошибочные UI
+scores parser не являются итоговыми результатами. Maintenance usage/cost
+наблюдались отдельно; их численные значения в отчёт не переданы.
+
+Пользователь подтвердил restart: session/count=4 восстановлены, старых bubbles
+нет, runtime measurements и compare results очищены, paid replay отсутствует.
+Чтение durable summary после restart и reset также подтверждены пользователем:
+после сброса старый диалог не восстанавливается.
+
+Offline команды из корня: `.\scripts\dev.ps1 unit`,
+`.\scripts\dev.ps1 build`,
+`.\scripts\dev.ps1 ui -Test 'com.example.responsecontrollab.CompressionLabUiTest'`.
+После изменений navigation выполняется полный `.\scripts\dev.ps1 ui`.
+UI tests используют fake repositories, без backend и OpenAI.

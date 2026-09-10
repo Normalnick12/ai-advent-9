@@ -35,8 +35,9 @@ foreign keys и обычный rollback journal обеспечивают ато�
 независимо от shell cwd; файл и sidecars уже исключены из Git. Первый запуск
 создаёт schema. История старого RAM-only процесса Day 06 не переносится.
 Restart не очищает SQLite; используйте «Новый диалог» для явного удаления.
-Busy, locks и незавершённые запросы не сохраняются. Семантической памяти,
-сжатия истории, ORM, автоматического TTL и восстановления UI transcript нет.
+Busy, locks и незавершённые запросы не сохраняются. Day 06–08 используют полную
+историю без summarization. Семантической памяти, ORM, автоматического TTL
+и восстановления UI transcript нет.
 
 ## Требования
 
@@ -144,3 +145,79 @@ GET, затем обычный turn допустим; это не подтвер
 новой схемы. Offline pytest использует mocks и временные SQLite-файлы, а не
 платную generation. Реальный short/long/overflow acceptance выполняется отдельно
 из Android; один live overflow требует отдельного явного подтверждения.
+
+## Day 09 — сжатие истории
+
+[Day 09](../day-09-history-compression/README.md) использует тот же SimpleAgent
+с RollingSummaryContextPolicy. Default FullHistoryContextPolicy сохраняет
+payloads, counts и HTTP contracts Day 06–08. Raw SQLite history остаётся полным
+источником: summary меняет только LLM context.
+
+Namespace `/api/v1/compression-lab/sessions`:
+
+| Метод / suffix | Назначение |
+| --- | --- |
+| POST / с `{}` | Создать пустой диалог |
+| GET /{id} | ID, confirmed turn count, config version и summary metadata |
+| GET /{id}/summary | Прочитать текущую durable summary |
+| DELETE /{id} | Атомарно удалить session, raw messages и summary |
+| POST /{id}/messages с `{"message":"…"}` | Один normal turn |
+| POST /{id}/compare с `{"question":"…","scenario_id":"three-facts-v1"}` | Явный scored compare; scenario_id можно опустить для сравнения без оценки |
+
+Поля history/config/model не принимаются. Input limit — 20000 символов.
+Metadata операции не вызывают OpenAI. Ошибки isolation/busy/validation —
+404/409/422; corruption/version mismatch — явная безопасная ошибка без repair.
+Отдельный файл
+`.local/compression-lab/day09-gpt4o-mini-tail4-v1/conversations.sqlite3`
+содержит прежние sessions/messages и таблицу conversation_summaries:
+session_id, summary_text, covered_through_position, config_version.
+Все три resolved DB paths должны различаться; по-прежнему нужен один worker.
+
+Перед turn политика сохраняет summary всей confirmed части старше последних
+4 сообщений (двух полных пар). Она использует предыдущую summary и только
+новые eligible messages, без current user. Boundary — inclusive zero-based
+position последнего assistant в covered prefix. Synthetic assistant message
+с data-only marker стоит перед raw tail; в raw историю он не попадает.
+Summary save — отдельная короткая транзакция после LLM await. Неудача summary
+или save блокирует ответ; successful summary commit сохраняется даже при
+последующей ошибке count, generation или atomic raw pair commit.
+
+Normal response отправляет только COMPRESSED. FULL — counterfactual provider
+count с теми же instructions/history/current; превышение FULL window не
+блокирует допустимый COMPRESSED. Signed delta не обрезается. Standalone summary
+count включает оформление synthetic message, без base instructions; эти
+измерения неаддитивны. Отрицательная delta означает дополнительный расход.
+
+Обе generation configs фиксированы: gpt-4o-mini, Standard tier, truncation
+disabled, reasoning omitted; response budget 1200, summary budget 384.
+Summarizer стремится к короткому тексту, но target не гарантирован; retries нет.
+На операцию — deadline 210s; count — прежние 15s/connect 5s, preflight 45s,
+отдельная generation — 75s. Ответ операции сохраняет известные phase receipts:
+input/output/cache usage, estimated cost, latency, outcome. Unavailable не
+подменяется нулём. Rates/actual usage используют Day 08 pricing.
+Backend не накапливает расходы и не хранит billing journal.
+
+Compare фиксирует один immutable snapshot. При необходимости готовится локальная
+catch-up summary без SQLite save; затем FULL/COMPRESSED count→generation ветки
+работают параллельно и независимо. Question/replies/local summary не commit'ятся;
+partial failure не стирает второй результат. Deadline отменяет незавершённые
+calls без replay. Scored compare до платных calls проверяет точные четыре
+учебных user messages и отсутствие ORBIT-7319/standalone 37 в последних
+четырёх raw messages обеих ролей. Загрязнённый tail даёт scenario_not_applicable.
+Verifier оценивает только named fields identifier/limit/responsible, 137 != 37.
+
+Offline проверки: `python -m pytest tests/test_compression.py` и полный
+`python -m pytest` из backend. Используются fake clients и временные реальные
+SQLite files. Counts и фактическое сохранение трёх фактов одного ручного прогона
+зафиксированы в Day 09 README вместе с actual usage/estimated cost итогового
+compare (FULL 2/3, COMPRESSED 1/3). Отдельные maintenance usage/cost подтверждены
+пользователем; их численные значения не переданы, net экономия не заявляется. Четырёх-turn
+recipe и acceptance описаны в
+[OpenSpec design](../openspec/changes/archive/2026-09-10-day-09-history-compression/design.md).
+Для restart-проверки дождитесь завершённого turn, перезапустите backend и
+force-stop/reopen Android без очистки данных: GET восстанавливает ID/count/summary,
+не вызывает paid repair и не возвращает старые UI bubbles/runtime observations.
+
+Ручной restart Day 09 подтвердил восстановление session/count=4 без paid replay.
+Пользователь также подтвердил чтение durable summary после restart и успешный
+reset: старый диалог после сброса не восстанавливается.

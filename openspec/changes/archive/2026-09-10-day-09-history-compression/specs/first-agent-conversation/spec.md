@@ -1,10 +1,4 @@
-# first-agent-conversation Specification
-
-## Purpose
-
-Определяет общее поведение backend-агента Day 06–07: полную явную историю конкретной session, durable context после restart, изоляцию и атомарность хода, lifecycle удаления и небольшой HTTP-контракт без semantic memory пользователя.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Sessions isolate state while sharing fixed agent behavior
 
@@ -40,24 +34,6 @@ Day 08 SHALL использовать отдельный namespace и фикси
 #### Scenario: Day 09 shares lifecycle without sharing context strategy
 - **WHEN** одновременно доступны Day 06–09
 - **THEN** старые namespaces сохраняют прежние payload/config/calls, Day 09 использует собственную policy и ни один ID не открывает другой namespace
-
-### Requirement: Session creation does not call the LLM
-
-`POST /api/v1/agent/sessions` SHALL принимать пустой JSON-объект и возвращать HTTP 201 с новым непрозрачным уникальным `session_id` и `history_turn_count=0` только после durable сохранения пустой session. Создание SHALL NOT вызывать LLM или требовать доступности OpenAI/API key. Лишние request fields SHALL отклоняться с HTTP 422. Storage failure SHALL NOT возвращать 201 или изображать созданную только в RAM session как сохранённую.
-
-#### Scenario: Create two empty sessions
-- **WHEN** клиент дважды создаёт session с телом `{}`
-- **THEN** получает разные IDs и нулевые счётчики без LLM-вызовов
-- **AND** обе пустые sessions доступны после backend restart
-
-#### Scenario: Client tries to configure the agent
-- **WHEN** create request содержит model, instructions, history или иное лишнее поле
-- **THEN** backend возвращает HTTP 422 и не создаёт session
-
-#### Scenario: Creation cannot be persisted
-- **WHEN** запись новой session завершается storage failure
-- **THEN** клиент получает безопасную ошибку вместо HTTP 201
-- **AND** незаписанная session не публикуется как рабочая runtime session
 
 ### Requirement: Every turn explicitly sends the entire saved conversation
 
@@ -139,45 +115,6 @@ Day 08 SHALL сохранять свой token-lab response contract. Day 09 SHA
 - **WHEN** после внедрения Day 09 вызываются старые agent и token-lab endpoints
 - **THEN** они возвращают прежние contracts без Day 09 summary или compare fields
 
-### Requirement: Only one turn per session can be active
-
-Конкурентная отправка в занятую session SHALL возвращать HTTP 409 `session_busy` без очереди, второго LLM-вызова или изменения истории. Занятость одной session SHALL NOT блокировать turn другой session.
-
-#### Scenario: A concurrent turn is rejected
-- **WHEN** LLM-вызов session A выполняется и приходит второе сообщение в A
-- **THEN** второе сообщение получает 409 `session_busy`, а только первый turn может сохранить пару
-
-#### Scenario: Another session can proceed
-- **WHEN** A ожидает LLM и поступает сообщение в свободную B
-- **THEN** B может начать свой turn до завершения A с независимым контекстом
-
-### Requirement: Deletion removes context and invalidates the session ID
-
-`DELETE /api/v1/agent/sessions/{session_id}` SHALL durable удалять свободную session и её history до HTTP 204. Удаление SHALL работать и для session, ещё не загруженной в runtime mapping после restart. Runtime object SHALL закрываться и удаляться только после успешного persistent delete. Storage failure SHALL NOT очищать runtime history или изображать успешный reset. Удаление отсутствующего корректного ID SHALL также давать 204. Удаление busy session SHALL давать 409 `session_busy` без частичного сброса. Удалённый ID SHALL NOT восстанавливаться отложенным запросом или restart. Reset/delete SHALL завершать текущую backend session без создания замены и без вызова OpenAI. После подтверждённого reset клиент SHALL оставаться без активного session ID; только следующая явная отправка SHALL инициировать создание новой session с новым ID, пустой history и прежним поведением агента.
-
-#### Scenario: Reset removes a saved fact
-- **WHEN** A с сохранённым фактом успешно удалена, клиент остаётся без session ID, а следующая явная отправка создаёт B с новым ID и отправляет в ней первое сообщение
-- **THEN** LLM context B не содержит сообщений A, а после первого успеха счётчик B равен 1
-- **AND** отправка по ID A возвращает 404 `session_not_found`
-
-#### Scenario: Reset races with a turn
-- **WHEN** клиент удаляет session с выполняющимся turn
-- **THEN** получает 409, а исходный turn продолжает обычный lifecycle
-- **AND** успешное удаление после завершения turn не позволяет старому ID принять сообщение
-
-#### Scenario: Deleted history stays deleted after restart
-- **WHEN** после DELETE 204 backend запускается заново и получает GET или send по удалённому ID
-- **THEN** возвращает 404 `session_not_found` без восстановления history
-- **AND** повторный DELETE возвращает 204 без LLM-вызова
-
-#### Scenario: Delete an unloaded session
-- **WHEN** backend перезапущен и до первого get/turn клиент удаляет существующую session
-- **THEN** session и все её сообщения удаляются durable, несмотря на пустой runtime mapping
-
-#### Scenario: Persistent delete fails
-- **WHEN** удаление завершается storage failure до commit
-- **THEN** клиент не получает 204, а существующий runtime object и history сохраняются для явного повторного reset
-
 ### Requirement: Earlier days remain independent experiments
 
 Day 07 SHALL сохранять HTTP contracts, prompts, controls, model selections, response schemas, timeout/retry semantics и число LLM-вызовов Day 02–05. Эти лаборатории SHALL NOT получать conversation state или использовать sessions агента. Day 06 Agent semantics SHALL сохраняться: полная явная history, исходный текст, fixed config, изоляция, один LLM-вызов, commit только пригодного completed, busy/delete guards и отсутствие replay. Для исторического Day 07 изменению подлежат только persistence lifecycle guarantees и связанное восстановление identity/metadata. Day 09 SHALL дополнительно сохранять все Day 02–08 contracts, model/config/payload, timeout/retry и число provider calls, включая Day 08 counting, actual usage/pricing и overflow behavior. Историческая volatile реализация Day 06 SHALL оставаться в OpenSpec archive и Git history, без второго backend stack. Ключ SHALL использоваться только backend из `OPENAI_API_KEY`.
@@ -228,20 +165,3 @@ Day 09 SHALL NOT сохранять backend cumulative accounting/runtime_id и�
 #### Scenario: Durable summary is not a runtime request
 - **WHEN** Day 09 backend перезапущен после сохранения summary
 - **THEN** summary восстанавливается, но busy, pending calls и billing observations не восстанавливаются и не replay-ятся
-
-### Requirement: Session metadata can be read without exporting history
-
-`GET /api/v1/agent/sessions/{session_id}` SHALL возвращать HTTP 200 с ровно `session_id` и `history_turn_count` для существующей свободной session, включая восстановленную после restart. GET SHALL NOT создавать session, менять conversation history, вызывать LLM, требовать API key или возвращать history, instructions, model/settings и другие internal данные. Для busy session GET SHALL возвращать 409 `session_busy`, чтобы клиент не принимал промежуточный count за baseline восстановления. Отсутствующий ID SHALL давать 404 `session_not_found`, некорректный UUID — 422; storage failure — безопасную серверную ошибку. Agent response SHALL сохранять `X-Request-ID` и безопасный error envelope; 404 SHALL NOT утверждать, что любой restart уничтожает session.
-
-#### Scenario: Read metadata after restart
-- **WHEN** GET получает ID session с одной подтверждённой парой после backend restart
-- **THEN** ответ равен metadata того же ID с `history_turn_count=1`
-- **AND** тело не содержит иных полей, LLM не вызывается
-
-#### Scenario: Read empty session without credentials
-- **WHEN** GET получает ID существующей пустой session без настроенного API key
-- **THEN** возвращает 200 с тем же ID и count 0
-
-#### Scenario: Metadata lookup fails safely
-- **WHEN** GET получает отсутствующий или некорректный ID либо занятую session
-- **THEN** возвращает соответственно 404, 422 или 409 без LLM-вызова и изменения history

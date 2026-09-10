@@ -21,6 +21,11 @@ from app.temperature_models import (
 )
 from app.temperature_service import TemperatureLabService
 
+from app.compression_lab_api import router as compression_lab_router
+from app.compression_models import DAY09_CONFIG, VERSION
+from app.compression_compare import CompressionComparison
+from app.conversation_summary_store import SQLiteConversationSummaryStore
+from app.history_summarizer import HistorySummarizer, RollingSummaryContextPolicy
 from app.token_lab_api import router as token_lab_router
 from app.token_diagnostics import DAY08_CONFIG
 from app.openai_token_counter import OpenAIInputTokenCounter
@@ -36,7 +41,8 @@ from app.sqlite_conversation_store import DEFAULT_DATABASE_PATH, SQLiteConversat
 async def lifespan(app: FastAPI):
     old_path = Path(app.state.agent_database_path).resolve()
     token_path = Path(app.state.token_database_path).resolve()
-    if old_path == token_path:
+    compression_path = Path(app.state.compression_database_path).resolve()
+    if len({old_path, token_path, compression_path}) != 3:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -54,12 +60,28 @@ async def lifespan(app: FastAPI):
         app.state.token_sessions = AgentSessionManager(token_store)
         app.state.token_agent = SimpleAgent(token_client, DAY08_CONFIG, counter)
         app.state.token_overflow = OverflowPreparations(app.state.token_agent)
+        compression_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(compression_client.close)
+        compression_counter = OpenAIInputTokenCounter()
+        resources.push_async_callback(compression_counter.close)
+        compression_store = SQLiteConversationStore(compression_path)
+        resources.callback(compression_store.close)
+        summaries = SQLiteConversationSummaryStore(compression_store._db, compression_store._transaction, VERSION)
+        summarizer = HistorySummarizer(compression_client)
+        app.state.compression_sessions = AgentSessionManager(compression_store)
+        app.state.compression_summaries = summaries
+        app.state.compression_agent = SimpleAgent(compression_client, DAY09_CONFIG, compression_counter,
+            RollingSummaryContextPolicy(summaries, summarizer))
+        app.state.compression_compare = CompressionComparison(
+            summaries.load, summarizer, app.state.compression_agent, compression_counter)
         yield
 
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
+app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
+app.include_router(compression_lab_router)
 app.include_router(token_lab_router)
 app.include_router(agent_router)
 app.include_router(model_benchmark_router)

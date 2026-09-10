@@ -1,10 +1,4 @@
-# learning-days-navigation Specification
-
-## Purpose
-
-Определяет каталог доступных дней Android-приложения, предсказуемые переходы между каталогом и уроками и сохранение пользовательского состояния при навигации в текущей сессии.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Catalog is the application entry screen
 

@@ -50,6 +50,7 @@ enum class LearningDay(
   FIRST_AGENT("06", AppDestination.FIRST_AGENT, R.string.day_06_title, R.string.day_06_description),
   CONTEXT_PERSISTENCE("07", AppDestination.CONTEXT_PERSISTENCE, R.string.day_07_title, R.string.day_07_description),
   TOKEN_LAB("08", AppDestination.TOKEN_LAB, R.string.day_08_title, R.string.day_08_description),
+  HISTORY_COMPRESSION("09", AppDestination.HISTORY_COMPRESSION, R.string.day_09_title, R.string.day_09_description),
 
 }
 

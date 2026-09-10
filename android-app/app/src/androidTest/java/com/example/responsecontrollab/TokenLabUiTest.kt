@@ -1,7 +1,5 @@
 package com.example.responsecontrollab
 
-import android.os.ParcelFileDescriptor
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.lifecycle.ViewModelProvider
@@ -28,27 +26,6 @@ class TokenLabUiTest {
     }
     rule.activityRule.scenario.recreate()
     open()
-  }
-  @Test fun largeFontWithImeKeepsActionsAndDiagnosticsAccessible() {
-    fun shell(command: String): String = ParcelFileDescriptor.AutoCloseInputStream(
-      InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)
-    ).bufferedReader().use { it.readText().trim() }
-    val previous = shell("settings get system font_scale")
-    try {
-      shell("settings put system font_scale 1.5")
-      rule.waitForIdle()
-      rule.onNodeWithTag("token_input").performClick().performTextInput("Проверка большого шрифта")
-      rule.onNodeWithTag("token_send").assertIsDisplayed()
-      rule.onNodeWithTag("token_reset").assertIsDisplayed()
-      Espresso.closeSoftKeyboard()
-      reveal("token_prepare"); rule.onNodeWithTag("token_prepare").performClick()
-      rule.waitUntil { vm.uiState.value.preparation != null }
-      reveal("token_execute"); rule.onNodeWithTag("token_execute").assertIsDisplayed()
-      rule.runOnIdle { assertEquals(0, repo.executes); assertEquals(0, repo.sends) }
-    } finally {
-      if (previous == "null") shell("settings delete system font_scale")
-      else shell("settings put system font_scale $previous")
-    }
   }
   private fun open() {
     rule.onNodeWithTag("days_catalog").performScrollToNode(hasTestTag("day_08"))

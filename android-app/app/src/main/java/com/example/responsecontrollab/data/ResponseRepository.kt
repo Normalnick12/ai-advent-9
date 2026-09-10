@@ -69,6 +69,8 @@ class DefaultTemperatureLabRepository(private val api: TemperatureLabApi) :
 }
 
 class AppContainer(context: android.content.Context) {
+  val compressionSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context,
+    com.example.responsecontrollab.ui.compression.CompressionLabViewModel.PREFERENCES)
   val tokenSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context, "day_08_current_session")
   val currentSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context)
   private val json = Json { ignoreUnknownKeys = true }
@@ -79,6 +81,8 @@ class AppContainer(context: android.content.Context) {
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
 
+  val compressionLabRepository: CompressionLabRepository = DefaultCompressionLabRepository(
+    retrofit.newBuilder().client(createCompressionHttpClient()).build().create(CompressionLabApi::class.java))
   val tokenLabRepository: TokenLabRepository = DefaultTokenLabRepository(retrofit.create(TokenLabApi::class.java))
 
   val chatRepository: ChatRepository = DefaultChatRepository(retrofit.create(ChatApi::class.java))
