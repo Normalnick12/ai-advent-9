@@ -31,7 +31,9 @@ class SimpleAgent:
             raise CountFailure("count_invalid_response")
         return value
 
-    async def run_turn(self, session: AgentSession, message: str, *, operation=None) -> AgentTurnResult:
+    async def run_turn(self, session: AgentSession, message: str, *, operation=None, day10=None) -> AgentTurnResult:
+        if day10 is not None:
+            return await day10.run(self, session, message)
         session.begin_turn()
         diagnostics = None
         try:

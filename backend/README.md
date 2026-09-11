@@ -39,6 +39,94 @@ Busy, locks и незавершённые запросы не сохраняют
 историю без summarization. Семантической памяти, ORM, автоматического TTL
 и восстановления UI transcript нет.
 
+## Day 10: независимые context strategies
+
+[Лаборатория Day 10](../day-10-context-strategies/README.md) использует один `SimpleAgent`
+с отдельным preparation/commit lifecycle и config `day10-gpt4o-mini-n6-v3`.
+Новый store: `.local/context-strategies/day10-gpt4o-mini-n6-v3/experiments.sqlite3`.
+Не переносит и не открывает Day 06–09 sessions. Запускать по-прежнему один worker.
+
+Каталог: GET `/api/v1/context-strategies/scenario` возвращает восемь canonical
+fixtures с presentation metadata и fixed A/B questions, без таблицы ответов verifier.
+Базовый адрес run: `/api/v1/context-strategies/{window|facts|branches}/runs`.
+
+| Операция | Метод и суффикс |
+| --- | --- |
+| Создать run (только перед первым явным Send) | POST base |
+| Прочитать confirmed state / outputs | GET base/{id} |
+| Отправить canonical fixture | POST base/{id}/messages |
+| Создать checkpoint после шага 6 | POST base/{id}/checkpoint |
+| Прочитать facts | GET base/{id}/facts |
+| Прочитать принадлежащий run raw message | GET base/{id}/messages/{message_id} |
+| Независимая final evaluation | POST base/{id}/evaluations/{A|B} |
+| Сбросить весь run | DELETE base/{id} |
+
+Create body: `{"config_version":"day10-gpt4o-mini-n6-v3","scenario_version":"meeting-rooms-v1"}`.
+Send дополнительно принимает `expected_revision`, `attempt_id` (новый UUID),
+`step_id`, explicit `target` (`root`, `A`, `B`) и точный `message` из каталога.
+Checkpoint добавляет только `expected_revision`, evaluation — revision и attempt ID.
+Settings/history/facts в request запрещены. Edited fixture отклоняется как
+`scenario_not_applicable` до provider calls; подмены текста не происходит.
+
+Window generation/count видят только последние шесть confirmed messages плюс
+current user: **stored audit history != active model context**. Facts extractor
+получает только JSON `{"current_user":"<exact raw current message>"}`.
+Strict extraction schema `facts-v2` содержит scope/key/kind/state/value/evidence,
+без op; state — set/cleared. Previous facts не передаются модели. Backend сначала
+валидирует весь semantic patch по exact current assertions/type/value/evidence,
+затем reducer применяет его к actual previous FactState. Set новой/cleared identity
+добавляет значение, другое typed value обновляет запись, identical value сохраняет
+прежние kind/evidence/provenance. Clear active создаёт tombstone, repeated clear —
+no-op, never-existing clear отклоняет весь patch (`extraction_clear_missing`).
+Wrong values и omissions не исправляются. Candidate facts с pair,
+step и revision commit-ятся одной короткой SQLite transaction после успешного
+ответа. Provider await никогда не держит transaction. Branch prefix хранится
+один раз; A/B выбираются explicit target, backend current-branch отсутствует.
+
+Evaluation использует fixed `gpt-4o-mini` strict schema из 11 nullable fields.
+Expected values находятся только в verifier. Quality — проверенные требования
+N/11, invalid/refused/incomplete — unavailable. Retention измеряет actual sources
+перед generation, отдельно от quality. Closed grammar принимает named assertions,
+scopes, strict JSON restatements и ACK «Принято.»; неоднозначный prose даёт
+`unverifiable_restatement`. Старые значения уступают более поздним user corrections.
+
+A/B outputs сохраняются отдельно; они не меняют conversation revision и не
+поступают в источники/extractor. Checkpoint, reads и выбор ветки не вызывают
+provider/count. При потерянном HTTP outcome читать state/attempt, не повторять
+Send/evaluation автоматически. Runtime receipts содержат actual usage отдельно
+от preflight; billing journal отсутствует. После потери Android process полный
+расход обозначается неполным, без reconstruction из outputs.
+
+При validation failure Facts backend выводит WARNING `facts_extraction_validation_failed`
+с JSON diagnostic: run/client attempt IDs, server attempt ID (prospective user message UUID),
+scenario step, exact raw extractor reply, parsed changes после успешной schema validation,
+zero-based change index, scope/key, internal reason и прежний public error code.
+Для invalid JSON/schema parsed changes и index равны null. Данные остаются в локальном
+backend log: не записываются в SQLite, API results или Android. Credentials, headers и
+configuration не логируются. Успешная extraction не создаёт этот diagnostic event.
+Проверка: `python -m pytest tests/test_fact_extraction_diagnostics.py` (fake provider).
+
+Targeted offline проверка из `backend`:
+`python -m pytest tests/test_context_strategies.py tests/test_context_strategies_edges.py tests/test_context_strategies_validation.py`.
+Полный regression: `python -m pytest`. Эти команды не запускают живые OpenAI calls.
+V3 targeted проверка: `python -m pytest tests/test_fact_reducer.py tests/test_context_strategies_versions.py tests/test_fact_extraction_diagnostics.py`.
+Config v3 меняет semantic extraction schema/input/instructions и переносит выбор
+state transition в deterministic backend reducer. Scenario meeting-rooms-v1,
+evaluation meeting-spec-v1, model/N, fixtures и response/evaluation settings прежние.
+Исторические stores:
+`.local/context-strategies/day10-gpt4o-mini-n6-v1/experiments.sqlite3` и
+`.local/context-strategies/day10-gpt4o-mini-n6-v2/experiments.sqlite3`
+не мигрируются, не удаляются и не используются как fallback. V1 Facts остановился
+на 3/8 (omission и identity/evidence mix-up), v2 — на 7/8 (replace для новых B
+identities, три explicit attempts). Оба failures отклонены без повреждения state;
+успешный Window v1 остаётся historical evidence. Подробности — в
+[validation](../openspec/changes/archive/2026-09-11-day-10-context-strategies/validation.md).
+Финальное сравнение выполнено на новых Window/Facts/Branching v3 runs; live/video
+и restart/reset подтверждены пользователем. Window/Facts имеют incomplete token
+coverage, поэтому known totals не являются полными затратами. Fake tests проверяют
+contracts отдельно от actual live observations в отчёте; один live run не гарантирует
+корректность последующей extraction или generation.
+
 ## Требования
 
 Python 3.11+, зависимости из [requirements.txt](requirements.txt)

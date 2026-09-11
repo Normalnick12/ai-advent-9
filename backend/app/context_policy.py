@@ -22,3 +22,9 @@ class FullHistoryContextPolicy:
     async def prepare(self, session_id: str,
                       confirmed_history: tuple[ConversationMessage, ...]) -> PreparedHistory:
         return PreparedHistory(confirmed_history)
+
+
+class SlidingWindowContextPolicy:
+    """Stored audit history is not active model context."""
+    async def prepare(self, session_id, confirmed_history):
+        return PreparedHistory(confirmed_history[-6:])

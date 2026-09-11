@@ -21,6 +21,10 @@ from app.temperature_models import (
 )
 from app.temperature_service import TemperatureLabService
 
+from app.context_strategies_api import router as strategies_router, lab_error_handler
+from app.context_strategies_models import VERSION as STRATEGIES_VERSION, LabError
+from app.context_strategies_store import Day10Store
+from app.context_strategies_service import ContextStrategiesService
 from app.compression_lab_api import router as compression_lab_router
 from app.compression_models import DAY09_CONFIG, VERSION
 from app.compression_compare import CompressionComparison
@@ -42,7 +46,8 @@ async def lifespan(app: FastAPI):
     old_path = Path(app.state.agent_database_path).resolve()
     token_path = Path(app.state.token_database_path).resolve()
     compression_path = Path(app.state.compression_database_path).resolve()
-    if len({old_path, token_path, compression_path}) != 3:
+    strategies_path = Path(app.state.strategies_database_path).resolve()
+    if len({old_path, token_path, compression_path, strategies_path}) != 4:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -74,6 +79,13 @@ async def lifespan(app: FastAPI):
             RollingSummaryContextPolicy(summaries, summarizer))
         app.state.compression_compare = CompressionComparison(
             summaries.load, summarizer, app.state.compression_agent, compression_counter)
+        strategies_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(strategies_client.close)
+        strategies_counter = OpenAIInputTokenCounter()
+        resources.push_async_callback(strategies_counter.close)
+        strategies_store = Day10Store(strategies_path)
+        resources.callback(strategies_store.close)
+        app.state.context_strategies = ContextStrategiesService(strategies_store, strategies_client, strategies_counter)
         yield
 
 
@@ -81,6 +93,9 @@ app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifesp
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
+app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'
+app.add_exception_handler(LabError, lab_error_handler)
+app.include_router(strategies_router)
 app.include_router(compression_lab_router)
 app.include_router(token_lab_router)
 app.include_router(agent_router)

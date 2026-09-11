@@ -31,6 +31,7 @@ class RootNavigationUiTest {
   private var benchmarkCalls = 0
   private val tokenRepository = TokenUiRepository()
   private val compressionRepository = CompressionUiRepository()
+  private val strategiesRepository = StrategiesUiRepository()
   private val temperatureResult = CompletableDeferred<TemperatureLabBatchResponseDto>()
   private lateinit var response: ResponseControlViewModel
   private lateinit var temperature: TemperatureLabViewModel
@@ -41,6 +42,7 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, com.example.responsecontrollab.ui.strategies.ContextStrategiesLabViewModel.factory(strategiesRepository, strategiesUiPreferences()))["day10", com.example.responsecontrollab.ui.strategies.ContextStrategiesLabViewModel::class.java]
       ViewModelProvider(activity, CompressionLabViewModel.factory(compressionRepository, tokenUiStore()))[CompressionLabViewModel.KEY, CompressionLabViewModel::class.java]
       ViewModelProvider(activity, TokenLabViewModel.factory(tokenRepository, tokenUiStore()))[TokenLabViewModel.KEY, TokenLabViewModel::class.java]
       ViewModelProvider(activity, ChatViewModel.factory(object : ChatRepository {
@@ -103,7 +105,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -121,6 +123,9 @@ class RootNavigationUiTest {
       assertEquals(0, compressionRepository.compares)
       assertEquals(0, tokenRepository.creates)
       assertEquals(0, tokenRepository.executes)
+      assertEquals(0, strategiesRepository.creates)
+      assertEquals(0, strategiesRepository.sends)
+      assertEquals(0, strategiesRepository.evals)
     }
   }
 

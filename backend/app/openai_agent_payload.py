@@ -5,7 +5,7 @@ def context_payload(messages: tuple[ConversationMessage, ...], config: AgentConf
                     *, include_instructions: bool = True) -> dict:
     payload = {"model": config.model,
                "input": [{"role": item.role, "content": item.content} for item in messages],
-               "text": {"format": {"type": "text"}}}
+               "text": {"format": config.text_format if config.text_format is not None else {"type": "text"}}}
     if include_instructions:
         payload["instructions"] = config.instructions
     if config.reasoning_effort is not None:

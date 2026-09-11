@@ -51,6 +51,7 @@ enum class LearningDay(
   CONTEXT_PERSISTENCE("07", AppDestination.CONTEXT_PERSISTENCE, R.string.day_07_title, R.string.day_07_description),
   TOKEN_LAB("08", AppDestination.TOKEN_LAB, R.string.day_08_title, R.string.day_08_description),
   HISTORY_COMPRESSION("09", AppDestination.HISTORY_COMPRESSION, R.string.day_09_title, R.string.day_09_description),
+  CONTEXT_STRATEGIES("10", AppDestination.CONTEXT_STRATEGIES, R.string.day_10_title, R.string.day_10_description),
 
 }
 
@@ -75,17 +76,13 @@ fun LearningDaysHome(onOpenDay: (AppDestination) -> Unit) {
       }
     },
   ) { innerPadding ->
-    val direction = LocalLayoutDirection.current
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    // Clip the scrolling viewport below the header, so visible card targets cannot
+    // scroll underneath its opaque surface and intercept taps invisibly.
+    Box(Modifier.fillMaxSize().padding(innerPadding).consumeWindowInsets(innerPadding), contentAlignment = Alignment.TopCenter) {
       LazyColumn(
         modifier = Modifier.widthIn(max = 640.dp).fillMaxSize()
-          .consumeWindowInsets(innerPadding).testTag("days_catalog"),
-        contentPadding = PaddingValues(
-          start = innerPadding.calculateLeftPadding(direction) + 16.dp,
-          end = innerPadding.calculateRightPadding(direction) + 16.dp,
-          top = innerPadding.calculateTopPadding() + 16.dp,
-          bottom = innerPadding.calculateBottomPadding() + 16.dp,
-        ),
+          .testTag("days_catalog"),
+        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
       ) {
         items(LearningDay.entries, key = { it.destination.name }) { day ->

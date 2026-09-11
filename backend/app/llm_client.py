@@ -22,6 +22,7 @@ class AgentConfig:
     service_tier: str | None = None
     truncation: str | None = None
     version: str | None = None
+    text_format: dict | None = None
 
 
 @dataclass(frozen=True)

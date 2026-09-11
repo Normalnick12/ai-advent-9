@@ -130,6 +130,7 @@ class ContextPersistenceUiTest {
   private fun open(day: String) {
     rule.onNodeWithTag("days_catalog").performScrollToNode(hasTestTag("day_$day"))
     rule.onNodeWithTag("day_$day").performClick()
+    rule.onNodeWithTag("chat_screen").assertIsDisplayed()
   }
   private fun back() { rule.onNodeWithContentDescription("Назад к дням").performClick() }
   // LazyColumn scroll semantics estimate total distance from measured item sizes.

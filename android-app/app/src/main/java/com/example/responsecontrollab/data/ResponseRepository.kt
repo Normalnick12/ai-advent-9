@@ -81,6 +81,10 @@ class AppContainer(context: android.content.Context) {
       .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
       .build()
 
+  val strategyPreferences: StrategyPreferences = SharedStrategyPreferences(context)
+  val contextStrategiesRepository: ContextStrategiesRepository = DefaultContextStrategiesRepository(
+    Retrofit.Builder().baseUrl(EMULATOR_BACKEND_URL).client(createBackendHttpClient()).addConverterFactory(Json { ignoreUnknownKeys = true; encodeDefaults = true }.asConverterFactory("application/json".toMediaType())).build().create(ContextStrategiesApi::class.java))
+
   val compressionLabRepository: CompressionLabRepository = DefaultCompressionLabRepository(
     retrofit.newBuilder().client(createCompressionHttpClient()).build().create(CompressionLabApi::class.java))
   val tokenLabRepository: TokenLabRepository = DefaultTokenLabRepository(retrofit.create(TokenLabApi::class.java))

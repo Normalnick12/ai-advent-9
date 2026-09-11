@@ -4,14 +4,50 @@
 backend. Позволяет отправлять запросы, сравнивать ответы и просматривать метрики.
 Все обращения к OpenAI выполняет backend; API-ключ в приложении не нужен.
 
-При запуске открывается каталог «AI Advent» с днями 02–09. Нажмите карточку,
+При запуске открывается каталог «AI Advent» с днями 02–10. Нажмите карточку,
 чтобы открыть урок; верхняя стрелка или системное действие назад возвращает
 к списку дней. Day 01 доступен отдельно как Python CLI.
 
 Запросы, настройки, результаты, история и положение экрана сохраняются при
 переходах между днями в текущей сессии. Выполняющийся эксперимент продолжает
-работу при уходе в каталог. После завершения процесса UI transcript и результаты не сохраняются.
+работу при уходе в каталог. После завершения процесса локальный UI transcript и runtime metrics не сохраняются;
+Day 10 отдельно восстанавливает сохранённые backend experiment outputs.
 Day 07 восстанавливает только identity текущего диалога и число ходов с backend.
+
+Day 10 — [разные стратегии контекста](../day-10-context-strategies/README.md):
+scenario-first экран с независимыми Окно/Факты/Ветки. Canonical fixtures загружаются
+read-only с backend; «Подготовить шаг», раскрытие полного текста, Send и «Далее»
+разделены. Каждый Send передаёт исходный текст, step/revision/attempt и explicit
+branch target, без conversation history. Старые шаги доступны в compact timeline.
+
+После шести shared шагов Branching требует checkpoint, затем A и B продолжаются
+отдельно. Facts inspector показывает actual scoped values и отменённые записи,
+редактирование отсутствует. После восьмого Send проверки ТЗ A/B запускаются
+отдельными кнопками и не создают девятый conversation turn. Dashboard только читает
+состояние: требования N/11, pre-evaluation retention, known tokens/coverage и
+management actions. Navigation/strategy switch/disclosure не вызывают provider.
+
+Текущая Day 10 identity — `day10-gpt4o-mini-n6-v3`. Preferences находятся в
+`context_strategies_day10-gpt4o-mini-n6-v3`; старые файлы v1/v2 сохраняются, но их
+IDs/progress/pending attempts/results не восстанавливаются в v3. Смена version
+не создаёт runs и не вызывает provider. Все три новых runs создаются только
+первым explicit Send; финальный dashboard использует только v3. Backend и Android
+должны работать с одной version; v1/v2 metadata отклоняются без fallback.
+Targeted JVM: `pwsh -File scripts/dev.ps1 unit -Test '*ContextStrategies*Test'`
+из корня репозитория; тесты используют temporary preferences и fake/mock backend.
+
+Versioned preferences сохраняют отдельные IDs, prepared step, strategy/branch и
+число переключений. Confirmed progress/facts/topology/results берутся с backend.
+Unknown HTTP outcome запускает read-only reconciliation; replay возможен только
+по новому явному действию. Runtime receipts deduplicate attempt IDs, после process
+recreation полный accounting помечается неполным. Live acceptance не проводился.
+
+Targeted проверки из корня проекта через PowerShell 7:
+`./scripts/dev.ps1 unit -Test '*ContextStrategies*'` и
+`./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.ContextStrategiesUiTest'`.
+Тесты используют mock HTTP/fake repository, не backend/OpenAI. Полные `unit`,
+`build`, `ui` запускаются последовательно по [scripts README](../scripts/README.md).
+Отдельный font-scale smoke не требуется; существующие accessibility tests сохранены.
 
 Day 05 — [лаборатория моделей](../day-05-model-benchmark/README.md): три выбранные
 модели решают один benchmark, экран показывает проверку, время, токены и стоимость.
