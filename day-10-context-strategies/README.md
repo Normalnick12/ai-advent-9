@@ -36,12 +36,6 @@ Known totals Окна и Фактов — только нижняя границ
 **Сохранность контекста не равна качеству ответа**: Facts B и Branching A имели
 11/11 доступных требований, но использовали лишь 4/11 и 2/11 соответственно.
 
-Исторические Facts v1/v2 не входят в таблицу: v1 пропустил требования Turn 2 и
-перепутал identity/evidence в Turn 4; v2 дошёл до 7/8, но выбирал replace для новых
-B identities. Validator защитил state. В v3 LLM извлекает semantic facts, а код
-детерминированно выполняет ADD/REPLACE/NO-OP/CLEAR. Точные state transitions
-не нужно поручать LLM. Live v3 не доказывает отсутствие будущих extraction ошибок.
-
 Restart/restore фактов, topology и evaluation outputs, reset без replay и честное
 отображение потери runtime token coverage подтверждены пользователем. Подробные
 наблюдения и отдельные deterministic проверки — в [отчёте](../openspec/changes/archive/2026-09-11-day-10-context-strategies/validation.md).
