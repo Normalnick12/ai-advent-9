@@ -52,6 +52,7 @@ enum class LearningDay(
   TOKEN_LAB("08", AppDestination.TOKEN_LAB, R.string.day_08_title, R.string.day_08_description),
   HISTORY_COMPRESSION("09", AppDestination.HISTORY_COMPRESSION, R.string.day_09_title, R.string.day_09_description),
   CONTEXT_STRATEGIES("10", AppDestination.CONTEXT_STRATEGIES, R.string.day_10_title, R.string.day_10_description),
+  MEMORY_LAYERS("11", AppDestination.MEMORY_LAYERS, R.string.day_11_title, R.string.day_11_description),
 
 }
 

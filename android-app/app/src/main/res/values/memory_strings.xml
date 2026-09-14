@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="day_11_title">Модель памяти агента</string>
+  <string name="day_11_description">Память разговора, задачи и владельца: что сохранено, выбрано в контекст и использовано в ответе.</string>
+</resources>

@@ -4,7 +4,7 @@
 backend. Позволяет отправлять запросы, сравнивать ответы и просматривать метрики.
 Все обращения к OpenAI выполняет backend; API-ключ в приложении не нужен.
 
-При запуске открывается каталог «AI Advent» с днями 02–10. Нажмите карточку,
+При запуске открывается каталог «AI Advent» с днями 02–11. Нажмите карточку,
 чтобы открыть урок; верхняя стрелка или системное действие назад возвращает
 к списку дней. Day 01 доступен отдельно как Python CLI.
 
@@ -197,3 +197,87 @@ Offline команды из корня: `.\scripts\dev.ps1 unit`,
 `.\scripts\dev.ps1 ui -Test 'com.example.responsecontrollab.CompressionLabUiTest'`.
 После изменений navigation выполняется полный `.\scripts\dev.ps1 ui`.
 UI tests используют fake repositories, без backend и OpenAI.
+
+## Day 11 Memory Layers
+
+[Day 11 — Модель памяти агента](../day-11-memory-layers/README.md) показывает
+три компактные карточки Short-term, Working, Long-term. Backend binding — source
+of truth для независимых owner/task/session IDs. Android не сохраняет transcript
+в запросах и не выбирает модель. Открытие экрана, возврат и «Прочитать память»
+делают только read. Dashboard/last response — runtime state; после process
+restart они могут исчезнуть, но memory layers восстанавливаются с backend.
+
+«Память и контекст» показывает stored → selected/excluded → reason, а затем
+точный request и response последнего вызова. Request раскрывается отдельно.
+После изменения памяти последний observation помечается «Предыдущий снимок».
+«Проверки A–E» раздельно показывает доступность пяти полей во входе и совпадения
+в ответе. Unknown/error не засчитываются как успех; свободный next_step не оценивается.
+
+### Ручной A–E и restart/video experiment
+
+Фактические результаты live-проверки зафиксированы в [Day 11 README](../day-11-memory-layers/README.md).
+Следующая таблица — ожидаемые значения, а не фактические ответы OpenAI. Исходное сообщение и каждый probe вызывают
+модель; остальные перечисленные действия — только deterministic storage/read.
+
+1. Запустите backend в отдельном терминале по [backend README](../backend/README.md).
+   Откройте в Android «День 11 — Модель памяти агента».
+   Нажмите «Создать память Day 11». Для повторного прохода после E сначала
+   нажмите «Новая задача»; если Long-term непуста — «Очистить Long-term».
+   Старые разговоры/задачи сохраняются inactive.
+2. На пустых активных слоях нажмите «Отправить исходное сообщение».
+   Оно содержит `error_title=Сбой-47`. Дождитесь завершённого ответа: в Short-term
+   должен появиться один committed turn. При ошибке проверяйте фактическое
+   состояние и выполняйте повтор только явно.
+3. Пять раз нажмите «Сохранить указанное значение», каждый раз проверяя
+   показанные target layer/key/value: LONG_TERM.project_code=ORION-17,
+   LONG_TERM.preferred_architecture=MVVM, WORKING.task=Checkout,
+   WORKING.current_architecture=MVI, WORKING.release_marker=RC-42.
+4. **A:** нажмите «Проверить A». Откройте inspector: MVVM сохранено в Long-term,
+   исключено по working_override, в model request выбрано MVI. Сравните два
+   результата в «Проверки A–E». Probe не должен увеличить число Short-term turns.
+5. **Restart до B:** в inspector зафиксируйте полные owner/task/session IDs,
+   Short-term turn и Working/Long-term. Остановите только backend через Ctrl+C
+   в его терминале и запустите той же командой. Нажмите «Прочитать память».
+   Сравните те же IDs и все три слоя; нового ответа/turn быть не должно.
+   При необходимости закройте и снова откройте приложение без очистки данных:
+   исчезновение runtime dashboard допустимо. Не нажимайте Initialize/seed/probe
+   для восстановления памяти.
+6. **B:** нажмите «B · Удалить Working architecture», затем «Проверить B».
+   Fallback в input должен вернуть MVVM из сохранённого Long-term.
+7. **C:** нажмите «Новый разговор», затем «Проверить C». Short-term пуст,
+   current task/Working/Long-term прежние. Старая session видна как inactive.
+8. **D:** нажмите «Новая задача», затем «Проверить D». Task/session IDs новые,
+   Working/Short-term пусты; owner/Long-term прежние.
+9. **E:** нажмите «Очистить Long-term», затем «Проверить E».
+   Активные слои пусты. Посмотрите отдельные input absence и output null checks.
+   Повторные probes не записывают вопросы/ответы и не меняют revision/identities.
+
+| Этап | project_code | release_marker | current_task | effective_architecture | last_error_title |
+| --- | --- | --- | --- | --- | --- |
+| A | ORION-17 | RC-42 | Checkout | MVI | Сбой-47 |
+| B | ORION-17 | RC-42 | Checkout | MVVM | Сбой-47 |
+| C | ORION-17 | RC-42 | Checkout | MVVM | null |
+| D | ORION-17 | null | null | MVVM | null |
+| E | null | null | null | null | null |
+
+Для видео достаточно показать три карточки, A override в inspector, read после
+restart, переходы B–E и итоговый dashboard. Зафиксируйте фактические два результата
+каждого этапа; model mismatch при корректном input нельзя представлять как storage
+failure. Recording-client результаты тестов не являются live evidence.
+
+### Проверки Day 11
+
+Из корня проекта последовательно:
+`pwsh -File scripts/dev.ps1 unit -Test '*Memory*'`,
+`pwsh -File scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.MemoryLayersUiTest'`,
+`pwsh -File scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.RootNavigationUiTest'`.
+Полные JVM regression и debug build: `pwsh -File scripts/dev.ps1 unit` и
+`pwsh -File scripts/dev.ps1 build`. Тесты используют fake repository/mock HTTP,
+без backend/OpenAI. Отдельный font-scale smoke не требуется; существующие
+accessibility tests сохраняются.
+
+Если pwsh/ExecutionPolicy недоступны, используйте установленный JDK и из
+`android-app` прямые `.\gradlew.bat testDebugUnitTest`,
+`.\gradlew.bat assembleDebug` и
+`.\gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.responsecontrollab.MemoryLayersUiTest`.
+Не запускайте конкурирующие Gradle сборки в том же checkout.

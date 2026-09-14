@@ -309,3 +309,70 @@ force-stop/reopen Android без очистки данных: GET восстан
 Ручной restart Day 09 подтвердил восстановление session/count=4 без paid replay.
 Пользователь также подтвердил чтение durable summary после restart и успешный
 reset: старый диалог после сброса не восстанавливается.
+
+## Day 11 — Memory Layers
+
+Day 11 переиспользует `SimpleAgent`, `AgentSessionManager`, `ConversationStore`
+и существующий `LlmClient`. `MemoryExperimentService` отвечает за explicit writes,
+lifecycle и snapshots, а `MemoryContextPolicy` — за выбор данных. Здесь
+conversation → Short-term, task → Working, owner → Long-term.
+
+Отдельный файл `.local/memory-layers/day11-v1/memory.sqlite3` содержит raw
+sessions/messages, `working_memory`, `long_term_memory`, `session_tasks`,
+`memory_owners` и `memory_bindings`. Таблицы прежних Day не мигрируются.
+Требуется один backend worker. Все пять resolved database paths должны
+различаться. Startup создаёт schema, но не owner/task/session: для этого
+нужен explicit Initialize. Restore читает durable binding и слои без provider.
+Несовместимая schema или повреждённые данные дают ошибку без автоматического repair.
+
+API prefix: `/api/v1/memory-layers`.
+
+| Операция | Endpoint | Данные |
+| --- | --- | --- |
+| Read-only сценарий / состояние | GET `/scenario`, GET `/current` | Без identities от клиента |
+| Idempotent Initialize | POST `/initialize` | `{}` |
+| Explicit запись | POST `/memory` | `snapshot_id, layer, key, operation`; для set ещё `value` |
+| Lifecycle | POST `/lifecycle/new-conversation`, `new-task`, `clear-long-term` | `snapshot_id` |
+| Обычный committed turn | POST `/messages` | `snapshot_id, message` |
+| Side-effect-free probe | POST `/verify/A` … `/verify/E` | `snapshot_id` |
+
+Allowlist: WORKING — `task/current_architecture/release_marker`;
+LONG_TERM — `project_code/preferred_architecture`. Значения — непустые строки
+до 256 символов; remove передаётся без value. Null, лишние ключи и неизвестные
+layers отклоняются. Chat не извлекает structured memory. Stale snapshot и busy
+отклоняются без replay. После неизвестного HTTP outcome клиент только читает
+current; повторный вызов требует явного действия.
+
+New Conversation сохраняет current task и Long-term; New Task создаёт task
+и session, сохраняя Long-term. Прежние rows остаются inactive. Изменения identities
+проходят в одной SQLite transaction; runtime session загружается только после
+commit. Clear Long-term не меняет Short/Working/IDs.
+
+Provider input: два data-блока Long-term/Working, Full History только активной
+session, один current query. Если задан Working.current_architecture, сохранённый
+Long-term.preferred_architecture исключается из data-блока. Diagnostics с причиной
+`working_override`, inactive refs и прошлые результаты в provider input не идут.
+Normal Send использует `run_turn`, probe — `generate` без commit.
+Модель: gpt-4o-mini, Standard tier, max_output_tokens=1200, truncation disabled,
+reasoning omitted. Проверка использует strict JSON schema: пять nullable exact
+fields и свободный `next_step`. Oracle не передаётся модели.
+
+Две метрики независимы: input availability/absence/conflict и output exact/null.
+Неверный ответ при корректном input — ошибка использования данных моделью.
+Runtime observations содержат immutable stored/selection/request/response
+snapshot; SQLite не хранит dashboard. Полный A–E проход: один seed до structured
+writes и пять probes, максимум шесть generation calls; maintenance/count calls нет.
+
+Детерминированные проверки из `backend`:
+`python -m pytest tests/test_memory_layers.py -q`; regression — `python -m pytest -q`.
+Используются временные SQLite и recording clients, без OpenAI. Ручной сценарий
+и restart на A-state описаны в [Android README](../android-app/README.md#day-11-memory-layers).
+
+Для запуска предпочтителен `pwsh -File scripts/dev.ps1 backend` из корня,
+готовность проверяется `pwsh -File scripts/dev.ps1 status`. При недоступном
+pwsh/ExecutionPolicy из `backend` в существующем Python-окружении:
+`python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`.
+В fallback `OPENAI_API_KEY` должен быть доступен процессу через окружение;
+при необходимости загрузите локальный `.env` штатным способом проекта.
+`/health` и чтение памяти проверяют backend, а не OpenAI.
+Исправление PowerShell/dev tooling в scope Day 11 не входит.

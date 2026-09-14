@@ -24,10 +24,11 @@ import com.example.responsecontrollab.ui.token.TokenLabViewModel
 import com.example.responsecontrollab.ui.compression.CompressionLabScreen
 import com.example.responsecontrollab.ui.compression.CompressionLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES }
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES, MEMORY_LAYERS }
 
 @Composable
 fun AppRoot(
+  memoryLayersViewModel: com.example.responsecontrollab.ui.memory.MemoryLayersViewModel,
   contextStrategiesViewModel: com.example.responsecontrollab.ui.strategies.ContextStrategiesLabViewModel,
   compressionLabViewModel: CompressionLabViewModel,
   tokenLabViewModel: TokenLabViewModel,
@@ -45,6 +46,7 @@ fun AppRoot(
 
   screenStates.SaveableStateProvider(destination.name) {
     when (destination) {
+      AppDestination.MEMORY_LAYERS -> com.example.responsecontrollab.ui.memory.MemoryLayersScreen(memoryLayersViewModel, onBack)
       AppDestination.CONTEXT_STRATEGIES -> com.example.responsecontrollab.ui.strategies.ContextStrategiesLabScreen(contextStrategiesViewModel, onBack)
       AppDestination.HISTORY_COMPRESSION -> CompressionLabScreen(compressionLabViewModel, onBack)
       AppDestination.TOKEN_LAB -> TokenLabScreen(tokenLabViewModel, onBack)

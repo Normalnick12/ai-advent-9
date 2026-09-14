@@ -39,6 +39,9 @@ from app.agent_api import router as agent_router
 from app.agent_sessions import AgentSessionManager
 from app.openai_responses_llm_client import OpenAIResponsesLlmClient
 from app.sqlite_conversation_store import DEFAULT_DATABASE_PATH, SQLiteConversationStore
+from app.memory_api import router as memory_router
+from app.memory_store import MemoryStore
+from app.memory_service import MemoryExperimentService
 
 
 @asynccontextmanager
@@ -47,7 +50,8 @@ async def lifespan(app: FastAPI):
     token_path = Path(app.state.token_database_path).resolve()
     compression_path = Path(app.state.compression_database_path).resolve()
     strategies_path = Path(app.state.strategies_database_path).resolve()
-    if len({old_path, token_path, compression_path, strategies_path}) != 4:
+    memory_path = Path(app.state.memory_database_path).resolve()
+    if len({old_path, token_path, compression_path, strategies_path, memory_path}) != 5:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -86,11 +90,18 @@ async def lifespan(app: FastAPI):
         strategies_store = Day10Store(strategies_path)
         resources.callback(strategies_store.close)
         app.state.context_strategies = ContextStrategiesService(strategies_store, strategies_client, strategies_counter)
+        memory_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(memory_client.close)
+        memory_store = MemoryStore(memory_path)
+        resources.callback(memory_store.close)
+        app.state.memory_layers = MemoryExperimentService(memory_store, memory_client)
         yield
 
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
+app.state.memory_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'memory-layers' / 'day11-v1' / 'memory.sqlite3'
+app.include_router(memory_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'

@@ -82,6 +82,7 @@ class AppContainer(context: android.content.Context) {
       .build()
 
   val strategyPreferences: StrategyPreferences = SharedStrategyPreferences(context)
+  val memoryLayersRepository: MemoryLayersRepository = DefaultMemoryLayersRepository(retrofit.create(MemoryLayersApi::class.java))
   val contextStrategiesRepository: ContextStrategiesRepository = DefaultContextStrategiesRepository(
     Retrofit.Builder().baseUrl(EMULATOR_BACKEND_URL).client(createBackendHttpClient()).addConverterFactory(Json { ignoreUnknownKeys = true; encodeDefaults = true }.asConverterFactory("application/json".toMediaType())).build().create(ContextStrategiesApi::class.java))
 
