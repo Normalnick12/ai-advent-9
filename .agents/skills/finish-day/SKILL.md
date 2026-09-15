@@ -63,7 +63,9 @@ Avoid repeating expensive tests, builds, and runtime checks.
 
 Record each check as either `run` or `reused`, including the command or runtime scenario and its result.
 
-## Verify the Day README
+## Verify the root index and Day README
+
+Before staging, ensure the repository-root `README.md` lists the selected Day in its assignments index with a relative link to `day-NN-short-name/README.md`. Add or correct the entry if needed, preserve day order, avoid duplicates, and verify the target file exists. Include this root README update in the scoped Day commit. Checking only the Day README does not satisfy this step.
 
 Review the selected Day's `README.md`. It must match the final implementation, explain a clear run scenario, state the key learning takeaway, list required dependencies/environment variables without real secret values, and follow applicable `AGENTS.md`.
 
