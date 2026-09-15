@@ -320,7 +320,7 @@ conversation → Short-term, task → Working, owner → Long-term.
 Отдельный файл `.local/memory-layers/day11-v1/memory.sqlite3` содержит raw
 sessions/messages, `working_memory`, `long_term_memory`, `session_tasks`,
 `memory_owners` и `memory_bindings`. Таблицы прежних Day не мигрируются.
-Требуется один backend worker. Все пять resolved database paths должны
+Требуется один backend worker. Все resolved database paths должны
 различаться. Startup создаёт schema, но не owner/task/session: для этого
 нужен explicit Initialize. Restore читает durable binding и слои без provider.
 Несовместимая schema или повреждённые данные дают ошибку без автоматического repair.
@@ -376,3 +376,71 @@ pwsh/ExecutionPolicy из `backend` в существующем Python-окру�
 при необходимости загрузите локальный `.env` штатным способом проекта.
 `/health` и чтение памяти проверяют backend, а не OpenAI.
 Исправление PowerShell/dev tooling в scope Day 11 не входит.
+
+## Day 12: Personalization
+
+Profile хранится отдельно от Long-term: `AgentProfile`, `ProfileStore`,
+`SQLiteProfileStore` и pure `render_profile` не зависят от Memory namespace,
+OpenAI SDK или experiment fixtures. `name` — metadata, не instructions.
+Create не активирует профиль; edit/select проверяют ожидаемые revisions до no-op.
+Explanation flags совместимы: базовый Android/Kotlin предполагается известным,
+новые специальные термины можно объяснять. Generic prompt/JSON editor отсутствует.
+
+Два adapter files: `backend/.local/personalization/day12-v1/memory.sqlite3`
+и `profiles.sqlite3`. Все семь paths в composition root различаются. Layout
+заменяем без изменения Profile API; schema проверяется при reopen без repair.
+Single-worker coordinator держит общий operation guard во время snapshot + await,
+но SQL transaction заканчивается до вызова provider. Stale/busy отклоняются;
+известный pre-dispatch отказ помечается `not_dispatched`, неизвестный исход —
+`unknown`. Клиент перечитывает state, запрос автоматически не повторяется.
+
+API prefix: `/api/v1/profile-personalization`.
+
+| Операция | Endpoint |
+| --- | --- |
+| Current / scenario / profiles | GET `/current`, `/scenario`, `/profiles`, `/profiles/{id}` |
+| Initialize | POST `/initialize` с `{}` |
+| Create | POST `/profiles`: owner_id, fields |
+| Edit | PUT `/profiles/{id}`: owner_id, fields, expected_revision |
+| Select | POST `/profiles/{id}/select`: owner_id, expected_profile_revision, expected_binding_revision |
+| Memory / lifecycle | POST `/memory`, `/lifecycle/{action}` — Day 11 typed bodies |
+| Seed / ordinary Send | POST `/seed`, `/messages` |
+| Freeze / side-effect-free probe | POST `/freeze`, `/probe` |
+
+Seed/Send/Freeze/probe принимают snapshot_id, profile_id, profile_revision,
+binding_revision; Send добавляет message, Freeze — A/B IDs/revisions, probe —
+comparison_id и slot. History, instructions и provider settings не приходят от UI.
+Read/startup не создаёт identities и не вызывает модель. New Conversation/New Task/
+Clear Long-term сохраняют Profile; Switch/edit сохраняют все Memory IDs, layers,
+revision и hash. Runtime comparison и receipts не восстанавливаются как measurements.
+
+Request: fixed neutral base + typed profile renderer в `AgentConfig.instructions`,
+Day 11 memory selection/policy + history + query в messages. Working MVI исключает
+Long-term MVVM из active input. `SimpleAgent.run_turn` коммитит ordinary completed
+pair; `generate` выполняет probe без commit. Actual LlmClient arguments копируются
+на dispatch boundary; inspector не пересобирает preview задним числом.
+
+Фиксированные settings: gpt-4o-mini, Standard tier, output budget 2000,
+truncation disabled, reasoning omitted, без text_format/Structured Output и retry.
+Ответ — natural Markdown. Раздельные checks: selection/revisions, assembly,
+adherence и literal memory mentions; human notes не попадают в запрос.
+Failed/refused/incomplete дают unavailable output checks, не нулевой score.
+Completed ответ сохраняется даже при нарушении формата: checks не являются commit gate.
+
+Markdown checks: H2 heading/порядок/непустые sections, число ordered/unordered,
+включая nested list items. Backtick/tilde fences исключаются из parsing структуры,
+code может быть содержимым example section. `no_emoji` проверяет весь raw reply
+только по набору `day12-common-v1`: U+1F600–1F64F, U+1F44D, U+1F44E, U+1F680,
+U+1F4A1, U+2705, U+274C, U+26A0, U+2728, U+2764. Это ограниченный detector,
+не Unicode Emoji compliance; отсутствие остальных emoji не гарантируется.
+ORION-17/RC-42/Checkout/MVI — literal mentions, не оценка семантики MVI.
+
+Проверки из backend: `python -m pytest tests/test_profiles.py tests/test_personalization.py tests/test_personalization_boundaries.py tests/test_memory_layers.py -q`.
+Полная regression: `python -m pytest -q`. Live запускается отдельно по общему
+[scripts guidance](../scripts/README.md); preferred `scripts/dev.ps1 backend`,
+при недоступном pwsh/ExecutionPolicy допустим существующий uvicorn fallback выше.
+Исправление PowerShell/tooling в Day 12 не входит.
+
+State Machine/Invariants/validation-before-commit отложены. Будущее orchestration
+использует generate → validate → commit → state transition; вызывать validate
+после нынешнего run_turn уже поздно. Сам run_turn в Day 12 не изменён.

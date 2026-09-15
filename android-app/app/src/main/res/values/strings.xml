@@ -62,4 +62,6 @@
     <string name="day_09_description">Сводка и последние сообщения: токены ответа, стоимость сжатия и сохранение фактов.</string>
     <string name="day_10_title">Управление контекстом: разные стратегии</string>
     <string name="day_10_description">Окно, структурированные факты и независимые ветки на одном сценарии.</string>
+    <string name="day_12_title">Персонализация ассистента</string>
+    <string name="day_12_description">Пользовательские профили поверх памяти: стиль, формат и controlled A/B.</string>
 </resources>

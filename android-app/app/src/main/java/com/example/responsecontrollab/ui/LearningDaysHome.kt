@@ -53,6 +53,7 @@ enum class LearningDay(
   HISTORY_COMPRESSION("09", AppDestination.HISTORY_COMPRESSION, R.string.day_09_title, R.string.day_09_description),
   CONTEXT_STRATEGIES("10", AppDestination.CONTEXT_STRATEGIES, R.string.day_10_title, R.string.day_10_description),
   MEMORY_LAYERS("11", AppDestination.MEMORY_LAYERS, R.string.day_11_title, R.string.day_11_description),
+  PERSONALIZATION("12", AppDestination.PERSONALIZATION, R.string.day_12_title, R.string.day_12_description),
 
 }
 

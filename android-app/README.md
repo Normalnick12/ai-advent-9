@@ -281,3 +281,45 @@ accessibility tests сохраняются.
 `.\gradlew.bat assembleDebug` и
 `.\gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.responsecontrollab.MemoryLayersUiTest`.
 Не запускайте конкурирующие Gradle сборки в том же checkout.
+
+## Day 12: Personalization
+
+В каталоге — «Персонализация ассистента». Экран лабораторный, Profile subsystem
+переиспользуемый. Backend — source of truth; active ID не сохраняется локально
+как самостоятельный выбор. Cold start только читает current/scenario.
+
+1. Создайте память Day 12. Создайте Compact Engineer и Mentor из шаблонов через
+   обычный editor. Все поля доступны для редактирования; можно создать собственный
+   профиль. Save не означает Select. Одинаковые имена различаются кратким ID.
+2. Явно выберите Compact Engineer и назначьте профили слотам A/B. Отправьте seed
+   в пустую память, прочитайте raw acknowledgment и подтвердите нейтральность.
+   Не заменяйте ответ ожидаемым fixture и не повторяйте вызов ради красивого результата.
+3. Сохраните пять показанных Memory values. Нажмите Freeze: одна настоящая seed
+   pair, Memory, A/B revisions, query и config фиксируются для обоих probes.
+4. При выбранном A нажмите Probe A. Явно выберите B и нажмите Probe B. Switch
+   сохраняет Memory; probes не добавляют turns. Проверяйте Selection, Assembly,
+   отдельные adherence checks. Нет общего personalization score.
+5. Inspector показывает использованный snapshot, revisions, rendered instructions,
+   selected memory, actual LlmClient arguments и raw outcome. Он остаётся историческим
+   после edit/switch. Human notes — отдельная optional оценка тона, подробности,
+   объяснений и семантики; они не уходят модели. Emoji check имеет узкую область,
+   объявленную в [backend](../backend/README.md#day-12-personalization).
+6. Обычный Send ниже использует current Profile автоматически. Переключите Profile
+   и отправьте следующий вопрос без style hints. Completed pair сохранится;
+   comparison станет stale, новый probe требует явной подготовки/Freeze.
+7. Для restart остановите backend в его терминале, force-stop Android без очистки
+   app data, снова запустите backend и приложение. Profiles/binding/Memory восстановятся,
+   generation count нового процесса — 0. Runtime results/notes могут исчезнуть;
+   отсутствие measurement не подменяется expected fixture.
+
+Editor draft/scroll и in-flight operation переживают rotation и navigation без
+повторной отправки. После неизвестного HTTP outcome UI читает backend и просит
+проверить state; Save/Send/Select не воспроизводятся автоматически.
+
+Проверки: `pwsh -File scripts/dev.ps1 unit`, `pwsh -File scripts/dev.ps1 build`,
+`pwsh -File scripts/dev.ps1 ui -Test com.example.responsecontrollab.PersonalizationUiTest`
+и `pwsh -File scripts/dev.ps1 ui -Test com.example.responsecontrollab.RootNavigationUiTest`.
+Fake repository общий для JVM/UI tests; provider не нужен. Если pwsh/ExecutionPolicy
+недоступны, прямые Gradle commands те же, что в Day 11 выше, с новым test class.
+Запуски последовательные. Existing accessibility tests сохранены; dedicated
+font-scale прогон только при layout regression или отдельной accessibility задаче.

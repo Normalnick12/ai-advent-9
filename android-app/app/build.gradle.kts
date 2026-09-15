@@ -5,6 +5,8 @@ plugins {
 }
 
 android {
+    sourceSets.getByName("test").kotlin.directories.add("src/sharedTest/java")
+    sourceSets.getByName("androidTest").kotlin.directories.add("src/sharedTest/java")
     namespace = "com.example.responsecontrollab"
     compileSdk = 36
     defaultConfig {

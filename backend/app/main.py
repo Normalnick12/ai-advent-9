@@ -42,6 +42,9 @@ from app.sqlite_conversation_store import DEFAULT_DATABASE_PATH, SQLiteConversat
 from app.memory_api import router as memory_router
 from app.memory_store import MemoryStore
 from app.memory_service import MemoryExperimentService
+from app.personalization_api import router as personalization_router
+from app.personalization_service import PersonalizationService
+from app.sqlite_profile_store import SQLiteProfileStore
 
 
 @asynccontextmanager
@@ -51,7 +54,9 @@ async def lifespan(app: FastAPI):
     compression_path = Path(app.state.compression_database_path).resolve()
     strategies_path = Path(app.state.strategies_database_path).resolve()
     memory_path = Path(app.state.memory_database_path).resolve()
-    if len({old_path, token_path, compression_path, strategies_path, memory_path}) != 5:
+    personalization_memory_path = Path(app.state.personalization_memory_path).resolve()
+    profile_path = Path(app.state.profile_database_path).resolve()
+    if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path, profile_path}) != 7:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -95,6 +100,13 @@ async def lifespan(app: FastAPI):
         memory_store = MemoryStore(memory_path)
         resources.callback(memory_store.close)
         app.state.memory_layers = MemoryExperimentService(memory_store, memory_client)
+        profile_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(profile_client.close)
+        profile_memory = MemoryStore(personalization_memory_path)
+        resources.callback(profile_memory.close)
+        profiles = SQLiteProfileStore(profile_path)
+        resources.callback(profiles.close)
+        app.state.personalization = PersonalizationService(profile_memory, profiles, profile_client)
         yield
 
 
@@ -102,6 +114,9 @@ app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifesp
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
 app.state.memory_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'memory-layers' / 'day11-v1' / 'memory.sqlite3'
 app.include_router(memory_router)
+app.state.personalization_memory_path = DEFAULT_DATABASE_PATH.parents[1] / 'personalization' / 'day12-v1' / 'memory.sqlite3'
+app.state.profile_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'personalization' / 'day12-v1' / 'profiles.sqlite3'
+app.include_router(personalization_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'
