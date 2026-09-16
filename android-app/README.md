@@ -323,3 +323,41 @@ Fake repository общий для JVM/UI tests; provider не нужен. Есл
 недоступны, прямые Gradle commands те же, что в Day 11 выше, с новым test class.
 Запуски последовательные. Existing accessibility tests сохранены; dedicated
 font-scale прогон только при layout regression или отдельной accessibility задаче.
+
+## Day 13 — Task State Machine
+
+Экран «Состояние задачи» показывает Task/Working/Profile summary, phase/step/action,
+ACTIVE/PAUSED, backend allowed events и текущую session с turn count. Composer
+работает при PAUSED; Resume — отдельная операция. Android не содержит transition
+table и не меняет State оптимистически. DONE оставляет conversation/read/New Task,
+но не предлагает events или Pause/Resume.
+
+В «Подготовке» явно создайте задачу, Compact Engineer, выберите Profile и сохраните
+показанные Working values. Для controlled live оставьте Long-term пустой.
+Недостающий State создаётся отдельно для current task; read/recovery ничего не
+сбрасывает. Probe текущего State вызывает модель без conversation commit и сам по
+себе не гарантирует controlled comparison разных snapshots.
+
+Live controls: REQUIREMENTS READY → PLAN APPROVED → обычный execution Send
+(подставить query можно в подготовке) → убедиться в 1 turn → Pause → New Conversation
+(0 turns) → «Где мы остановились?» → New Conversation (снова 0 turns) → Resume →
+«Продолжим». Это три generation calls. После ответа execution остаётся прежним;
+IMPLEMENTATION READY применяется только отдельной кнопкой.
+
+Inspector показывает current preview отдельно от historical actual request,
+State/Memory/Profile snapshots, rendered sections, outcome/commit и runtime
+before/event/after. Human notes локальны и не входят в input. Opening/cold start
+только читает backend; lost response приводит к read без replay. Rotation сохраняет
+draft, scroll, in-flight operation и last receipt; после process death receipts не
+восстанавливаются из fixtures.
+
+Проверки из корня: `pwsh -File scripts/dev.ps1 unit -Test '*TaskState*'`,
+`pwsh -File scripts/dev.ps1 build`, затем последовательно
+`pwsh -File scripts/dev.ps1 ui -Test com.example.responsecontrollab.TaskStateUiTest`
+и `pwsh -File scripts/dev.ps1 ui -Test com.example.responsecontrollab.RootNavigationUiTest`.
+При недоступном pwsh/ExecutionPolicy допустимы прямые Gradle tasks
+`testDebugUnitTest --tests '*TaskState*'`, `assembleDebug`,
+`connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.responsecontrollab.TaskStateUiTest`
+(аналогично для RootNavigationUiTest) из android-app с установленными JDK/SDK.
+Не запускать одновременно со Studio/другим Gradle и не менять daemon/cache flags.
+Backend setup/API и изолированный adapter layout — в [backend](../backend/README.md#day-13-task-state-machine).

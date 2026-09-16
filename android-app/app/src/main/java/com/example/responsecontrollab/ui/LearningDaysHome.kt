@@ -54,6 +54,7 @@ enum class LearningDay(
   CONTEXT_STRATEGIES("10", AppDestination.CONTEXT_STRATEGIES, R.string.day_10_title, R.string.day_10_description),
   MEMORY_LAYERS("11", AppDestination.MEMORY_LAYERS, R.string.day_11_title, R.string.day_11_description),
   PERSONALIZATION("12", AppDestination.PERSONALIZATION, R.string.day_12_title, R.string.day_12_description),
+  TASK_STATE("13", AppDestination.TASK_STATE, R.string.day_13_title, R.string.day_13_description),
 
 }
 

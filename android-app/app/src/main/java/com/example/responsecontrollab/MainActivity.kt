@@ -43,10 +43,12 @@ class MainActivity : ComponentActivity() {
         factory = CompressionLabViewModel.factory(container.compressionLabRepository, container.compressionSessionStore))
       val strategiesViewModel: com.example.responsecontrollab.ui.strategies.ContextStrategiesLabViewModel = viewModel(key="day10", factory=com.example.responsecontrollab.ui.strategies.ContextStrategiesLabViewModel.factory(container.contextStrategiesRepository,container.strategyPreferences))
       val personalizationViewModel: com.example.responsecontrollab.ui.profile.PersonalizationViewModel = viewModel(key="day12", factory=com.example.responsecontrollab.ui.profile.PersonalizationViewModel.factory(container.personalizationRepository))
+      val taskStateViewModel: com.example.responsecontrollab.ui.taskstate.TaskStateViewModel = viewModel(key="day13", factory=com.example.responsecontrollab.ui.taskstate.TaskStateViewModel.factory(container.taskStateRepository))
       ResponseControlLabTheme {
         val memoryViewModel: com.example.responsecontrollab.ui.memory.MemoryLayersViewModel = viewModel(key="day11", factory=com.example.responsecontrollab.ui.memory.MemoryLayersViewModel.factory(container.memoryLayersRepository))
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
+            taskStateViewModel = taskStateViewModel,
             personalizationViewModel = personalizationViewModel,
             memoryLayersViewModel = memoryViewModel,
             contextStrategiesViewModel = strategiesViewModel,

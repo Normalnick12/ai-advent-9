@@ -1,0 +1,9 @@
+"""Layout-independent current-state persistence contract."""
+from typing import Protocol
+from app.task_state import TaskState
+
+
+class TaskStateStore(Protocol):
+    def create_initial(self, task_id: str) -> TaskState: ...
+    def read(self, task_id: str) -> TaskState | None: ...
+    def compare_and_set(self, expected_revision: int, next_state: TaskState) -> TaskState: ...

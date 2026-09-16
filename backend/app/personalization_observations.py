@@ -1,6 +1,5 @@
 """Narrow experiment diagnostics. Never a commit gate, judge or retry policy."""
-from copy import deepcopy
-from dataclasses import asdict
+from app.llm_capture import CapturingClient
 import re
 
 from app.profile_instructions import HEADINGS, SUMMARY
@@ -10,16 +9,6 @@ from app.profiles import SummaryBullets
 EMOJI_SCOPE = "day12-common-v1: U+1F600–1F64F, U+1F44D/U+1F44E/U+1F680/U+1F4A1, U+2705/U+274C/U+26A0/U+2728/U+2764"
 EMOJI = re.compile("[\U0001f600-\U0001f64f\U0001f44d\U0001f44e\U0001f680\U0001f4a1\u2705\u274c\u26a0\u2728\u2764]")
 MARKERS = ("ORION-17", "RC-42", "Checkout", "MVI")
-
-
-class CapturingClient:
-    def __init__(self, delegate, on_call):
-        self.delegate, self.on_call, self.request = delegate, on_call, None
-
-    async def complete(self, messages, config):
-        self.request = deepcopy({"messages": [asdict(m) for m in messages], "config": asdict(config)})
-        self.on_call()
-        return await self.delegate.complete(messages, config)
 
 
 def check(correct, detail=""):

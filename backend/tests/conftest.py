@@ -13,6 +13,8 @@ def isolated_agent_database(tmp_path, monkeypatch):
     monkeypatch.setattr(app.state, "token_database_path", tmp_path / "token-lab.sqlite3")
     monkeypatch.setattr(app.state, "compression_database_path", tmp_path / "compression-lab.sqlite3")
     monkeypatch.setattr(app.state, "strategies_database_path", tmp_path / "strategies.sqlite3")
+    for name in ("task_state_memory_path", "task_state_profile_path", "task_state_database_path"):
+        monkeypatch.setattr(app.state, name, tmp_path / (name + ".sqlite3"))
     return path
 
 

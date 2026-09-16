@@ -64,4 +64,6 @@
     <string name="day_10_description">Окно, структурированные факты и независимые ветки на одном сценарии.</string>
     <string name="day_12_title">Персонализация ассистента</string>
     <string name="day_12_description">Пользовательские профили поверх памяти: стиль, формат и controlled A/B.</string>
+    <string name="day_13_title">Состояние задачи</string>
+    <string name="day_13_description">Детерминированный workflow, Pause/Resume и продолжение без старого диалога.</string>
 </resources>

@@ -45,6 +45,10 @@ from app.memory_service import MemoryExperimentService
 from app.personalization_api import router as personalization_router
 from app.personalization_service import PersonalizationService
 from app.sqlite_profile_store import SQLiteProfileStore
+from app.checkout_workflow import CHECKOUT
+from app.sqlite_task_state_store import SQLiteTaskStateStore
+from app.task_state_lab_service import TaskStateLabService
+from app.task_state_lab_api import router as task_state_router
 
 
 @asynccontextmanager
@@ -56,7 +60,11 @@ async def lifespan(app: FastAPI):
     memory_path = Path(app.state.memory_database_path).resolve()
     personalization_memory_path = Path(app.state.personalization_memory_path).resolve()
     profile_path = Path(app.state.profile_database_path).resolve()
-    if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path, profile_path}) != 7:
+    state_memory_path = Path(app.state.task_state_memory_path).resolve()
+    state_profile_path = Path(app.state.task_state_profile_path).resolve()
+    state_path = Path(app.state.task_state_database_path).resolve()
+    if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path,
+            profile_path, state_memory_path, state_profile_path, state_path}) != 10:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -107,6 +115,15 @@ async def lifespan(app: FastAPI):
         profiles = SQLiteProfileStore(profile_path)
         resources.callback(profiles.close)
         app.state.personalization = PersonalizationService(profile_memory, profiles, profile_client)
+        state_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(state_client.close)
+        state_memory = MemoryStore(state_memory_path)
+        resources.callback(state_memory.close)
+        state_profiles = SQLiteProfileStore(state_profile_path)
+        resources.callback(state_profiles.close)
+        states = SQLiteTaskStateStore(state_path, CHECKOUT)
+        resources.callback(states.close)
+        app.state.task_state_lab = TaskStateLabService(state_memory, state_profiles, states, state_client)
         yield
 
 
@@ -117,6 +134,10 @@ app.include_router(memory_router)
 app.state.personalization_memory_path = DEFAULT_DATABASE_PATH.parents[1] / 'personalization' / 'day12-v1' / 'memory.sqlite3'
 app.state.profile_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'personalization' / 'day12-v1' / 'profiles.sqlite3'
 app.include_router(personalization_router)
+app.state.task_state_memory_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-state' / 'day13-v1' / 'memory.sqlite3'
+app.state.task_state_profile_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-state' / 'day13-v1' / 'profiles.sqlite3'
+app.state.task_state_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-state' / 'day13-v1' / 'task-state.sqlite3'
+app.include_router(task_state_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'

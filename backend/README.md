@@ -444,3 +444,62 @@ ORION-17/RC-42/Checkout/MVI — literal mentions, не оценка семант
 State Machine/Invariants/validation-before-commit отложены. Будущее orchestration
 использует generate → validate → commit → state transition; вызывать validate
 после нынешнего run_turn уже поздно. Сам run_turn в Day 12 не изменён.
+
+## Day 13 — Task State Machine
+
+Day 13 использует существующие SimpleAgent/run_turn/generate и Memory/Profile,
+добавляя независимые task-scoped FSM/store/renderer. Canonical state:
+`task_id, machine_id, state_id, status, revision`; остальные поля выводятся из
+versioned definition `checkout-v1`. Progress — только explicit event. Обычный
+Send, включая PAUSED, не меняет State. `VALIDATION_CONFIRMED` — подтверждение
+пользователя/application, не результат semantic Validator.
+
+SQLite adapter хранит current state и CAS revision без transition history.
+Namespace `backend/.local/task-state/day13-v1/` содержит `memory.sqlite3`,
+`profiles.sqlite3`, `task-state.sqlite3`. Это layout лаборатории, не domain
+архитектура будущего Runtime; TaskStateStore не знает пути остальных stores.
+Single-worker application guard не удерживает SQL transaction на provider await.
+Conversation commit и State transition не атомарны и остаются отдельными действиями.
+
+API prefix: `/api/v1/task-state`.
+
+| Операция | Endpoint / body |
+| --- | --- |
+| Read / fixture | GET `/current`, `/scenario` |
+| Initialize Memory + State | POST `/initialize`: `{}` |
+| Завершить partial State setup | POST `/initialize-state`: snapshot_id, task_id, machine_id |
+| Profile create/edit/select | POST `/profiles`, PUT `/profiles/{id}`, POST `/profiles/{id}/select` — typed Day12 fields/revisions |
+| Working / lifecycle | POST `/memory`, `/lifecycle/{action}` — Day11 typed bodies |
+| Explicit event, включая PAUSE/RESUME | POST `/events`: snapshot_id, task_id, state_revision, event |
+| Ordinary Send | POST `/messages`: snapshot_id, task_id, state_revision, profile_id, profile_revision, binding_revision, message |
+| Current non-committing probe | POST `/probe`: те же references без message |
+
+Read/startup не создаёт task records. Partial setup между stores виден в readiness:
+Memory/Profile/State должны быть готовы для Send/events. `initialize-state`
+завершает подготовку current task, не создаёт новую и не сбрасывает существующую.
+После unknown outcome — read/reconcile; mutations и generation не повторяются.
+New Conversation оставляет task/Working/Profile/State, New Task создаёт initial
+State, старые task rows и conversations сохраняются.
+
+Pure preparation получает resolved snapshots: neutral base + Profile section +
+authoritative Task State section в instructions, selected Memory + active transcript
++ query в messages. IDs/revisions остаются receipt metadata. Inspector сохраняет
+actual LlmClient arguments и разделяет storage/selection/assembly/model adherence.
+Preview не является actual evidence. PAUSED semantic violation не блокирует commit;
+LLM никогда не применяет events. Invariants/Validator/retry/Playground отложены.
+
+Offline: из backend `python -m pytest tests/test_task_state.py tests/test_task_state_lab.py tests/test_task_state_boundaries.py -q`.
+Live запускается отдельно: preferred `pwsh -File scripts/dev.ps1 backend`, затем
+`status` и проверка HTTP с эмулятора. Если pwsh/ExecutionPolicy недоступны,
+из backend допустим `python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`.
+Исправление PowerShell/tooling не входит в Day13.
+
+Ручной HTTP acceptance runner (из backend):
+`python scripts/day13_live.py --output ../.local/day13/live.json`.
+Он требует свежий Day13 namespace, выполняет explicit fixture setup и ровно три
+Send: execution → Pause → New Conversation → status → New Conversation → Resume
+→ continuation. Затем отдельный IMPLEMENTATION_READY. Не очищает старые данные,
+останавливается при ошибке, не повторяет calls. Existing tasks проходятся теми же
+явными controls в UI. Проверки input/State/call budget автоматические; смысл ответа
+оценивается отдельно. Local JSON содержит реальные requests/outcomes без headers
+и ключей, не попадает в Git. Reopen проверяется offline, а не обязательным live restart.
