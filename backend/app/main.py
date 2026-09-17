@@ -49,6 +49,9 @@ from app.checkout_workflow import CHECKOUT
 from app.sqlite_task_state_store import SQLiteTaskStateStore
 from app.task_state_lab_service import TaskStateLabService
 from app.task_state_lab_api import router as task_state_router
+from app.coding_policy_store import CodingPolicyStore
+from app.invariants_lab_service import InvariantsLabService
+from app.invariants_lab_api import router as invariants_router
 
 
 @asynccontextmanager
@@ -63,8 +66,10 @@ async def lifespan(app: FastAPI):
     state_memory_path = Path(app.state.task_state_memory_path).resolve()
     state_profile_path = Path(app.state.task_state_profile_path).resolve()
     state_path = Path(app.state.task_state_database_path).resolve()
+    invariants_path = Path(app.state.invariants_database_dir).resolve()
+    invariant_paths = [invariants_path / name for name in ('memory.sqlite3', 'profiles.sqlite3', 'state.sqlite3', 'policies.sqlite3')]
     if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path,
-            profile_path, state_memory_path, state_profile_path, state_path}) != 10:
+            profile_path, state_memory_path, state_profile_path, state_path, *invariant_paths}) != 14:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -124,6 +129,18 @@ async def lifespan(app: FastAPI):
         states = SQLiteTaskStateStore(state_path, CHECKOUT)
         resources.callback(states.close)
         app.state.task_state_lab = TaskStateLabService(state_memory, state_profiles, states, state_client)
+        invariant_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(invariant_client.close)
+        invariant_memory = MemoryStore(invariant_paths[0])
+        resources.callback(invariant_memory.close)
+        invariant_profiles = SQLiteProfileStore(invariant_paths[1])
+        resources.callback(invariant_profiles.close)
+        invariant_states = SQLiteTaskStateStore(invariant_paths[2], CHECKOUT)
+        resources.callback(invariant_states.close)
+        invariant_policies = CodingPolicyStore(invariant_paths[3])
+        resources.callback(invariant_policies.close)
+        app.state.invariants_lab = InvariantsLabService(invariant_memory, invariant_profiles,
+            invariant_states, invariant_policies, invariant_client)
         yield
 
 
@@ -138,6 +155,8 @@ app.state.task_state_memory_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-stat
 app.state.task_state_profile_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-state' / 'day13-v1' / 'profiles.sqlite3'
 app.state.task_state_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-state' / 'day13-v1' / 'task-state.sqlite3'
 app.include_router(task_state_router)
+app.state.invariants_database_dir = DEFAULT_DATABASE_PATH.parents[1] / 'invariants' / 'day14-v1'
+app.include_router(invariants_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'

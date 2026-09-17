@@ -82,6 +82,7 @@ class AppContainer(context: android.content.Context) {
       .build()
 
   val strategyPreferences: StrategyPreferences = SharedStrategyPreferences(context)
+  val invariantsRepository: InvariantsRepository = DefaultInvariantsRepository(retrofit.create(InvariantsApi::class.java))
   val taskStateRepository: TaskStateRepository = DefaultTaskStateRepository(retrofit.create(TaskStateApi::class.java))
   val personalizationRepository: PersonalizationRepository = DefaultPersonalizationRepository(retrofit.create(PersonalizationApi::class.java))
   val memoryLayersRepository: MemoryLayersRepository = DefaultMemoryLayersRepository(retrofit.create(MemoryLayersApi::class.java))

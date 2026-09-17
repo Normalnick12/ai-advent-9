@@ -15,6 +15,7 @@ def isolated_agent_database(tmp_path, monkeypatch):
     monkeypatch.setattr(app.state, "strategies_database_path", tmp_path / "strategies.sqlite3")
     for name in ("task_state_memory_path", "task_state_profile_path", "task_state_database_path"):
         monkeypatch.setattr(app.state, name, tmp_path / (name + ".sqlite3"))
+    monkeypatch.setattr(app.state, "invariants_database_dir", tmp_path / "invariants")
     return path
 
 

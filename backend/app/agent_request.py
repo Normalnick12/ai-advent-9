@@ -17,6 +17,7 @@ class PreparedAgentRequest:
     query: str
     profile_section: str
     state_section: str
+    invariant_section: str = ""
 
     @property
     def messages(self):
@@ -24,7 +25,8 @@ class PreparedAgentRequest:
 
 
 def prepare_agent_request(base_config: AgentConfig, memory: dict, profile: AgentProfile,
-                          state: TaskState, definition: TaskStateDefinition, query: str):
+                          state: TaskState, definition: TaskStateDefinition, query: str,
+                          *, invariant_section: str = ""):
     if state.task_id != memory["task_id"] or profile.owner_id != memory["memory_owner_id"]:
         raise TaskStateError("request_source_mismatch")
     policy, _ = build_context(deepcopy(memory))
@@ -32,4 +34,6 @@ def prepare_agent_request(base_config: AgentConfig, memory: dict, profile: Agent
     state_text = render_task_state(state, definition)
     config = replace(deepcopy(base_config), instructions=(base_config.instructions +
         "\n\nPROFILE\n" + profile_text + "\n\n" + state_text))
-    return PreparedAgentRequest(config, policy, query, profile_text, state_text)
+    if invariant_section:
+        config = replace(config, instructions=config.instructions + "\n\n" + invariant_section)
+    return PreparedAgentRequest(config, policy, query, profile_text, state_text, invariant_section)

@@ -11,6 +11,7 @@ __pycache__/
 .idea/
 .vscode/
 .gradle/
+.kotlin/
 local.properties
 build/
 **/build/

@@ -55,6 +55,7 @@ enum class LearningDay(
   MEMORY_LAYERS("11", AppDestination.MEMORY_LAYERS, R.string.day_11_title, R.string.day_11_description),
   PERSONALIZATION("12", AppDestination.PERSONALIZATION, R.string.day_12_title, R.string.day_12_description),
   TASK_STATE("13", AppDestination.TASK_STATE, R.string.day_13_title, R.string.day_13_description),
+  INVARIANTS("14", AppDestination.INVARIANTS, R.string.day_14_title, R.string.day_14_description),
 
 }
 

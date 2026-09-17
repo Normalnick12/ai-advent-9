@@ -66,4 +66,6 @@
     <string name="day_12_description">Пользовательские профили поверх памяти: стиль, формат и controlled A/B.</string>
     <string name="day_13_title">Состояние задачи</string>
     <string name="day_13_description">Детерминированный workflow, Pause/Resume и продолжение без старого диалога.</string>
+  <string name="day_14_title">Инварианты и ограничения состояния</string>
+  <string name="day_14_description">Typed proposal, проверка правил и безопасный отказ до commit</string>
 </resources>

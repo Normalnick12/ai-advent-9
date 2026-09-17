@@ -503,3 +503,78 @@ Send: execution → Pause → New Conversation → status → New Conversation �
 явными controls в UI. Проверки input/State/call budget автоматические; смысл ответа
 оценивается отдельно. Local JSON содержит реальные requests/outcomes без headers
 и ключей, не попадает в Git. Reopen проверяется offline, а не обязательным live restart.
+
+## Day 14 — Invariants
+
+Изолированная лаборатория `/api/v1/invariants` использует namespace
+`backend/.local/invariants/day14-v1/`: Memory, Profile, Task State и отдельный
+immutable task policy store. Read/open не создаёт task records и не вызывает модель.
+`GET /scenario` возвращает fixture и два controlled action IDs. `GET /current`
+возвращает источники, readiness, recovery и applicability.
+
+Явная подготовка: `POST /initialize {}`, затем `POST /setup` с `task_id` и
+`snapshot_id` текущей Memory. Setup дополняет отсутствующие Working/Profile/State/policy
+на тех же IDs; конфликтующие значения не перезаписывает. В Working записываются
+Checkout loading/error/success, MVI и RC-42; Profile — Compact Engineer;
+policy coding-v1 — MVI, Compose, CoroutinesFlow и обязательное подтверждение оплаты.
+`POST /events` принимает task/snapshot/state_revision/event. Подтвердите
+REQUIREMENTS_READY, затем PLAN_APPROVED. Proposals доступны только в ACTIVE execution.
+
+`POST /proposals`: task_id, snapshot_id, session_id, state_revision, profile_id,
+profile_revision, binding_revision, policy_id, policy_version, policy_snapshot_id,
+action_id. Допустимы `compatible-retry` и `conflicting-stack`; свободный intent,
+instructions и неизвестные поля не принимаются. Source references проверяются до dispatch.
+`POST /lifecycle/new-conversation` и `new-task` принимают task_id/snapshot_id.
+Новая conversation сохраняет policy; новая task получает initial State, но требует
+отдельного setup новой policy. Старые записи остаются вне active selection.
+
+| Исход | Provider calls | Conversation |
+| --- | --- | --- |
+| Compatible typed candidate | 1 | user + trusted answer после validator |
+| Controlled request conflict | 0 | user + deterministic refusal |
+| Нарушение в parsed candidate | 1 | user + safe refusal, raw candidate не сохраняется |
+| Configuration inconsistency | 0 | operation error, без пары |
+| Parser/validator/renderer/provider failure | 0 или 1 | technical error, без semantic refusal |
+| Ошибка pair commit | 0 или 1 | failed/unknown; authoritative reread, без replay |
+
+Coordinator удерживает session guard, проверяет captured history и выполняет ровно
+один atomic pair commit после acceptance gate. При storage uncertainty перечитывается
+durable history и заменяется cache только Day 14; failed recovery блокирует новые
+turns. State/events, Working, Long-term, Profile и policy не изменяются от ответа.
+
+Reusable core получает уже parsed candidate и injected predicates/renderers.
+OpenAI Structured Output и strict JSON parsing находятся в coding candidate adapter.
+Policy — typed code, без field/operator/value DSL. Четыре конкретных predicates
+проверяют decisions; произвольный код не анализируется. Prevention в instructions
+не заменяет enforcement. Старые FSM/Profile и domain leakage TaskStateRenderer
+не переработаны; integrated Playground и optional LLM reviewer остаются будущими задачами.
+
+Настройки: gpt-4o-mini, max_output_tokens=1200, Standard tier, truncation disabled,
+reasoning omitted, строгая CodingProposal schema, store=false, без automatic retries.
+Receipt разделяет actual input, provider outcome/usage, parsed/raw candidate,
+precheck/validation, decision и commit. Controlled conflict не имеет actual input.
+Technical proposal response может иметь HTTP 500 и сохранённый observation —
+его нельзя терять. Current preview не заменяет историческое evidence.
+Raw candidate доступен только в diagnostics, не Short-term.
+
+Offline из backend:
+`python -m pytest tests/test_invariants.py tests/test_invariants_lab.py tests/test_invariants_boundaries.py tests/test_validated_turn.py -q`.
+Общая regression: `python -m pytest -q`.
+
+Для live preferred path: `pwsh -File scripts/dev.ps1 backend`, затем `status`.
+При недоступном pwsh/ExecutionPolicy из backend:
+`python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload`.
+Readiness допускает прямой HTTP `/health` и `/api/v1/invariants/current`;
+отдельно проверьте доступ с emulator. Исправление PowerShell не входит в Day 14.
+
+Bounded live runner из backend:
+`python scripts/day14_live.py --output ../.local/day14/live.json --approved-payload ../.local/day14/payload-preview.json`.
+`--approved-payload` указывает заранее просмотренный локальный JSON с полями
+`destination` и `payload`. Runner сверяет полное равенство с подготовленным запросом
+до dispatch и с actual capture после ответа; SHA-256 файла сохраняется в evidence.
+Файл evidence резервирует единственную попытку до HTTP и не перезаписывается.
+Он требует свежий namespace, не сбрасывает данные, делает одну compatible generation
+и controlled conflict (0 calls), сохраняет каждую операцию без headers/ключей.
+Ошибки и нарушения сохраняются как факты; happy path подтверждается только accepted
+и committed outcome. Не повторять ради успешного ответа. Runtime receipts исчезают
+после restart; SQLite sources/history сохраняются.

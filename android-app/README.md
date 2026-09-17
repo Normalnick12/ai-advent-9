@@ -4,7 +4,7 @@
 backend. Позволяет отправлять запросы, сравнивать ответы и просматривать метрики.
 Все обращения к OpenAI выполняет backend; API-ключ в приложении не нужен.
 
-При запуске открывается каталог «AI Advent» с днями 02–11. Нажмите карточку,
+При запуске открывается каталог «AI Advent» с днями 02–14. Нажмите карточку,
 чтобы открыть урок; верхняя стрелка или системное действие назад возвращает
 к списку дней. Day 01 доступен отдельно как Python CLI.
 
@@ -361,3 +361,42 @@ draft, scroll, in-flight operation и last receipt; после process death rec
 (аналогично для RootNavigationUiTest) из android-app с установленными JDK/SDK.
 Не запускать одновременно со Studio/другим Gradle и не менять daemon/cache flags.
 Backend setup/API и изолированный adapter layout — в [backend](../backend/README.md#day-13-task-state-machine).
+
+## Day 14 — Инварианты и ограничения
+
+В каталоге открыт компактный lab с тремя страницами: Задача, Подготовка и Inspector.
+Подготовка показывает fixture values и явно создаёт/дополняет Memory/Profile/State/policy
+без перезаписи. Затем нажмите REQUIREMENTS READY → PLAN APPROVED. На основной
+странице видны четыре инварианта и два controlled actions: «Предложить retry» и
+«Проверить конфликт». Пока источники не готовы, State не ACTIVE execution, backend
+busy или идёт recovery, proposals недоступны.
+
+Main показывает только trusted final reply/refusal. Decision, provider dispatch,
+число generation calls и commit status читаются независимо из backend receipt.
+Отказ по конфликту имеет not_dispatched/0 calls и committed pair. Technical failure
+показывается отдельно; receipt из HTTP 500 сохраняется, если он доступен.
+Raw candidate отображается только в Inspector с diagnostic label; отклонённый
+candidate не сохранён в conversation.
+
+Inspector разделяет current sources и historical attempt со snapshots, actual
+messages/config, parsing, violations, checks и commit. New Conversation меняет
+current session, сохраняя предыдущий receipt и task policy. New Task требует setup.
+Cold open только читает backend. При неизвестном HTTP outcome выполняется read,
+без автоматического повторения proposal/setup/event/lifecycle. Rotation и возврат
+из каталога сохраняют ViewModel, page/scroll, in-flight request и последний receipt;
+после process death runtime receipt остаётся unavailable.
+
+Проверки из корня: `pwsh -File scripts/dev.ps1 unit`,
+`pwsh -File scripts/dev.ps1 build`. UI запускайте последовательно через
+`pwsh -File scripts/dev.ps1 ui -Test com.example.responsecontrollab.InvariantsUiTest`,
+затем аналогично `InvariantsNarrowUiTest`, `RootNavigationUiTest` и `TaskStateUiTest`.
+Fake repositories не требуют OpenAI или backend. Narrow viewport — 320×480.
+Existing accessibility tests сохранены; отдельный expanded font-scale прогон
+нужен только при layout regression или отдельной accessibility задаче.
+
+При недоступном pwsh/ExecutionPolicy допустимы прямые commands из android-app:
+`gradlew.bat testDebugUnitTest`, `gradlew.bat assembleDebug`,
+`gradlew.bat connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.example.responsecontrollab.InvariantsUiTest`.
+Другие классы подставляются аналогично. Не запускать Gradle параллельно со Studio;
+PowerShell tooling не является частью Day 14. Backend/live flow —
+в [backend README](../backend/README.md#day-14-invariants).
