@@ -34,5 +34,4 @@ status и continuation. Все ответы завершились, обе ст�
 а не ошибка FSM. Пользователь подтвердил оценку: «Частичное adherence: продолжение слабое». Ответы не
 меняли State. Переход в validation выполнен отдельным IMPLEMENTATION_READY.
 
-Зависимости, настройка и запуск описаны в [backend](../backend/README.md#day-13-task-state-machine)
-и [Android](../android-app/README.md#day-13-task-state-machine). `OPENAI_API_KEY` задаётся только на backend.
+Зависимости, настройка и запуск описаны в [инструкции по запуску](../scripts/README.md). `OPENAI_API_KEY` задаётся только на backend.

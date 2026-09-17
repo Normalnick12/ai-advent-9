@@ -46,6 +46,5 @@ Profiles/revisions, Memory и owner/task/session state. По подтвержд�
 Вывод: корректный выбор профиля и сборка запроса не гарантируют соблюдения всех
 его требований моделью. Profile остаётся самостоятельным состоянием поверх Memory.
 
-Зависимости, настройка и запуск описаны в [backend](../backend/README.md#day-12-personalization)
-и [Android](../android-app/README.md#day-12-personalization).
+Зависимости, настройка и запуск описаны в [инструкции по запуску](../scripts/README.md).
 `OPENAI_API_KEY` задаётся только на backend.
