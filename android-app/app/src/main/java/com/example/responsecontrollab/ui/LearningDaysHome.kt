@@ -56,6 +56,7 @@ enum class LearningDay(
   PERSONALIZATION("12", AppDestination.PERSONALIZATION, R.string.day_12_title, R.string.day_12_description),
   TASK_STATE("13", AppDestination.TASK_STATE, R.string.day_13_title, R.string.day_13_description),
   INVARIANTS("14", AppDestination.INVARIANTS, R.string.day_14_title, R.string.day_14_description),
+  AGENT_PLAYGROUND("15", AppDestination.AGENT_PLAYGROUND, R.string.day_15_title, R.string.day_15_description),
 
 }
 

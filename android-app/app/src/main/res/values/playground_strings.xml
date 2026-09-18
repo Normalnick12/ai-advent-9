@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="day_15_title">Контролируемый жизненный цикл задачи</string>
+    <string name="day_15_description">Agent Playground: разговор, ограничения задачи и явные переходы, включая возврат на исправление.</string>
+</resources>

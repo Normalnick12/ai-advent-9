@@ -35,6 +35,7 @@ class RootNavigationUiTest {
   private val memoryRepository = MemoryUiRepository()
   private val profileRepository = ProfileFixture()
   private val taskRepository = TaskFixture()
+  private val playgroundRepository = PlaygroundFixture()
   private val invariantsRepository = InvariantsFixture()
   private val temperatureResult = CompletableDeferred<TemperatureLabBatchResponseDto>()
   private lateinit var response: ResponseControlViewModel
@@ -46,6 +47,7 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, com.example.responsecontrollab.ui.playground.PlaygroundViewModel.factory(playgroundRepository))["day15", com.example.responsecontrollab.ui.playground.PlaygroundViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.invariants.InvariantsViewModel.factory(invariantsRepository))["day14", com.example.responsecontrollab.ui.invariants.InvariantsViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.taskstate.TaskStateViewModel.factory(taskRepository))["day13", com.example.responsecontrollab.ui.taskstate.TaskStateViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.profile.PersonalizationViewModel.factory(profileRepository))["day12", com.example.responsecontrollab.ui.profile.PersonalizationViewModel::class.java]
@@ -113,7 +115,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -123,6 +125,9 @@ class RootNavigationUiTest {
     }
     composeRule.runOnIdle {
       assertTrue(responseCalls.isEmpty())
+      assertEquals(0, playgroundRepository.sends)
+      assertEquals(0, playgroundRepository.events)
+      assertEquals(0, playgroundRepository.creates)
       assertEquals(0, invariantsRepository.proposals)
       assertEquals(0, invariantsRepository.setups)
       assertEquals(0, invariantsRepository.events)

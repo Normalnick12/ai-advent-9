@@ -73,6 +73,23 @@ python -m pytest
 Сборка и тесты Android запускаются командами `build`, `unit` и `ui`
 из таблицы выше. Выбор отдельного теста описан ниже.
 
+## Проверки Day 15
+
+Targeted offline backend checks из `backend`:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_playground_coding.py tests/test_playground_service.py tests/test_playground_boundaries.py tests/test_playground_http_acceptance.py -q
+```
+
+Android из корня, по одной Gradle-команде за раз:
+
+```powershell
+.\scripts\dev.ps1 unit -Test '*Playground*'
+.\scripts\dev.ps1 ui -Test 'com.example.responsecontrollab.PlaygroundUiTest'
+```
+
+Fake clients/repositories не обращаются к OpenAI. Перед согласованным live проверьте backend через `status` и доступность `http://10.0.2.2:8000/health` с эмулятора. Сценарий хранится в [OpenSpec design](../openspec/changes/archive/2026-09-18-day-15-agent-playground/design.md); перед отправкой payload внешнему provider требуется отдельное разрешение. Live не повторяется автоматически при отказе или ошибке.
+
 ## Ручной restart Day 07
 
 После подтверждённого ответа/count 1 остановите backend через Ctrl+C в его

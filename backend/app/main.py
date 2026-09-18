@@ -52,6 +52,10 @@ from app.task_state_lab_api import router as task_state_router
 from app.coding_policy_store import CodingPolicyStore
 from app.invariants_lab_service import InvariantsLabService
 from app.invariants_lab_api import router as invariants_router
+from app.playground_api import router as playground_router
+from app.playground_service import PlaygroundService
+from app.playground_setup_store import PlaygroundSetupStore
+from app.playground_workflow import CHECKOUT_V2
 
 
 @asynccontextmanager
@@ -68,8 +72,10 @@ async def lifespan(app: FastAPI):
     state_path = Path(app.state.task_state_database_path).resolve()
     invariants_path = Path(app.state.invariants_database_dir).resolve()
     invariant_paths = [invariants_path / name for name in ('memory.sqlite3', 'profiles.sqlite3', 'state.sqlite3', 'policies.sqlite3')]
+    playground_dir = Path(app.state.playground_database_dir).resolve()
+    playground_paths = [playground_dir / name for name in ('memory.sqlite3', 'profiles.sqlite3', 'state.sqlite3', 'policies.sqlite3', 'setup.sqlite3')]
     if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path,
-            profile_path, state_memory_path, state_profile_path, state_path, *invariant_paths}) != 14:
+            profile_path, state_memory_path, state_profile_path, state_path, *invariant_paths, *playground_paths}) != 19:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -141,6 +147,20 @@ async def lifespan(app: FastAPI):
         resources.callback(invariant_policies.close)
         app.state.invariants_lab = InvariantsLabService(invariant_memory, invariant_profiles,
             invariant_states, invariant_policies, invariant_client)
+        playground_client = OpenAIResponsesLlmClient()
+        resources.push_async_callback(playground_client.close)
+        playground_memory = MemoryStore(playground_paths[0])
+        resources.callback(playground_memory.close)
+        playground_profiles = SQLiteProfileStore(playground_paths[1])
+        resources.callback(playground_profiles.close)
+        playground_states = SQLiteTaskStateStore(playground_paths[2], CHECKOUT_V2)
+        resources.callback(playground_states.close)
+        playground_policies = CodingPolicyStore(playground_paths[3])
+        resources.callback(playground_policies.close)
+        playground_setups = PlaygroundSetupStore(playground_paths[4])
+        resources.callback(playground_setups.close)
+        app.state.agent_playground = PlaygroundService(playground_memory, playground_profiles,
+            playground_states, playground_policies, playground_setups, playground_client)
         yield
 
 
@@ -157,6 +177,8 @@ app.state.task_state_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'task-st
 app.include_router(task_state_router)
 app.state.invariants_database_dir = DEFAULT_DATABASE_PATH.parents[1] / 'invariants' / 'day14-v1'
 app.include_router(invariants_router)
+app.state.playground_database_dir = DEFAULT_DATABASE_PATH.parents[1] / 'agent-playground' / 'day15-v1'
+app.include_router(playground_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'

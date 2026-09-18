@@ -24,10 +24,11 @@ import com.example.responsecontrollab.ui.token.TokenLabViewModel
 import com.example.responsecontrollab.ui.compression.CompressionLabScreen
 import com.example.responsecontrollab.ui.compression.CompressionLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES, MEMORY_LAYERS, PERSONALIZATION, TASK_STATE, INVARIANTS }
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES, MEMORY_LAYERS, PERSONALIZATION, TASK_STATE, INVARIANTS, AGENT_PLAYGROUND }
 
 @Composable
 fun AppRoot(
+  playgroundViewModel: com.example.responsecontrollab.ui.playground.PlaygroundViewModel,
   invariantsViewModel: com.example.responsecontrollab.ui.invariants.InvariantsViewModel,
   taskStateViewModel: com.example.responsecontrollab.ui.taskstate.TaskStateViewModel,
   personalizationViewModel: com.example.responsecontrollab.ui.profile.PersonalizationViewModel,
@@ -49,6 +50,7 @@ fun AppRoot(
 
   screenStates.SaveableStateProvider(destination.name) {
     when (destination) {
+      AppDestination.AGENT_PLAYGROUND -> com.example.responsecontrollab.ui.playground.PlaygroundScreen(playgroundViewModel, onBack)
       AppDestination.INVARIANTS -> com.example.responsecontrollab.ui.invariants.InvariantsScreen(invariantsViewModel, onBack)
       AppDestination.TASK_STATE -> com.example.responsecontrollab.ui.taskstate.TaskStateScreen(taskStateViewModel, onBack)
       AppDestination.PERSONALIZATION -> com.example.responsecontrollab.ui.profile.PersonalizationScreen(personalizationViewModel, onBack)

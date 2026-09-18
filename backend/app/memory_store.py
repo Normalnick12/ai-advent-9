@@ -151,8 +151,8 @@ class MemoryStore:
         return state
 
     @staticmethod
-    def _session(db, task_id):
-        session_id = str(uuid4())
+    def _session(db, task_id, session_id=None):
+        session_id = session_id or str(uuid4())
         # Same sessions schema, within the caller's transaction, with no runtime publication.
         db.execute("INSERT INTO sessions VALUES (?)", (session_id,))
         db.execute("INSERT INTO session_tasks VALUES (?,?)", (session_id, task_id))
@@ -167,6 +167,32 @@ class MemoryStore:
                 db.execute("INSERT INTO working_memory VALUES (?,?,'{}')", (task_id, owner_id))
                 session_id = self._session(db, task_id)
                 db.execute("INSERT INTO memory_bindings VALUES (?,?,?,0)", (owner_id, task_id, session_id))
+        return self.read()
+
+    def create_reserved(self, *, owner_id, task_id, session_id, expected_snapshot):
+        """Materialize reviewed identities atomically; repeat only the exact current binding."""
+        for identity in (owner_id, task_id, session_id):
+            if str(UUID(identity)) != identity:
+                raise MemoryError("invalid_reserved_identity", 422)
+        with self.raw._transaction() as db:
+            state = self.read()
+            if state and (state["memory_owner_id"], state["task_id"], state["session_id"]) == (
+                    owner_id, task_id, session_id):
+                return state
+            if (state["snapshot_id"] if state else None) != expected_snapshot:
+                raise MemoryError("stale_snapshot")
+            if state is None:
+                db.execute("INSERT INTO memory_owners VALUES (?,1)", (owner_id,))
+                db.execute("INSERT INTO long_term_memory VALUES (?, '{}')", (owner_id,))
+            elif state["memory_owner_id"] != owner_id:
+                raise MemoryError("reserved_owner_mismatch")
+            db.execute("INSERT INTO working_memory VALUES (?,?,'{}')", (task_id, owner_id))
+            self._session(db, task_id, session_id)
+            if state is None:
+                db.execute("INSERT INTO memory_bindings VALUES (?,?,?,0)", (owner_id, task_id, session_id))
+            else:
+                db.execute("UPDATE memory_bindings SET current_task_id=?,current_session_id=?,revision=revision+1 WHERE owner_id=?",
+                           (task_id, session_id, owner_id))
         return self.read()
 
     def transition(self, action, snapshot_id):

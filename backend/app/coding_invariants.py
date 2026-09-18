@@ -21,11 +21,14 @@ class CodingPolicy(CodingModel):
     payment_confirmation_required: bool = True
 
 
-class CodingProposal(CodingModel):
+class CodingDecisions(CodingModel):
     architecture: Architecture
     ui_toolkit: Toolkit
     async_model: AsyncModel
     payment_confirmation_required: bool
+
+
+class CodingProposal(CodingDecisions):
     retry_mode: Literal["manual", "bounded_backoff"]
 
 
@@ -55,7 +58,7 @@ def check_consistency(policy: CodingPolicy, current_architecture: str | None) ->
         raise CodingConfigurationError
 
 
-def _check(policy: CodingPolicy, value: CodingIntent | CodingProposal,
+def _check(policy: CodingPolicy, value: CodingIntent | CodingDecisions,
            rules: tuple[RuleRef, ...], stage: Literal["request", "candidate"]) -> ValidationResult:
     # These are four concrete predicates, not interpreted field/operator definitions.
     violations = []
@@ -79,7 +82,7 @@ def check_request(policy: CodingPolicy, intent: CodingIntent, source: RuleSource
     return _check(policy, intent, rule_refs(policy, source), "request")
 
 
-def check_candidate(policy: CodingPolicy, candidate: CodingProposal, source: RuleSource) -> ValidationResult:
+def check_candidate(policy: CodingPolicy, candidate: CodingDecisions, source: RuleSource) -> ValidationResult:
     return _check(policy, candidate, rule_refs(policy, source), "candidate")
 
 
