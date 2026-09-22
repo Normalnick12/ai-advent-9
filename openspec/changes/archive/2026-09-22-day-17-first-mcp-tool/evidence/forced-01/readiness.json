@@ -1,0 +1,117 @@
+{
+  "at": "2026-09-22T14:58:21.442477+00:00",
+  "endpoint": "https://android-dependency-mcp.onrender.com/mcp",
+  "deployed_commit_sha": "ad1dae7b615072de7fa271a6e94e065373a747cb",
+  "revision_source": "user confirmed; Auto-Deploy disabled",
+  "generation_performed": false,
+  "health": {
+    "status_code": 200,
+    "body": {
+      "status": "ok"
+    }
+  },
+  "protocol_version": "2026-07-28",
+  "tools_list": {
+    "_meta": {
+      "io.modelcontextprotocol/serverInfo": {
+        "name": "Android Dependency MCP",
+        "version": "0.1.0"
+      }
+    },
+    "ttlMs": 0,
+    "cacheScope": "private",
+    "tools": [
+      {
+        "name": "get_google_maven_versions",
+        "description": "Get all published versions of an exact dependency from Google Maven only.\n\nReturns source order, not latest/stable recommendations or compatibility/security advice.\nNegative lookups describe Google Maven only; upstream failures are tool errors.\n",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "group_id": {
+              "description": "Exact Maven group, e.g. androidx.core. No spaces or URL/path syntax.",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(?:\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+              "title": "Group Id",
+              "type": "string"
+            },
+            "artifact_id": {
+              "description": "Exact artifact in this group, e.g. core-ktx. No URL/path syntax.",
+              "maxLength": 256,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+              "title": "Artifact Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "group_id",
+            "artifact_id"
+          ],
+          "title": "get_google_maven_versionsArguments"
+        },
+        "outputSchema": {
+          "properties": {
+            "status": {
+              "enum": [
+                "found",
+                "group_not_found",
+                "artifact_not_found",
+                "no_versions"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "group_id": {
+              "title": "Group Id",
+              "type": "string"
+            },
+            "artifact_id": {
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "versions": {
+              "items": {
+                "type": "string"
+              },
+              "title": "Versions",
+              "type": "array"
+            },
+            "source_url": {
+              "title": "Source Url",
+              "type": "string"
+            },
+            "checked_at": {
+              "format": "date-time",
+              "title": "Checked At",
+              "type": "string"
+            },
+            "lookup_id": {
+              "title": "Lookup Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "status",
+            "group_id",
+            "artifact_id",
+            "versions",
+            "source_url",
+            "checked_at",
+            "lookup_id"
+          ],
+          "title": "VersionsResult",
+          "type": "object"
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true
+        }
+      }
+    ],
+    "resultType": "complete"
+  },
+  "verdict": "passed"
+}

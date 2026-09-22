@@ -17,7 +17,13 @@ native remote MCP возвращает модели результат, а пр�
 Offline-проверки пройдены: 57 server tests, 51 backend tests (Day 17 и общий Responses adapter),
 7 Android JVM tests и 10 UI/navigation tests на эмуляторе API 34. APK собран.
 Это проверка реализации с fixtures, а не доказательство remote-вызова.
-Render deployment, forced live, auto experiment и видео ещё не выполнены.
+22 сентября 2026 выполнена одна forced-попытка из Android через Render MCP.
+Discovery, вызов `androidx.core:core-ktx`, structured result и серверный лог подтверждены.
+Tool вернул 129 версий; модель правильно указала последние три элемента, но ошиблась
+в количестве — ответила 133. Поэтому вызов MCP успешен, а проверка точности final response
+не пройдена. Повторов и исправления ответа не было; auto не проводился. Видео записано, что подтверждено пользователем.
+[Полный evidence и verdict](../openspec/changes/archive/2026-09-22-day-17-first-mcp-tool/live-result.md)
+сохранены с deployed SHA.
 
 Standalone server: Python 3.11+, `pip install -r requirements.txt`,
 запуск из этой папки: `python -m uvicorn server:app --host 127.0.0.1 --port 8001`.

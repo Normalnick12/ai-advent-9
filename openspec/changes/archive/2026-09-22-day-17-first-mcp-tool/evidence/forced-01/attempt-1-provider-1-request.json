@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-22T14:59:57.496741+00:00",
+  "payload": {
+    "model": "gpt-5.6",
+    "input": "Получи опубликованные версии androidx.core:core-ktx из Google Maven. Укажи количество и три последних элемента в порядке источника. Не оценивай стабильность или совместимость.",
+    "instructions": "Используй данные Google Maven из результата инструмента для ответа о версиях. Сохраняй порядок источника. Не называй версии latest/stable, совместимыми или безопасными. Если lookup отрицательный или инструмент недоступен, сообщи это без догадок. Не повторяй вызов для исправления результата. Отвечай кратко по-русски.",
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 1200,
+    "store": false,
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "android_dependencies",
+        "server_url": "https://android-dependency-mcp.onrender.com/mcp",
+        "allowed_tools": [
+          "get_google_maven_versions"
+        ],
+        "require_approval": "never"
+      }
+    ],
+    "tool_choice": {
+      "type": "mcp",
+      "server_label": "android_dependencies",
+      "name": "get_google_maven_versions"
+    }
+  }
+}

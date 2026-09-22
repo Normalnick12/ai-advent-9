@@ -10,7 +10,7 @@ Day 16 проверил discovery чужого MCP-сервера; Day 17 дол
 - После реализации, offline checks, scoped diff review и strict OpenSpec validation выполнить отдельный pre-live commit/push deployable revision для Git-backed Render deployment. Зафиксировать фактически deployed commit SHA в live evidence; этот commit не завершает Day 17 и не закрывает live/video tasks.
 - Добавить отдельный Day-17-specific backend service/provider path: один native remote MCP Responses API request возвращает typed operation result с final text и реальными `mcp_list_tools` / всеми `mcp_call`. Общий `LlmClient` и контракты Days 6–15 не расширяются.
 - Добавить независимый Android Day 17 lab с запросом, режимами «Проверить вызов» / «Автовыбор», итогом и раскрываемым Inspector конкретной попытки.
-- Проверить основной forced live по фактическим arguments, output и серверному `lookup_id`; auto оставить дополнительным наблюдением выбора модели. Не выполнять автоматический retry, regeneration или repair.
+- Проверить основной forced live по фактическим arguments, output и серверному `lookup_id`; auto оставить дополнительным наблюдением выбора модели. Завершение эксперимента требует подтверждённого MCP mechanism и фиксации проверки final response с фактическим verdict, включая ошибку модели. Оно не означает успешный полный forced acceptance. Не выполнять автоматический retry, regeneration или repair.
 
 ## Capabilities
 

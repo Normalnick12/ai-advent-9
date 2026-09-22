@@ -66,6 +66,11 @@ Day 17 SHALL возвращать final text и MCP evidence единым рез
 - **THEN** зафиксированы подтверждённый commit SHA фактически deployed MCP server, deployment reference/endpoint, response id, call id, actual arguments, lookup id, соответствующий серверный лог и проверка фактов final response по tool result
 - **AND** наличие одного зарегистрированного tool не трактуется как гарантия ровно одного provider call
 
+#### Scenario: Model prose mismatch remains a failed acceptance result
+- **WHEN** полная MCP evidence-цепочка подтверждена, но количество или последние элементы в final response не соответствуют tool result
+- **THEN** эксперимент SHALL сохранить подтверждение MCP mechanism и failed verdict точности final response раздельно, без retry/regeneration/repair
+- **AND** проверка эксперимента SHALL считаться выполненной после фиксации расхождения и полного evidence; завершение и архивирование дня MUST NOT обозначать полный forced acceptance как passed
+
 #### Scenario: Optional auto observation
 - **WHEN** отдельно выполнен auto experiment с запросом актуальных данных Google Maven
 - **THEN** фиксируется фактический выбор модели, включая `not_called`, с deployed commit SHA этой попытки и без повторов ради получения желаемого ответа
@@ -83,5 +88,5 @@ Day 17 SHALL публиковать проверенную deployable revision �
 - **AND** последующие docs/archive commits не заменяют SHA уже выполненной попытки
 
 #### Scenario: Finalization follows live and video
-- **WHEN** пользователь вызывает `$finish-day Day 17` после обязательного live acceptance и подтверждённого видео
+- **WHEN** пользователь вызывает `$finish-day Day 17` после обязательной проверки live, фиксации фактического verdict при подтверждённой MCP evidence-цепочке и подтверждённого видео
 - **THEN** evidence/docs и task statuses сверяются с фактами, завершённый change проходит strict validation и архивируется, а последующие scoped changes входят в final commit/push без пустого commit

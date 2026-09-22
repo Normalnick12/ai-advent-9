@@ -1,0 +1,97 @@
+{
+  "attempt": "forced-01",
+  "verdict": "failed_final_response_count_mismatch",
+  "deployed_commit_sha": "ad1dae7b615072de7fa271a6e94e065373a747cb",
+  "deployment_url": "https://android-dependency-mcp.onrender.com",
+  "mcp_url": "https://android-dependency-mcp.onrender.com/mcp",
+  "deployment_revision_source": "user confirmed; Auto-Deploy disabled",
+  "dispatch_at": "2026-09-22T17:59:57.442292+03:00",
+  "completed_at": "2026-09-22T18:00:06.573232+03:00",
+  "operation_id": "ff7afd5a-634b-4f9c-a467-286105eb1a36",
+  "response_id": "resp_06fba37e66c07c66016ab297f02ea087d2bc2f76fea51e5f9d",
+  "call_id": "mcp_06fba37e66c07c66016ab297f3910887d2896e14c262773dc1",
+  "lookup_id": "730a8685-51e8-4627-8c21-3a587b6d8b4f",
+  "requested_model": "gpt-5.6",
+  "resolved_model": "gpt-5.6-sol",
+  "counts": {
+    "android_send_actions": 1,
+    "backend_operations": 1,
+    "responses_create_calls": 1,
+    "returned_mcp_calls": 1
+  },
+  "backend_readiness": {
+    "host_health_http_status": 200,
+    "emulator_health_http_status": 200,
+    "previous_days_code_changed": false,
+    "day17_max_retries": 0,
+    "day17_deadline_seconds": 75
+  },
+  "checks": {
+    "default_prompt_unchanged": true,
+    "forced_tool_choice": {
+      "type": "mcp",
+      "server_label": "android_dependencies",
+      "name": "get_google_maven_versions"
+    },
+    "provider_status": "completed",
+    "operation_outcome": "completed",
+    "actual_arguments": {
+      "group_id": "androidx.core",
+      "artifact_id": "core-ktx"
+    },
+    "raw_equals_parsed": true,
+    "android_result_observed": true,
+    "android_inspector_observed": true,
+    "actual_versions_count": 129,
+    "final_response_versions_count": 133,
+    "count_matches": false,
+    "actual_last_three": [
+      "1.19.0-alpha02",
+      "1.19.0-rc01",
+      "1.19.0"
+    ],
+    "final_response_last_three": [
+      "1.19.0-alpha02",
+      "1.19.0-rc01",
+      "1.19.0"
+    ],
+    "last_three_match": true,
+    "upstream_log_correlated": true,
+    "full_mcp_evidence_chain": true,
+    "forced_acceptance_passed": false
+  },
+  "render_upstream_log": {
+    "status": "correlated",
+    "source": "Exact Render Logs line supplied by user",
+    "file": "render-upstream.log",
+    "lookup_id": "730a8685-51e8-4627-8c21-3a587b6d8b4f",
+    "http_status": 200,
+    "versions_count": 129,
+    "elapsed_ms": 431
+  },
+  "retry_regeneration_repair_performed": false,
+  "auto_experiment": "not_performed",
+  "capture_method": "Local passive sitecustomize observer around Uvicorn ASGI send/receive and AsyncResponses.create; delegates original call once, preserves payload/result; no headers or credentials captured. Production source unchanged.",
+  "artifacts_sha256": {
+    "android-before.png": "553bf4aa2d53b6c7edf2a3b69f6c53955c0fc7ab0aab11d9ecd1c03ca5f89ed0",
+    "android-before.xml": "c337b9935ca202e26dead912d45f5e094acc34622f148030539599afbd5e6624",
+    "android-inspector.png": "1598e39ce3cc8ba5000e2f25a8dbd2a9afce1da2bf7f90ff81c0c62189d7c896",
+    "android-inspector.xml": "3da71fb3c1e2071637a60850aa308555fc3eb5cb03c2fa4b1d6334513039a8cb",
+    "android-result.png": "3a9a4f36aa0a76ada28e09561ca105f5d39fb1aa76edb773f27f775da1230cd9",
+    "android-result.xml": "93a6925980c805b3122f46431ea987b617f7d867d81d4a8fe1c33f1dda3defec",
+    "attempt-1-android-request.json": "225af8b053de68f40b0bc676f460d267ddc9c7b0890288f23b993359690829ce",
+    "attempt-1-android-response.json": "721e32273e5261fb3f7b6b7651ba25c90529b683caed8aebf8fd79bab975ea06",
+    "attempt-1-dispatch.json": "a19c4acfaa293f536f201884c0271ec9c1ed7ec3363c535e6d2a129814fca29e",
+    "attempt-1-provider-1-request.json": "c0d8c113cb71c9c8e0b35d413b3b04bd41f94a2b358d50ec2e1bbfa3f717fb48",
+    "attempt-1-provider-1-response.json": "4dc80f3c0b80b7dfe934c2b3ef475b325f6d10455242cdde6b0468e5b8b7970f",
+    "readiness.json": "b6d1a4a91c1499de0f161ce26c4179209eaf13128a30d0227ec6cb8d04dfaba3",
+    "render-upstream.log": "f86d0df2e9dfd4ad84464a9f0394b0b1ab3b562c23677caeca295eb541d0f1b6",
+    "send-issued.json": "6e4562d2c9c8c87cb0be14afdc9511fcfebb4cd7b197ed75502258294585904d",
+    "sitecustomize.py": "5a5fe605fa6047a0b8aa8551056575b515b8a5d277e2d6abaa454d0af79f1dcc",
+    ".gitattributes": "8d18c8ecd8f8e1e8ca07df2346350a3a0217e4ee50ce07401f1f8e272dc7f027"
+  },
+  "video": {
+    "source": "User confirmation on 2026-09-22",
+    "status": "recorded"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "action": "one adb input tap on observed Android Send control",
+  "mode": "forced",
+  "device": "emulator-5554",
+  "y": 1364,
+  "at": "2026-09-22T14:59:57.3021590+00:00",
+  "deployed_commit_sha": "ad1dae7b615072de7fa271a6e94e065373a747cb",
+  "prompt": "Получи опубликованные версии androidx.core:core-ktx из Google Maven. Укажи количество и три последних элемента в порядке источника. Не оценивай стабильность или совместимость.",
+  "x": 208
+}
