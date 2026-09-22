@@ -59,6 +59,39 @@ Backend загружает локальный `backend/.env`, если он ес
 и [проверка состояния](http://127.0.0.1:8000/health).
 Backend запускается одним worker: блокировки диалогов действуют внутри процесса.
 
+## MCP-сервер Day 17
+
+Сервер из [Day 17](../day-17-android-dependency-mcp/README.md) использует отдельное
+Python-окружение и не требует `OPENAI_API_KEY`. Нужен Python 3.11+;
+локальная проверка и Render deployment выполнены на Python 3.14.7.
+
+```powershell
+cd day-17-android-dependency-mcp
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m uvicorn server:app --host 127.0.0.1 --port 8001
+```
+
+Для offline-проверок из той же папки и окружения:
+`python -m pip install -r requirements-dev.txt`, затем `python -m pytest -q`.
+
+Render Web Service использует `day-17-android-dependency-mcp` как Root Directory,
+build command `pip install -r requirements.txt` и start command
+`python -m uvicorn server:app --host 0.0.0.0 --port $PORT`.
+Задайте `PYTHON_VERSION=3.14.7`, Health Check Path `/health`.
+Разрешённый hostname берётся из `RENDER_EXTERNAL_HOSTNAME` либо `MCP_PUBLIC_HOST`.
+Публичный endpoint — `https://<service-host>/mcp`.
+
+На время эксперимента отключите Auto-Deploy, чтобы последующие изменения документации
+не сменили участвующую в проверке revision. Deployment выполняется из проверенного
+pre-live commit; фактический deployed SHA сохраняется в evidence попытки.
+`/health` проверяет готовность сервера, а MCP discovery проверяется отдельно до запроса модели.
+
+URL сервера задаётся на [backend](../backend/README.md) через `DAY17_MCP_SERVER_URL`;
+ключ OpenAI остаётся только на backend. Локальный MCP endpoint предназначен для
+разработки; для вызова через Responses API нужен публичный HTTPS endpoint.
+
 ## Тесты backend
 
 Из папки `backend` с активированным окружением:
