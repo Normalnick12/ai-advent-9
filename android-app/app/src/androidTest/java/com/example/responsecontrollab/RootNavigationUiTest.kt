@@ -26,6 +26,8 @@ class RootNavigationUiTest {
   @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
   private val responseCalls = mutableListOf<Pair<String, GenerationControlsDto>>()
   private var reasoningCalls = 0
+  private var mcpCalls = 0
+  private val mcpResult = CompletableDeferred<McpLabOperationDto>()
   private var temperatureCalls = 0
   private var chatCalls = 0
   private var benchmarkCalls = 0
@@ -47,6 +49,9 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, com.example.responsecontrollab.ui.mcp.McpLabViewModel.factory(McpLabRepository { _, _ ->
+        mcpCalls++; mcpResult.await()
+      }))["day17", com.example.responsecontrollab.ui.mcp.McpLabViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.playground.PlaygroundViewModel.factory(playgroundRepository))["day15", com.example.responsecontrollab.ui.playground.PlaygroundViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.invariants.InvariantsViewModel.factory(invariantsRepository))["day14", com.example.responsecontrollab.ui.invariants.InvariantsViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.taskstate.TaskStateViewModel.factory(taskRepository))["day13", com.example.responsecontrollab.ui.taskstate.TaskStateViewModel::class.java]
@@ -115,7 +120,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "17")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -141,6 +146,7 @@ class RootNavigationUiTest {
       assertEquals(0, memoryRepository.creates)
       assertEquals(0, memoryRepository.probes)
       assertEquals(0, memoryRepository.sends)
+      assertEquals(0, mcpCalls)
       assertEquals(0, reasoningCalls)
       assertEquals(0, temperatureCalls)
       assertEquals(0, benchmarkCalls)
@@ -153,6 +159,27 @@ class RootNavigationUiTest {
       assertEquals(0, strategiesRepository.sends)
       assertEquals(0, strategiesRepository.evals)
     }
+  }
+
+  @Test
+  fun mcpAttemptSurvivesNavigationAndRotationWithoutReplay() {
+    open("17")
+    composeRule.runOnIdle { assertEquals(0, mcpCalls) }
+    composeRule.onNodeWithTag("mcp_send").performScrollTo().performClick()
+    composeRule.waitUntil { mcpCalls == 1 }
+    back(); open("17")
+    composeRule.onNodeWithTag("mcp_send").performScrollTo().assertIsNotEnabled()
+    composeRule.activityRule.scenario.recreate()
+    composeRule.onNodeWithTag("mcp_send").performScrollTo().assertIsNotEnabled()
+    composeRule.runOnIdle {
+      assertEquals(1, mcpCalls)
+      mcpResult.complete(McpLabOperationDto("op17", MCP_DEFAULT_PROMPT, "forced", final_text = "MCP response preserved",
+        response_id = "resp17", outcome = "completed", invocation = "observed"))
+    }
+    composeRule.onNodeWithText("MCP response preserved").performScrollTo().assertIsDisplayed()
+    back(); open("15"); back(); open("17")
+    composeRule.onNodeWithText("MCP response preserved").performScrollTo().assertIsDisplayed()
+    composeRule.runOnIdle { assertEquals(1, mcpCalls); assertEquals(0, playgroundRepository.sends) }
   }
 
   @Test

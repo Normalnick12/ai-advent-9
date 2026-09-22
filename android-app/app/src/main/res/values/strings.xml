@@ -68,4 +68,6 @@
     <string name="day_13_description">Детерминированный workflow, Pause/Resume и продолжение без старого диалога.</string>
   <string name="day_14_title">Инварианты и ограничения состояния</string>
   <string name="day_14_description">Typed proposal, проверка правил и безопасный отказ до commit</string>
+  <string name="day_17_title">Первый MCP-инструмент</string>
+  <string name="day_17_description">Google Maven: вызов инструмента и проверка результата</string>
 </resources>
