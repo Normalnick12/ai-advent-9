@@ -70,4 +70,6 @@
   <string name="day_14_description">Typed proposal, проверка правил и безопасный отказ до commit</string>
   <string name="day_17_title">Первый MCP-инструмент</string>
   <string name="day_17_description">Google Maven: вызов инструмента и проверка результата</string>
+    <string name="day_18_title">Фоновые проверки зависимостей</string>
+    <string name="day_18_description">Создать watch и получить сводку независимых проверок на VPS</string>
 </resources>

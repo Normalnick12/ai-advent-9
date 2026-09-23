@@ -42,3 +42,26 @@ Forced live запускается из Android после Render discovery. Spe
 commit SHA/deployment reference, endpoint, response/call/lookup ids и сопоставление
 server log с output. Final prose отдельно не доказывает invocation. Provider timeout
 до получения response означает неизвестный факт вызова, а auto без call — `not_called`.
+
+## Фоновые проверки — Day 18
+
+`POST /api/v1/dependency-watch/run`: `operation=create|summary`, `prompt`, для summary
+обязателен выбранный `watch_id`. Один Responses request (`gpt-5.6`, forced tool,
+`store=false`, `max_retries=0`), без repair/regeneration. Создание не идемпотентно:
+все фактические create calls и все подтверждённые IDs возвращаются в evidence.
+
+В backend environment задайте `DAY18_MCP_SERVER_URL=https://<выбранный-hostname>/mcp`
+и `DAY18_MCP_TOKEN`. Значение token передаётся штатным полем remote MCP `authorization`
+в каждом запросе. Не добавляйте префикс `Bearer ` в значение environment. Token
+остаётся только в backend environment и на VPS; Android, prompts, logs и Git его
+не получают. Без настроек Day 18 возвращает configuration error; старые Days независимы.
+`OPENAI_API_KEY` остаётся на локальном backend, VPS в нём не нуждается.
+
+В `backend/.local/day18/evidence/` сохраняются redacted `.attempt` перед отправкой
+и окончательный `.json` с operation snapshot. Отсутствующий terminal response
+означает unknown, не отмену create. При недоступном evidence storage запрос не
+отправляется. Provider prose сохраняется отдельно от typed receipt/aggregate;
+неверный watch ID или контракт помечаются invalid_tool_result без повторного вызова.
+
+Offline: из `backend` выполните `.venv/Scripts/python.exe -m pytest tests/test_dependency_watch.py tests/test_mcp_lab.py -q`.
+Deployment, backup и recovery — в [scripts](../scripts/README.md#day-18--dependency-watch).

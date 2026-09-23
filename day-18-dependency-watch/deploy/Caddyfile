@@ -1,0 +1,5 @@
+# Set this environment variable for Caddy only AFTER choosing a real DNS hostname.
+# A/AAAA records must resolve to this VPS; remove stale AAAA records.
+{$DAY18_MCP_PUBLIC_HOST} {
+    reverse_proxy 127.0.0.1:8018
+}

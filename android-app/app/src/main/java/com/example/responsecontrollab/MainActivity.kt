@@ -46,11 +46,13 @@ class MainActivity : ComponentActivity() {
       val taskStateViewModel: com.example.responsecontrollab.ui.taskstate.TaskStateViewModel = viewModel(key="day13", factory=com.example.responsecontrollab.ui.taskstate.TaskStateViewModel.factory(container.taskStateRepository))
       val invariantsViewModel: com.example.responsecontrollab.ui.invariants.InvariantsViewModel = viewModel(key="day14", factory=com.example.responsecontrollab.ui.invariants.InvariantsViewModel.factory(container.invariantsRepository))
       val playgroundViewModel: com.example.responsecontrollab.ui.playground.PlaygroundViewModel = viewModel(key="day15", factory=com.example.responsecontrollab.ui.playground.PlaygroundViewModel.factory(container.playgroundRepository))
+      val dependencyWatchViewModel: com.example.responsecontrollab.ui.watch.DependencyWatchViewModel = viewModel(key="day18", factory=com.example.responsecontrollab.ui.watch.DependencyWatchViewModel.factory(container.dependencyWatchRepository, container.watchReceiptStore))
       val mcpLabViewModel: com.example.responsecontrollab.ui.mcp.McpLabViewModel = viewModel(key="day17", factory=com.example.responsecontrollab.ui.mcp.McpLabViewModel.factory(container.mcpLabRepository))
       ResponseControlLabTheme {
         val memoryViewModel: com.example.responsecontrollab.ui.memory.MemoryLayersViewModel = viewModel(key="day11", factory=com.example.responsecontrollab.ui.memory.MemoryLayersViewModel.factory(container.memoryLayersRepository))
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
+            dependencyWatchViewModel = dependencyWatchViewModel,
             mcpLabViewModel = mcpLabViewModel,
             playgroundViewModel = playgroundViewModel,
             invariantsViewModel = invariantsViewModel,

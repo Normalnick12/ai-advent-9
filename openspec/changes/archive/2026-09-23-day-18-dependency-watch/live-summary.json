@@ -1,0 +1,182 @@
+{
+  "started_at": "2026-09-23T18:21:50.811201+00:00",
+  "completed_at": "2026-09-23T18:21:58.646744+00:00",
+  "request_configuration": {
+    "model": "gpt-5.6",
+    "input": "Получи сводку выбранного watch. Кратко объясни сохранённые результаты и изменения версий.",
+    "instructions": "Выполни выбранную операцию один раз. Не повторяй tool call, не исправляй и не регенерируй результат. Для create обязательны max_runs и точные координаты; каждый принятый вызов создаёт новый watch. Для summary используй только выбранный watch_id. Факты сводки заданы deterministic aggregate; null означает отсутствие данных, а не ноль. Не обещай новые версии, стабильность или безопасность. Кратко объясни результат по-русски; при ошибке или неизвестном исходе сообщи об этом. Выбранный watch_id: 66d4ce61-bf97-4f22-8c3d-a1f538d1092c.",
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 1800,
+    "store": false,
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "dependency_watch",
+        "server_url": "https://132-243-120-220.sslip.io/mcp",
+        "authorization": "[REDACTED]",
+        "allowed_tools": [
+          "get_dependency_watch_summary"
+        ],
+        "require_approval": "never"
+      }
+    ],
+    "tool_choice": {
+      "type": "mcp",
+      "server_label": "dependency_watch",
+      "name": "get_dependency_watch_summary"
+    }
+  },
+  "operation": {
+    "operation_id": "465bd48b-f5e1-4648-976f-a36ef2d2929b",
+    "submitted_prompt": "Получи сводку выбранного watch. Кратко объясни сохранённые результаты и изменения версий.",
+    "operation": "summary",
+    "selected_watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+    "server_url": "https://132-243-120-220.sslip.io/mcp",
+    "response_id": "resp_05b5cf1d8aa02c03016ab418c0f4dc87d292d6dd8275ac8a93",
+    "provider_status": "completed",
+    "final_text": "Сводка watch для `androidx.core:core-ktx`:\n\n- Выполнено **3 из 3** проверок, все успешны.\n- Во всех сравнимых снимках найдено **130 версий**.\n- Изменений не обнаружено: **новых версий нет**.\n- Период проверок: **23 сентября 2026, 18:11:47–18:12:48 UTC**.\n- Watch завершён; ошибок и пропущенных запусков не было.",
+    "mcp_items": [
+      {
+        "id": "mcpl_05b5cf1d8aa02c03016ab418c109e087d2b3eeab8fdd32f334",
+        "server_label": "dependency_watch",
+        "tools": [
+          {
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "watch_id": {
+                  "format": "uuid",
+                  "title": "Watch Id",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "watch_id"
+              ],
+              "title": "get_dependency_watch_summaryArguments"
+            },
+            "name": "get_dependency_watch_summary",
+            "annotations": {
+              "read_only": true
+            },
+            "description": "Read committed deterministic facts for exactly this watch. No new checks.\n\n        Null version counts mean no comparable snapshot. Failed/interrupted runs\n        count toward max_runs. Model prose must not replace these persisted facts.\n        "
+          }
+        ],
+        "type": "mcp_list_tools"
+      },
+      {
+        "id": "mcp_05b5cf1d8aa02c03016ab418c361e487d2a26fde543fad0020",
+        "arguments": "{\"watch_id\":\"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\"}",
+        "name": "get_dependency_watch_summary",
+        "server_label": "dependency_watch",
+        "type": "mcp_call",
+        "approval_request_id": null,
+        "error": null,
+        "output": "{\"runs_total\": 3, \"successful\": 3, \"failed\": 0, \"interrupted\": 0, \"comparable_snapshots\": 3, \"first_checked_at\": \"2026-09-23T18:11:47.889000+00:00\", \"last_checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"first_version_count\": 130, \"last_version_count\": 130, \"changes_detected\": 0, \"newly_seen_versions\": [], \"latest_execution\": {\"run_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:47.233000+00:00\", \"started_at\": \"2026-09-23T18:12:48.014000+00:00\", \"completed_at\": \"2026-09-23T18:12:48.048000+00:00\", \"checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"27df8d68-9caf-478a-8cde-d889a85adf5c\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, \"through_execution_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"generated_at\": \"2026-09-23T18:12:48.048000+00:00\", \"executions\": [{\"run_id\": \"004954b5-2681-4254-9fda-a9fca53be399\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:11:47.233000+00:00\", \"started_at\": \"2026-09-23T18:11:47.849000+00:00\", \"completed_at\": \"2026-09-23T18:11:47.889000+00:00\", \"checked_at\": \"2026-09-23T18:11:47.889000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"b77a2576-588d-42e8-9eb5-b29cc5f2d9d5\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, {\"run_id\": \"5914f415-9a80-4fa7-a81f-c52ee6eac06e\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:17.233000+00:00\", \"started_at\": \"2026-09-23T18:12:17.941000+00:00\", \"completed_at\": \"2026-09-23T18:12:17.974000+00:00\", \"checked_at\": \"2026-09-23T18:12:17.974000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"21c7aa0e-c571-464d-874b-b437e292964d\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, {\"run_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:47.233000+00:00\", \"started_at\": \"2026-09-23T18:12:48.014000+00:00\", \"completed_at\": \"2026-09-23T18:12:48.048000+00:00\", \"checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"27df8d68-9caf-478a-8cde-d889a85adf5c\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}], \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"interval_seconds\": 30, \"max_runs\": 3, \"created_at\": \"2026-09-23T18:11:17.233000+00:00\", \"next_run_at\": null, \"status\": \"completed\", \"skipped_slots\": 0, \"running_execution\": null}",
+        "status": "completed"
+      }
+    ],
+    "calls": [
+      {
+        "id": "mcp_05b5cf1d8aa02c03016ab418c361e487d2a26fde543fad0020",
+        "server_label": "dependency_watch",
+        "name": "get_dependency_watch_summary",
+        "arguments": "{\"watch_id\":\"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\"}",
+        "status": "completed",
+        "output": "{\"runs_total\": 3, \"successful\": 3, \"failed\": 0, \"interrupted\": 0, \"comparable_snapshots\": 3, \"first_checked_at\": \"2026-09-23T18:11:47.889000+00:00\", \"last_checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"first_version_count\": 130, \"last_version_count\": 130, \"changes_detected\": 0, \"newly_seen_versions\": [], \"latest_execution\": {\"run_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:47.233000+00:00\", \"started_at\": \"2026-09-23T18:12:48.014000+00:00\", \"completed_at\": \"2026-09-23T18:12:48.048000+00:00\", \"checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"27df8d68-9caf-478a-8cde-d889a85adf5c\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, \"through_execution_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"generated_at\": \"2026-09-23T18:12:48.048000+00:00\", \"executions\": [{\"run_id\": \"004954b5-2681-4254-9fda-a9fca53be399\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:11:47.233000+00:00\", \"started_at\": \"2026-09-23T18:11:47.849000+00:00\", \"completed_at\": \"2026-09-23T18:11:47.889000+00:00\", \"checked_at\": \"2026-09-23T18:11:47.889000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"b77a2576-588d-42e8-9eb5-b29cc5f2d9d5\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, {\"run_id\": \"5914f415-9a80-4fa7-a81f-c52ee6eac06e\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:17.233000+00:00\", \"started_at\": \"2026-09-23T18:12:17.941000+00:00\", \"completed_at\": \"2026-09-23T18:12:17.974000+00:00\", \"checked_at\": \"2026-09-23T18:12:17.974000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"21c7aa0e-c571-464d-874b-b437e292964d\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}, {\"run_id\": \"798a0c33-11a0-4467-9b90-a602ce572c2f\", \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"scheduled_at\": \"2026-09-23T18:12:47.233000+00:00\", \"started_at\": \"2026-09-23T18:12:48.014000+00:00\", \"completed_at\": \"2026-09-23T18:12:48.048000+00:00\", \"checked_at\": \"2026-09-23T18:12:48.047000+00:00\", \"state\": \"succeeded\", \"lookup_outcome\": \"found\", \"lookup_id\": \"27df8d68-9caf-478a-8cde-d889a85adf5c\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"version_count\": 130, \"error_category\": null}], \"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"interval_seconds\": 30, \"max_runs\": 3, \"created_at\": \"2026-09-23T18:11:17.233000+00:00\", \"next_run_at\": null, \"status\": \"completed\", \"skipped_slots\": 0, \"running_execution\": null}",
+        "error": null,
+        "outcome": "completed",
+        "receipt": null,
+        "summary": {
+          "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+          "group_id": "androidx.core",
+          "artifact_id": "core-ktx",
+          "interval_seconds": 30,
+          "max_runs": 3,
+          "created_at": "2026-09-23T18:11:17.233000Z",
+          "next_run_at": null,
+          "status": "completed",
+          "runs_total": 3,
+          "skipped_slots": 0,
+          "successful": 3,
+          "failed": 0,
+          "interrupted": 0,
+          "comparable_snapshots": 3,
+          "first_checked_at": "2026-09-23T18:11:47.889000Z",
+          "last_checked_at": "2026-09-23T18:12:48.047000Z",
+          "first_version_count": 130,
+          "last_version_count": 130,
+          "changes_detected": 0,
+          "newly_seen_versions": [],
+          "latest_execution": {
+            "run_id": "798a0c33-11a0-4467-9b90-a602ce572c2f",
+            "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+            "scheduled_at": "2026-09-23T18:12:47.233000Z",
+            "started_at": "2026-09-23T18:12:48.014000Z",
+            "completed_at": "2026-09-23T18:12:48.048000Z",
+            "checked_at": "2026-09-23T18:12:48.047000Z",
+            "state": "succeeded",
+            "lookup_outcome": "found",
+            "lookup_id": "27df8d68-9caf-478a-8cde-d889a85adf5c",
+            "source_url": "https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml",
+            "version_count": 130,
+            "error_category": null
+          },
+          "through_execution_id": "798a0c33-11a0-4467-9b90-a602ce572c2f",
+          "generated_at": "2026-09-23T18:12:48.048000Z",
+          "executions": [
+            {
+              "run_id": "004954b5-2681-4254-9fda-a9fca53be399",
+              "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+              "scheduled_at": "2026-09-23T18:11:47.233000Z",
+              "started_at": "2026-09-23T18:11:47.849000Z",
+              "completed_at": "2026-09-23T18:11:47.889000Z",
+              "checked_at": "2026-09-23T18:11:47.889000Z",
+              "state": "succeeded",
+              "lookup_outcome": "found",
+              "lookup_id": "b77a2576-588d-42e8-9eb5-b29cc5f2d9d5",
+              "source_url": "https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml",
+              "version_count": 130,
+              "error_category": null
+            },
+            {
+              "run_id": "5914f415-9a80-4fa7-a81f-c52ee6eac06e",
+              "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+              "scheduled_at": "2026-09-23T18:12:17.233000Z",
+              "started_at": "2026-09-23T18:12:17.941000Z",
+              "completed_at": "2026-09-23T18:12:17.974000Z",
+              "checked_at": "2026-09-23T18:12:17.974000Z",
+              "state": "succeeded",
+              "lookup_outcome": "found",
+              "lookup_id": "21c7aa0e-c571-464d-874b-b437e292964d",
+              "source_url": "https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml",
+              "version_count": 130,
+              "error_category": null
+            },
+            {
+              "run_id": "798a0c33-11a0-4467-9b90-a602ce572c2f",
+              "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+              "scheduled_at": "2026-09-23T18:12:47.233000Z",
+              "started_at": "2026-09-23T18:12:48.014000Z",
+              "completed_at": "2026-09-23T18:12:48.048000Z",
+              "checked_at": "2026-09-23T18:12:48.047000Z",
+              "state": "succeeded",
+              "lookup_outcome": "found",
+              "lookup_id": "27df8d68-9caf-478a-8cde-d889a85adf5c",
+              "source_url": "https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml",
+              "version_count": 130,
+              "error_category": null
+            }
+          ],
+          "running_execution": null
+        }
+      }
+    ],
+    "outcome": "completed",
+    "invocation": "observed",
+    "error_message": null,
+    "evidence_saved": true
+  }
+}

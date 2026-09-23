@@ -82,6 +82,8 @@ class AppContainer(context: android.content.Context) {
       .build()
 
   val strategyPreferences: StrategyPreferences = SharedStrategyPreferences(context)
+  val watchReceiptStore: WatchReceiptStore = SharedWatchReceiptStore(context)
+  val dependencyWatchRepository: DependencyWatchRepository = DefaultDependencyWatchRepository(retrofit.create(DependencyWatchApi::class.java))
   val mcpLabRepository: McpLabRepository = DefaultMcpLabRepository(retrofit.create(McpLabApi::class.java))
   val playgroundRepository: PlaygroundRepository = DefaultPlaygroundRepository(retrofit.create(PlaygroundApi::class.java))
   val invariantsRepository: InvariantsRepository = DefaultInvariantsRepository(retrofit.create(InvariantsApi::class.java))

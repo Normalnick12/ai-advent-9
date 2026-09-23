@@ -1,0 +1,139 @@
+{
+  "started_at": "2026-09-23T18:11:11.950105+00:00",
+  "completed_at": "2026-09-23T18:11:19.478418+00:00",
+  "request_configuration": {
+    "model": "gpt-5.6",
+    "input": "Create exactly one dependency watch for androidx.core:core-ktx in Google Maven with interval_seconds=30 and max_runs=3. Call the create tool once. Do not retry. Report the watch_id and schedule.",
+    "instructions": "Выполни выбранную операцию один раз. Не повторяй tool call, не исправляй и не регенерируй результат. Для create обязательны max_runs и точные координаты; каждый принятый вызов создаёт новый watch. Для summary используй только выбранный watch_id. Факты сводки заданы deterministic aggregate; null означает отсутствие данных, а не ноль. Не обещай новые версии, стабильность или безопасность. Кратко объясни результат по-русски; при ошибке или неизвестном исходе сообщи об этом.",
+    "reasoning": {
+      "effort": "none"
+    },
+    "max_output_tokens": 1800,
+    "store": false,
+    "tools": [
+      {
+        "type": "mcp",
+        "server_label": "dependency_watch",
+        "server_url": "https://132-243-120-220.sslip.io/mcp",
+        "authorization": "[REDACTED]",
+        "allowed_tools": [
+          "create_dependency_watch"
+        ],
+        "require_approval": "never"
+      }
+    ],
+    "tool_choice": {
+      "type": "mcp",
+      "server_label": "dependency_watch",
+      "name": "create_dependency_watch"
+    }
+  },
+  "operation": {
+    "operation_id": "298c5a6e-348e-4d52-a403-6dbdeb0f689e",
+    "submitted_prompt": "Create exactly one dependency watch for androidx.core:core-ktx in Google Maven with interval_seconds=30 and max_runs=3. Call the create tool once. Do not retry. Report the watch_id and schedule.",
+    "operation": "create",
+    "selected_watch_id": null,
+    "server_url": "https://132-243-120-220.sslip.io/mcp",
+    "response_id": "resp_09791a4f3273d71e016ab416423cac87d2ba6341df089183cf",
+    "provider_status": "completed",
+    "final_text": "Watch создан.\n\n- **watch_id:** `66d4ce61-bf97-4f22-8c3d-a1f538d1092c`\n- **Зависимость:** `androidx.core:core-ktx`\n- **Интервал:** 30 секунд\n- **Максимум запусков:** 3\n- **Статус:** active\n- **Следующая проверка:** `2026-09-23T18:11:47.233000+00:00`",
+    "mcp_items": [
+      {
+        "id": "mcpl_09791a4f3273d71e016ab41642515c87d29b8953145e2f6f04",
+        "server_label": "dependency_watch",
+        "tools": [
+          {
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "group_id": {
+                  "description": "Exact Google Maven group, for example androidx.core",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(?:\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                  "title": "Group Id",
+                  "type": "string"
+                },
+                "artifact_id": {
+                  "description": "Exact artifact, for example core-ktx; not a URL",
+                  "maxLength": 256,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                  "title": "Artifact Id",
+                  "type": "string"
+                },
+                "max_runs": {
+                  "description": "Finite number of runs, including failures",
+                  "maximum": 100,
+                  "minimum": 1,
+                  "title": "Max Runs",
+                  "type": "integer"
+                },
+                "interval_seconds": {
+                  "default": 21600,
+                  "description": "Seconds between checks; normally at least 3600; default 21600",
+                  "maximum": 86400,
+                  "minimum": 30,
+                  "title": "Interval Seconds",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "group_id",
+                "artifact_id",
+                "max_runs"
+              ],
+              "title": "create_dependency_watchArguments"
+            },
+            "name": "create_dependency_watch",
+            "annotations": {
+              "read_only": false
+            },
+            "description": "Schedule finite Google Maven checks; every accepted call creates a NEW watch.\n\n        No retry or idempotent-create guarantee. max_runs includes failures. Normally\n        interval_seconds >= 3600; short demo intervals require server configuration.\n        Creation only persists a schedule; it does not perform a lookup.\n        "
+          }
+        ],
+        "type": "mcp_list_tools"
+      },
+      {
+        "id": "mcp_09791a4f3273d71e016ab416449d2887d2b2468187b9057db9",
+        "arguments": "{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"interval_seconds\":30,\"max_runs\":3}",
+        "name": "create_dependency_watch",
+        "server_label": "dependency_watch",
+        "type": "mcp_call",
+        "approval_request_id": null,
+        "error": null,
+        "output": "{\"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"interval_seconds\": 30, \"max_runs\": 3, \"created_at\": \"2026-09-23T18:11:17.233000+00:00\", \"next_run_at\": \"2026-09-23T18:11:47.233000+00:00\", \"status\": \"active\", \"runs_total\": 0, \"skipped_slots\": 0}",
+        "status": "completed"
+      }
+    ],
+    "calls": [
+      {
+        "id": "mcp_09791a4f3273d71e016ab416449d2887d2b2468187b9057db9",
+        "server_label": "dependency_watch",
+        "name": "create_dependency_watch",
+        "arguments": "{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"interval_seconds\":30,\"max_runs\":3}",
+        "status": "completed",
+        "output": "{\"watch_id\": \"66d4ce61-bf97-4f22-8c3d-a1f538d1092c\", \"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"interval_seconds\": 30, \"max_runs\": 3, \"created_at\": \"2026-09-23T18:11:17.233000+00:00\", \"next_run_at\": \"2026-09-23T18:11:47.233000+00:00\", \"status\": \"active\", \"runs_total\": 0, \"skipped_slots\": 0}",
+        "error": null,
+        "outcome": "completed",
+        "receipt": {
+          "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+          "group_id": "androidx.core",
+          "artifact_id": "core-ktx",
+          "interval_seconds": 30,
+          "max_runs": 3,
+          "created_at": "2026-09-23T18:11:17.233000Z",
+          "next_run_at": "2026-09-23T18:11:47.233000Z",
+          "status": "active",
+          "runs_total": 0,
+          "skipped_slots": 0
+        },
+        "summary": null
+      }
+    ],
+    "outcome": "completed",
+    "invocation": "observed",
+    "error_message": null,
+    "evidence_saved": true
+  }
+}

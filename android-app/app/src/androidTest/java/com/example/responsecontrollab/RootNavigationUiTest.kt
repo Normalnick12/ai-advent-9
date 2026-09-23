@@ -26,6 +26,8 @@ class RootNavigationUiTest {
   @get:Rule val composeRule = createAndroidComposeRule<MainActivity>()
   private val responseCalls = mutableListOf<Pair<String, GenerationControlsDto>>()
   private var reasoningCalls = 0
+  private var watchCalls = 0
+  private val watchResult = CompletableDeferred<WatchOperationDto>()
   private var mcpCalls = 0
   private val mcpResult = CompletableDeferred<McpLabOperationDto>()
   private var temperatureCalls = 0
@@ -49,6 +51,11 @@ class RootNavigationUiTest {
     // then recreate the real Activity so production onCreate reuses these instances.
     composeRule.activityRule.scenario.onActivity { activity ->
       activity.viewModelStore.clear()
+      ViewModelProvider(activity, com.example.responsecontrollab.ui.watch.DependencyWatchViewModel.factory(
+        DependencyWatchRepository { watchCalls++; watchResult.await() }, object : WatchReceiptStore {
+          override fun load() = WatchReceipts()
+          override fun save(value: WatchReceipts) {}
+        }))["day18", com.example.responsecontrollab.ui.watch.DependencyWatchViewModel::class.java]
       ViewModelProvider(activity, com.example.responsecontrollab.ui.mcp.McpLabViewModel.factory(McpLabRepository { _, _ ->
         mcpCalls++; mcpResult.await()
       }))["day17", com.example.responsecontrollab.ui.mcp.McpLabViewModel::class.java]
@@ -120,7 +127,7 @@ class RootNavigationUiTest {
   fun catalogOpensAllDaysAndBothBackActionsReturnWithoutRequests() {
     composeRule.onNodeWithText("AI Advent").assertIsDisplayed()
     composeRule.onNodeWithTag("day_01").assertDoesNotExist()
-    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "17")) {
+    for (day in listOf("02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "17", "18")) {
       open(day)
       composeRule.onNodeWithText("День $day").assertIsDisplayed()
       back()
@@ -146,6 +153,7 @@ class RootNavigationUiTest {
       assertEquals(0, memoryRepository.creates)
       assertEquals(0, memoryRepository.probes)
       assertEquals(0, memoryRepository.sends)
+      assertEquals(0, watchCalls)
       assertEquals(0, mcpCalls)
       assertEquals(0, reasoningCalls)
       assertEquals(0, temperatureCalls)
@@ -159,6 +167,27 @@ class RootNavigationUiTest {
       assertEquals(0, strategiesRepository.sends)
       assertEquals(0, strategiesRepository.evals)
     }
+  }
+
+  @Test
+  fun watchAttemptSurvivesNavigationAndRotationWithoutReplay() {
+    open("18")
+    composeRule.runOnIdle { assertEquals(0, watchCalls) }
+    composeRule.onNodeWithTag("watch_send").performScrollTo().performClick()
+    composeRule.waitUntil { watchCalls == 1 }
+    back(); open("18")
+    composeRule.onNodeWithTag("watch_send").performScrollTo().assertIsNotEnabled()
+    composeRule.activityRule.scenario.recreate()
+    composeRule.onNodeWithTag("watch_send").performScrollTo().assertIsNotEnabled()
+    composeRule.runOnIdle {
+      assertEquals(1, watchCalls)
+      watchResult.complete(WatchOperationDto("op18", WATCH_CREATE_PROMPT, "create", final_text = "Watch response preserved",
+        outcome = "completed", invocation = "observed"))
+    }
+    composeRule.onNodeWithText("Watch response preserved").performScrollTo().assertIsDisplayed()
+    back(); open("17"); back(); open("18")
+    composeRule.onNodeWithText("Watch response preserved").performScrollTo().assertIsDisplayed()
+    composeRule.runOnIdle { assertEquals(1, watchCalls); assertEquals(0, mcpCalls) }
   }
 
   @Test

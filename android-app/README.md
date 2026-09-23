@@ -36,3 +36,25 @@ Inspector ответа или операции показывает summary, р�
 `./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.McpLabUiTest'`, затем
 `./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.RootNavigationUiTest'`.
 UI-команды запускаются последовательно; backend/OpenAI для них не требуются.
+
+## Фоновые проверки — Day 18
+
+Карточка Day 18 находится после Day 17. «Создать» отправляет явный запрос регистрации,
+«Сводка» читает выбранный watch отдельной agent operation. По умолчанию create
+предлагает interval=21600 и max_runs=3; для короткого live interval=30 разрешается
+только специальной конфигурацией VPS. Повторное нажатие блокируется до ответа;
+автоматических retry, regeneration или запросов при открытии/повороте нет.
+
+Подтверждённые IDs, параметры и выбор сохраняются в `day18_watch_receipts_v1`.
+После process death показаны последние известные сведения, сводка сама не запрашивается.
+Все IDs из нескольких create calls доступны для выбора. Неизвестный исход новой
+попытки не удаляет прошлый receipt. Typed summary и объяснение модели показываются
+отдельно; Inspector раскрывает каждый actual call, discovery и submitted snapshot.
+Для фоновых checks приложение и локальный backend не нужны; для agent operations
+backend должен работать. Token не настраивается и не хранится в Android.
+
+Проверки через PowerShell 7, последовательно:
+`./scripts/dev.ps1 unit -Test '*DependencyWatch*'`,
+`./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.DependencyWatchUiTest'`,
+`./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.DependencyWatchNarrowUiTest'`,
+`./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.RootNavigationUiTest'`.

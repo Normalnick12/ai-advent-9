@@ -1,0 +1,32 @@
+[Unit]
+Description=AI Advent Day 18 Dependency Watch MCP
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=day18
+Group=day18
+WorkingDirectory=/opt/day18/current
+EnvironmentFile=/etc/day18/dependency-watch.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/day18/current/.venv/bin/python /opt/day18/current/run.py
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=25
+UMask=0077
+StateDirectory=day18
+StateDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

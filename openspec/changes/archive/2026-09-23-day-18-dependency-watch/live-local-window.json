@@ -1,0 +1,41 @@
+{
+  "watch_ids": [
+    "66d4ce61-bf97-4f22-8c3d-a1f538d1092c"
+  ],
+  "create_evidence_file": "C:\\Projects\\ai-advent-9\\backend\\.local\\day18\\evidence\\298c5a6e-348e-4d52-a403-6dbdeb0f689e.json",
+  "backend_stopped_at": "2026-09-23T18:11:25.6677806+00:00",
+  "outcome": "completed",
+  "android_receipt_observed": false,
+  "android_force_stopped_at": "2026-09-23T18:11:25.7960948+00:00",
+  "background_window_not_before_end": "2026-09-23T18:13:26.4112297+00:00",
+  "backend_port_closed": true,
+  "response_id": "resp_09791a4f3273d71e016ab416423cac87d2ba6341df089183cf",
+  "response_completed_at": "2026-09-23T18:11:19.478418+00:00",
+  "operation_id": "298c5a6e-348e-4d52-a403-6dbdeb0f689e",
+  "android_process_absent": true,
+  "backend_stop_requested_at": "2026-09-23T18:11:25.6535205+00:00",
+  "background_end_observed_at": "2026-09-23T18:15:12.461253+00:00",
+  "backend_still_stopped_at_end": true,
+  "android_still_stopped_at_end": true,
+  "android_receipt_after_stop": {
+    "read_at": "2026-09-23T18:14:11.095936+00:00",
+    "snapshot": {
+      "watches": [
+        {
+          "watch_id": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c",
+          "group_id": "androidx.core",
+          "artifact_id": "core-ktx",
+          "interval_seconds": 30,
+          "max_runs": 3,
+          "created_at": "2026-09-23T18:11:17.233000Z",
+          "next_run_at": "2026-09-23T18:11:47.233000Z",
+          "status": "active",
+          "runs_total": 0,
+          "skipped_slots": 0
+        }
+      ],
+      "selectedId": "66d4ce61-bf97-4f22-8c3d-a1f538d1092c"
+    }
+  },
+  "receipt_observation_note": "Initial pre-stop poll did not detect receipt; read-only XML parsing after stop confirmed durable receipt. Original flag preserved."
+}

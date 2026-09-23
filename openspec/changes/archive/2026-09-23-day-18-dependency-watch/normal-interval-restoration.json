@@ -1,0 +1,16 @@
+{
+  "source": "User-provided SSH command output after video recording",
+  "short_intervals": false,
+  "service": "day18-watch",
+  "service_status": "active",
+  "health_url": "https://132-243-120-220.sslip.io/health",
+  "trusted_https_health": {
+    "status": "ok"
+  },
+  "reported_output": [
+    "DAY18_ALLOW_SHORT_INTERVALS=false",
+    "active",
+    "{\"status\":\"ok\"}"
+  ],
+  "model_requests": 0
+}

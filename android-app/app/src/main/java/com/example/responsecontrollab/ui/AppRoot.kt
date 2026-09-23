@@ -24,10 +24,11 @@ import com.example.responsecontrollab.ui.token.TokenLabViewModel
 import com.example.responsecontrollab.ui.compression.CompressionLabScreen
 import com.example.responsecontrollab.ui.compression.CompressionLabViewModel
 
-enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES, MEMORY_LAYERS, PERSONALIZATION, TASK_STATE, INVARIANTS, AGENT_PLAYGROUND, FIRST_MCP_TOOL }
+enum class AppDestination { HOME, RESPONSE_CONTROL, REASONING_LAB, TEMPERATURE_LAB, MODEL_BENCHMARK, FIRST_AGENT, CONTEXT_PERSISTENCE, TOKEN_LAB, HISTORY_COMPRESSION, CONTEXT_STRATEGIES, MEMORY_LAYERS, PERSONALIZATION, TASK_STATE, INVARIANTS, AGENT_PLAYGROUND, FIRST_MCP_TOOL, DEPENDENCY_WATCH }
 
 @Composable
 fun AppRoot(
+  dependencyWatchViewModel: com.example.responsecontrollab.ui.watch.DependencyWatchViewModel,
   mcpLabViewModel: com.example.responsecontrollab.ui.mcp.McpLabViewModel,
   playgroundViewModel: com.example.responsecontrollab.ui.playground.PlaygroundViewModel,
   invariantsViewModel: com.example.responsecontrollab.ui.invariants.InvariantsViewModel,
@@ -51,6 +52,7 @@ fun AppRoot(
 
   screenStates.SaveableStateProvider(destination.name) {
     when (destination) {
+      AppDestination.DEPENDENCY_WATCH -> com.example.responsecontrollab.ui.watch.DependencyWatchScreen(dependencyWatchViewModel, onBack)
       AppDestination.FIRST_MCP_TOOL -> com.example.responsecontrollab.ui.mcp.McpLabScreen(mcpLabViewModel, onBack)
       AppDestination.AGENT_PLAYGROUND -> com.example.responsecontrollab.ui.playground.PlaygroundScreen(playgroundViewModel, onBack)
       AppDestination.INVARIANTS -> com.example.responsecontrollab.ui.invariants.InvariantsScreen(invariantsViewModel, onBack)

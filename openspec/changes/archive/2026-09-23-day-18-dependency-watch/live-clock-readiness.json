@@ -1,0 +1,484 @@
+{
+  "phase": "create",
+  "client_before_ssh": "2026-09-23T18:09:19.330116+00:00",
+  "client_after_ssh": "2026-09-23T18:09:20.245643+00:00",
+  "server_utc": "2026-09-23T18:09:20.041170+00:00",
+  "ntp_synchronized": "yes",
+  "short_intervals": "true",
+  "endpoint": "https://132-243-120-220.sslip.io/mcp",
+  "health": {
+    "status": "ok"
+  },
+  "tools": [
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true,
+        "readOnlyHint": false
+      },
+      "description": "Schedule finite Google Maven checks; every accepted call creates a NEW watch.\n\n        No retry or idempotent-create guarantee. max_runs includes failures. Normally\n        interval_seconds >= 3600; short demo intervals require server configuration.\n        Creation only persists a schedule; it does not perform a lookup.\n        ",
+      "inputSchema": {
+        "properties": {
+          "group_id": {
+            "description": "Exact Google Maven group, for example androidx.core",
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(?:\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "description": "Exact artifact, for example core-ktx; not a URL",
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "max_runs": {
+            "description": "Finite number of runs, including failures",
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Max Runs",
+            "type": "integer"
+          },
+          "interval_seconds": {
+            "default": 21600,
+            "description": "Seconds between checks; normally at least 3600; default 21600",
+            "maximum": 86400,
+            "minimum": 30,
+            "title": "Interval Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "group_id",
+          "artifact_id",
+          "max_runs"
+        ],
+        "type": "object",
+        "title": "create_dependency_watchArguments"
+      },
+      "name": "create_dependency_watch",
+      "outputSchema": {
+        "properties": {
+          "watch_id": {
+            "format": "uuid",
+            "title": "Watch Id",
+            "type": "string"
+          },
+          "group_id": {
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "interval_seconds": {
+            "title": "Interval Seconds",
+            "type": "integer"
+          },
+          "max_runs": {
+            "title": "Max Runs",
+            "type": "integer"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "next_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Run At"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "completed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "runs_total": {
+            "default": 0,
+            "title": "Runs Total",
+            "type": "integer"
+          },
+          "skipped_slots": {
+            "default": 0,
+            "title": "Skipped Slots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "watch_id",
+          "group_id",
+          "artifact_id",
+          "interval_seconds",
+          "max_runs",
+          "created_at",
+          "next_run_at",
+          "status"
+        ],
+        "type": "object",
+        "title": "Receipt"
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Read committed deterministic facts for exactly this watch. No new checks.\n\n        Null version counts mean no comparable snapshot. Failed/interrupted runs\n        count toward max_runs. Model prose must not replace these persisted facts.\n        ",
+      "inputSchema": {
+        "properties": {
+          "watch_id": {
+            "format": "uuid",
+            "title": "Watch Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "watch_id"
+        ],
+        "type": "object",
+        "title": "get_dependency_watch_summaryArguments"
+      },
+      "name": "get_dependency_watch_summary",
+      "outputSchema": {
+        "properties": {
+          "runs_total": {
+            "default": 0,
+            "title": "Runs Total",
+            "type": "integer"
+          },
+          "successful": {
+            "default": 0,
+            "title": "Successful",
+            "type": "integer"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "interrupted": {
+            "default": 0,
+            "title": "Interrupted",
+            "type": "integer"
+          },
+          "comparable_snapshots": {
+            "default": 0,
+            "title": "Comparable Snapshots",
+            "type": "integer"
+          },
+          "first_checked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "First Checked At"
+          },
+          "last_checked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Last Checked At"
+          },
+          "first_version_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "First Version Count"
+          },
+          "last_version_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Last Version Count"
+          },
+          "changes_detected": {
+            "default": 0,
+            "title": "Changes Detected",
+            "type": "integer"
+          },
+          "newly_seen_versions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Newly Seen Versions",
+            "type": "array"
+          },
+          "latest_execution": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Execution"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "through_execution_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Through Execution Id"
+          },
+          "generated_at": {
+            "title": "Generated At",
+            "type": "string"
+          },
+          "executions": {
+            "items": {
+              "$ref": "#/$defs/Execution"
+            },
+            "title": "Executions",
+            "type": "array"
+          },
+          "watch_id": {
+            "format": "uuid",
+            "title": "Watch Id",
+            "type": "string"
+          },
+          "group_id": {
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "interval_seconds": {
+            "title": "Interval Seconds",
+            "type": "integer"
+          },
+          "max_runs": {
+            "title": "Max Runs",
+            "type": "integer"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "next_run_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Run At"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "completed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "skipped_slots": {
+            "default": 0,
+            "title": "Skipped Slots",
+            "type": "integer"
+          },
+          "running_execution": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Execution"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "required": [
+          "generated_at",
+          "watch_id",
+          "group_id",
+          "artifact_id",
+          "interval_seconds",
+          "max_runs",
+          "created_at",
+          "next_run_at",
+          "status"
+        ],
+        "type": "object",
+        "$defs": {
+          "Execution": {
+            "properties": {
+              "run_id": {
+                "format": "uuid",
+                "title": "Run Id",
+                "type": "string"
+              },
+              "watch_id": {
+                "format": "uuid",
+                "title": "Watch Id",
+                "type": "string"
+              },
+              "scheduled_at": {
+                "title": "Scheduled At",
+                "type": "string"
+              },
+              "started_at": {
+                "title": "Started At",
+                "type": "string"
+              },
+              "completed_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Completed At"
+              },
+              "checked_at": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Checked At"
+              },
+              "state": {
+                "enum": [
+                  "running",
+                  "succeeded",
+                  "failed"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "lookup_outcome": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "found",
+                      "no_versions",
+                      "group_not_found",
+                      "artifact_not_found"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Lookup Outcome"
+              },
+              "lookup_id": {
+                "anyOf": [
+                  {
+                    "format": "uuid",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Lookup Id"
+              },
+              "source_url": {
+                "title": "Source Url",
+                "type": "string"
+              },
+              "version_count": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Version Count"
+              },
+              "error_category": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Error Category"
+              }
+            },
+            "required": [
+              "run_id",
+              "watch_id",
+              "scheduled_at",
+              "started_at",
+              "completed_at",
+              "checked_at",
+              "state",
+              "lookup_outcome",
+              "lookup_id",
+              "source_url",
+              "version_count",
+              "error_category"
+            ],
+            "title": "Execution",
+            "type": "object"
+          }
+        },
+        "title": "Summary"
+      }
+    }
+  ],
+  "model_requests": 0
+}

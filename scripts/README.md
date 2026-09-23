@@ -168,3 +168,140 @@ JDK ищется в `JAVA_HOME`, PATH, Android Studio и Gradle JDK cache; SDK �
 Долгую сборку наблюдайте в её исходной сессии: session ID и отсутствие завершения за время одного ожидания не означают зависания. Проверяйте последний вывод и владельца блокировки, не запускайте дубликат.
 
 Скрипт сообщает время подготовки эмулятора, Gradle-команды и всего действия. Длительности самих UI-тестов — в `android-app/app/build/reports/androidTests/`. Логи эмулятора — `.local/environment/emulator.stdout.log` и `emulator.stderr.log`; backend пишет в свою терминальную сессию. Локальные файлы в Git не попадают.
+
+## Day 18 — Dependency Watch
+
+Standalone service находится в [day-18-dependency-watch](../day-18-dependency-watch/README.md).
+Python 3.11+, отдельный venv; локально из его каталога:
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+Для запуска задайте `DAY18_MCP_TOKEN` в environment (случайное значение >=32 символов,
+без пробелов), затем `.\.venv\Scripts\python.exe run.py`. Не печатайте token и не
+передавайте его аргументом командной строки. По умолчанию SQLite в `.local/day18/`,
+HTTP только `127.0.0.1:8018`. `/health` не содержит credentials; `/mcp` требует
+`Authorization: Bearer <token>`. Сервис не требует OpenAI key. Owner lock не удаляйте:
+ОС освобождает его при завершении процесса. Запускать только через `run.py`, одним
+процессом: он останавливает HTTP с exit=1 при падении scheduler. systemd перезапускает его.
+
+### Публичный VPS после выбора hostname
+
+Пользователь выбрал временный `132-243-120-220.sslip.io`; A-запись проверена и указывает
+на `132.243.120.220`. Public settings — в [public.conf](../day-18-dependency-watch/deploy/public.conf).
+Deployment выполнен; trusted HTTPS, auth/discovery и upstream readiness проверены. Service restart/VPS reboot probes и основной live прошли; фактические результаты — в [live report](../openspec/changes/archive/2026-09-23-day-18-dependency-watch/live-report.md). При смене DNS проверяйте также AAAA.
+При ошибке DNS, trusted certificate или принятия endpoint OpenAI остановитесь для review;
+автоматический переход на tunnel, self-signed certificate или другой hostname запрещён.
+Позже hostname/URL можно заменить в environment Caddy/service/backend без миграции SQLite.
+Ubuntu: установите Python/venv и Caddy из официальных пакетов; создайте отдельного
+непривилегированного пользователя `day18` без интерактивного входа.
+
+1. Разместите проверенный snapshot в `/opt/day18/releases/<revision>/`, создайте его
+   venv, установите `requirements.txt`. Сопоставьте вывод `python deploy/manifest.py`
+   локально и на VPS; сохраните manifest и фактические `pip freeze` в безопасном отчёте.
+   Symlink `/opt/day18/current` указывает на выбранный release, код принадлежит root.
+2. Установите [unit](../day-18-dependency-watch/deploy/day18-watch.service) в
+   `/etc/systemd/system/`. `StateDirectory` создаёт `/var/lib/day18` с mode 0700;
+   SQLite и owner lock остаются вне release. Секретный environment разместите в
+   `/etc/day18/dependency-watch.env` (root:day18, 0640, parent 0750) по
+   [шаблону](../day-18-dependency-watch/deploy/service.env.example). Генерируйте token
+   на VPS без вывода в терминал, передавайте его только защищённо в backend environment.
+3. Для Caddy задайте выбранный `DAY18_MCP_PUBLIC_HOST` в systemd environment Caddy
+   и используйте [Caddyfile](../day-18-dependency-watch/deploy/Caddyfile).
+   Выполните `caddy validate --config /etc/caddy/Caddyfile`,
+   `systemd-analyze verify /etc/systemd/system/day18-watch.service`, затем
+   `systemctl daemon-reload` и `systemctl enable --now day18-watch caddy`.
+4. Разрешите HTTPS 443/TCP и HTTP 80/TCP для ACME. Сохраните SSH-доступ до применения
+   firewall. Port 8018 остаётся loopback-only и закрыт извне. Проверьте доверенный TLS,
+   `/health`, 401 без/с неправильным token, authenticated tools/list и чужой Host.
+   Authenticated probes читайте token из environment, не из командных аргументов.
+5. Безопасные JSON logs: `journalctl -u day18-watch`. Не включайте дампы request headers,
+   SDK debug или полный XML. Watch/run/lookup IDs связывают операции с SQLite. Backend
+   проверяйте отдельно через `dev.ps1 status`, затем доступ с эмулятора: FastAPI health
+   не доказывает OpenAI/MCP readiness.
+
+`DAY18_ALLOW_SHORT_INTERVALS=false` по умолчанию: interval 3600–86400, max_runs 1–100,
+максимум пять active watches. Для согласованного короткого acceptance временно включите
+`true`: interval 30–3599, max_runs<=3, максимум один active accelerated watch.
+После проверки верните `false` и перезапустите service; существующая история сохраняется.
+
+### Recovery, backup и проверка фактов
+
+SQLite — source of truth. Один execution slot уникален по `(watch_id, scheduled_at)`;
+это не idempotency create. Fixed UTC grid не выполняет backlog серией. Stale running
+становится failed/interrupted и расходует max_runs в одной транзакции с aggregate и
+next_run_at. Summary готов сразу после recovery commit; повторный startup не удваивает
+counts. Exactly-once upstream не обещается.
+
+Перед backup/rollback остановите service, дождитесь его остановки и скопируйте БД в
+закрытый backup directory (0700/0600), затем запускайте снова. Не заменяйте живую SQLite
+копированием. При code rollback переключайте symlink только на совместимый со schema
+release; неизвестная schema отклоняется без очистки. Restore БД — отдельное явное действие,
+которое откатывает историю; обычный code rollback БД не трогает.
+
+Live acceptance требует публичного HTTPS: отдельные service restart/VPS reboot probes,
+затем одна Android create attempt `androidx.core:core-ktx`, interval=30/max_runs=3.
+Сохраните все actual calls/IDs и время окончания Responses. Остановите локальный backend
+и закройте Android на background window; сверьте реальные executions с SQLite и logs.
+После возврата backend получите summary отдельным явным запросом. Сравнивайте отдельно
+mechanism, временную независимость, aggregate и точность prose. Если первый run случился
+до окончания Responses, соответствующий temporal criterion не доказан; timestamps не
+исправлять. Отсутствие новых версий — нормальный результат. Overnight необязателен.
+
+Для первой установки подготовлен проверяемый [bootstrap.sh](../day-18-dependency-watch/deploy/bootstrap.sh).
+Он требует root через интерактивный `sudo`; пароль вводится пользователем только в SSH terminal.
+Рядом должны лежать reviewed `snapshot.tar.gz` и `snapshot.sha256`. Скрипт сверяет archive
+и file manifest, отказывается заменять существующий deployment/Caddy config, генерирует
+credential только на VPS, разрешает оператору `aiadvent` чтение protected env через группу
+`day18` и не печатает token. Сначала открывает SSH в UFW, затем включает firewall;
+password/root SSH login отключается после подтверждённого key login. При частичной ошибке
+нужен review текущего состояния, а не слепой повтор bootstrap.
+
+[readiness.py](../day-18-dependency-watch/deploy/readiness.py) запускается на VPS release venv
+и читает token только из protected env. Выводит безопасный JSON с TLS/auth/discovery/upstream
+результатами, без credential. Это техническая readiness, не Android/OpenAI live acceptance.
+
+### Ручные recovery probes с VPS reboot
+
+[recovery_probe.py](../day-18-dependency-watch/deploy/recovery_probe.py) выполняется
+отдельно от основного live acceptance и не обращается к OpenAI. `pre` требует sudo:
+сохраняет manifest/packages/UFW/sshd evidence, временно включает short intervals,
+создаёт два последовательных watch по 30 секунд/max_runs=2 и проверяет service restart.
+Перед reboot возвращает normal interval configuration. `post` проверяет boot ID,
+сохранённую историю, последующий execution и completed. Ни SSH, ни UFW не изменяются.
+
+Из корня проекта, PowerShell 7:
+
+```powershell
+scp .\day-18-dependency-watch\deploy\recovery_probe.py aiadvent@132.243.120.220:/home/aiadvent/day18-deploy/recovery_probe.py
+if ($LASTEXITCODE -ne 0) { throw 'Upload failed' }
+$localHash = (Get-FileHash -Algorithm SHA256 .\day-18-dependency-watch\deploy\recovery_probe.py).Hash.ToLowerInvariant()
+$remoteHash = ssh aiadvent@132.243.120.220 "python3 -m py_compile /home/aiadvent/day18-deploy/recovery_probe.py && sha256sum /home/aiadvent/day18-deploy/recovery_probe.py"
+if ($LASTEXITCODE -ne 0 -or ($remoteHash -split '\s+')[0] -ne $localHash) { throw 'Syntax/hash check failed' }
+ssh -t aiadvent@132.243.120.220 "sudo /opt/day18/current/.venv/bin/python /home/aiadvent/day18-deploy/recovery_probe.py pre"
+```
+
+Обычно около 90 секунд до сообщения `Normal configuration restored. Rebooting.`,
+затем SSH disconnect из-за reboot — ожидаемый результат. При traceback остановиться,
+сохранить вывод и не повторять `pre`: неизвестный create outcome не даёт права на retry.
+`pre` сам откажется работать при наличии `/var/lib/day18-probes/recovery.json`.
+
+После загрузки VPS:
+
+```powershell
+ssh aiadvent@132.243.120.220 "/opt/day18/current/.venv/bin/python /home/aiadvent/day18-deploy/recovery_probe.py post" > .\.local\day18-deploy\recovery-result.json
+if ($LASTEXITCODE -ne 0) { throw 'Post probe failed; inspect output before proceeding' }
+$recovery = Get-Content -Raw .\.local\day18-deploy\recovery-result.json | ConvertFrom-Json
+$recovery | Select-Object phase, normal_configuration_restored
+$recovery.restart.completed | Select-Object watch_id, status, runs_total, successful, failed, through_execution_id, next_run_at
+$recovery.reboot.completed | Select-Object watch_id, status, runs_total, successful, failed, through_execution_id, next_run_at
+```
+
+Ожидаются `phase=passed`, normal configuration=true, оба watch completed/runs_total=2,
+next_run_at=null, разные boot IDs и сохранённый prefix executions. Failed lookup также
+расходует max_runs; его наличие остаётся в evidence и не превращается в success.
+Полный безопасный JSON нужен для review; token/пароль отсутствуют. `post` только читает
+и может быть повторён после проверки причины ошибки; новый watch он не создаёт.
