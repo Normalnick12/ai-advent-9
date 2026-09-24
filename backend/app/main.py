@@ -60,6 +60,8 @@ from app.mcp_lab_api import router as mcp_lab_router
 from app.mcp_lab_service import McpLabService
 from app.dependency_watch_api import router as dependency_watch_router
 from app.dependency_watch_service import DependencyWatchService
+from app.mcp_composition_api import router as mcp_composition_router
+from app.mcp_composition_service import CompositionService
 
 
 @asynccontextmanager
@@ -165,6 +167,8 @@ async def lifespan(app: FastAPI):
         resources.callback(playground_setups.close)
         app.state.agent_playground = PlaygroundService(playground_memory, playground_profiles,
             playground_states, playground_policies, playground_setups, playground_client)
+        app.state.mcp_composition = CompositionService()
+        resources.push_async_callback(app.state.mcp_composition.close)
         app.state.dependency_watch = DependencyWatchService()
         resources.push_async_callback(app.state.dependency_watch.close)
         app.state.mcp_tool_lab = McpLabService()
@@ -189,6 +193,7 @@ app.state.playground_database_dir = DEFAULT_DATABASE_PATH.parents[1] / 'agent-pl
 app.include_router(playground_router)
 app.include_router(mcp_lab_router)
 app.include_router(dependency_watch_router)
+app.include_router(mcp_composition_router)
 app.state.token_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'token-lab' / DAY08_CONFIG.version / 'conversations.sqlite3'
 app.state.compression_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'compression-lab' / VERSION / 'conversations.sqlite3'
 app.state.strategies_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'context-strategies' / STRATEGIES_VERSION / 'experiments.sqlite3'

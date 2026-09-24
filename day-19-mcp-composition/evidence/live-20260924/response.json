@@ -1,0 +1,365 @@
+{
+  "id": "resp_0bb8d3129d60a866016ab53b939fb087d2aee44e0d0447cebe",
+  "created_at": 1790262163.0,
+  "error": null,
+  "incomplete_details": null,
+  "instructions": "\u0412\u044b\u043f\u043e\u043b\u043d\u0438 \u0446\u0435\u043f\u043e\u0447\u043a\u0443 \u043e\u0434\u0438\u043d \u0440\u0430\u0437: get_google_maven_versions, summarize_dependency_versions, save_dependency_report. \u041a\u0430\u0436\u0434\u044b\u0439 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0432\u044b\u0437\u043e\u0432\u0438 \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e \u0438 \u0440\u043e\u0432\u043d\u043e \u043e\u0434\u0438\u043d \u0440\u0430\u0437 \u0432 \u044d\u0442\u043e\u043c \u043f\u043e\u0440\u044f\u0434\u043a\u0435. \u0412\u043e \u0432\u0442\u043e\u0440\u043e\u0439 \u043f\u0435\u0440\u0435\u0434\u0430\u0439 \u0432\u0435\u0441\u044c \u043e\u0431\u044a\u0435\u043a\u0442 LookupResult \u0438\u0437 \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u043f\u043e\u0434 \u043a\u043b\u044e\u0447\u043e\u043c lookup, \u0432\u043a\u043b\u044e\u0447\u0430\u044f \u043f\u043e\u043b\u043d\u044b\u0439 \u043c\u0430\u0441\u0441\u0438\u0432 versions, \u0431\u0435\u0437 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0439. \u0412 \u0442\u0440\u0435\u0442\u0438\u0439 \u043f\u0435\u0440\u0435\u0434\u0430\u0439 \u0432\u0435\u0441\u044c DependencyReport \u0438\u0437 \u0432\u0442\u043e\u0440\u043e\u0433\u043e \u043f\u043e\u0434 \u043a\u043b\u044e\u0447\u043e\u043c report \u0431\u0435\u0437 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0439. \u041d\u0435 \u0432\u044b\u0447\u0438\u0441\u043b\u044f\u0439 count, tail \u0438\u043b\u0438 hash \u0441\u0430\u043c\u043e\u0441\u0442\u043e\u044f\u0442\u0435\u043b\u044c\u043d\u043e, \u043d\u0435 \u0441\u043e\u043a\u0440\u0430\u0449\u0430\u0439 \u0441\u043f\u0438\u0441\u043e\u043a. \u041d\u0435 \u043f\u043e\u0432\u0442\u043e\u0440\u044f\u0439 \u0432\u044b\u0437\u043e\u0432\u044b \u0438 \u043d\u0435 \u0438\u0441\u043f\u0440\u0430\u0432\u043b\u044f\u0439 \u043e\u0448\u0438\u0431\u043a\u0438. \u041f\u0440\u0438 execution error \u043e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0441\u044c \u0438 \u0441\u043e\u043e\u0431\u0449\u0438 \u043e\u0448\u0438\u0431\u043a\u0443. \u041f\u0440\u0438 \u0443\u0441\u043f\u0435\u0445\u0435 \u043e\u0442\u0432\u0435\u0442\u044c \u043e\u0434\u043d\u0438\u043c JSON object \u0431\u0435\u0437 Markdown \u0438 \u0434\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u0445 \u043f\u043e\u043b\u0435\u0439, \u0441 \u0440\u043e\u0432\u043d\u043e \u043f\u043e\u043b\u044f\u043c\u0438 group_id, artifact_id, status, version_count, last_three, file_id. \u041a\u043e\u043f\u0438\u0440\u0443\u0439 \u0444\u0430\u043a\u0442\u044b report \u0438 receipt. last_three \u043e\u0437\u043d\u0430\u0447\u0430\u0435\u0442 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b \u0432 \u043f\u043e\u0440\u044f\u0434\u043a\u0435 \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a\u0430, \u043d\u0435 semver latest/stable.",
+  "metadata": {},
+  "model": "gpt-5.6-sol",
+  "object": "response",
+  "output": [
+    {
+      "id": "mcpl_0bb8d3129d60a866016ab53b93b41487d293d1eade0af5adee",
+      "server_label": "dependency_composition",
+      "tools": [
+        {
+          "input_schema": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "group_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "artifact_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                "title": "Artifact Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group_id",
+              "artifact_id"
+            ],
+            "title": "Coordinates"
+          },
+          "name": "get_google_maven_versions",
+          "annotations": {
+            "read_only": true
+          },
+          "description": "Fetch ALL Google Maven versions in source order. Pass the ENTIRE result to summarize."
+        },
+        {
+          "input_schema": {
+            "type": "object",
+            "$defs": {
+              "LookupResult": {
+                "additionalProperties": false,
+                "properties": {
+                  "group_id": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                    "title": "Group Id",
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                    "title": "Artifact Id",
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "found",
+                      "group_not_found",
+                      "artifact_not_found",
+                      "no_versions"
+                    ],
+                    "title": "Status",
+                    "type": "string"
+                  },
+                  "source_url": {
+                    "title": "Source Url",
+                    "type": "string"
+                  },
+                  "checked_at": {
+                    "title": "Checked At",
+                    "type": "string"
+                  },
+                  "lookup_id": {
+                    "title": "Lookup Id",
+                    "type": "string"
+                  },
+                  "versions": {
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "title": "Versions",
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "group_id",
+                  "artifact_id",
+                  "status",
+                  "source_url",
+                  "checked_at",
+                  "lookup_id",
+                  "versions"
+                ],
+                "title": "LookupResult",
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "properties": {
+              "lookup": {
+                "$ref": "#/$defs/LookupResult"
+              }
+            },
+            "required": [
+              "lookup"
+            ],
+            "title": "SummaryInput"
+          },
+          "name": "summarize_dependency_versions",
+          "annotations": {
+            "read_only": true
+          },
+          "description": "Pass the complete lookup object unchanged. Compute count, last three and hash without I/O."
+        },
+        {
+          "input_schema": {
+            "type": "object",
+            "$defs": {
+              "DependencyReport": {
+                "additionalProperties": false,
+                "properties": {
+                  "group_id": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                    "title": "Group Id",
+                    "type": "string"
+                  },
+                  "artifact_id": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                    "title": "Artifact Id",
+                    "type": "string"
+                  },
+                  "status": {
+                    "enum": [
+                      "found",
+                      "group_not_found",
+                      "artifact_not_found",
+                      "no_versions"
+                    ],
+                    "title": "Status",
+                    "type": "string"
+                  },
+                  "source_url": {
+                    "title": "Source Url",
+                    "type": "string"
+                  },
+                  "checked_at": {
+                    "title": "Checked At",
+                    "type": "string"
+                  },
+                  "lookup_id": {
+                    "title": "Lookup Id",
+                    "type": "string"
+                  },
+                  "schema_version": {
+                    "maximum": 1,
+                    "minimum": 1,
+                    "title": "Schema Version",
+                    "type": "integer"
+                  },
+                  "version_count": {
+                    "minimum": 0,
+                    "title": "Version Count",
+                    "type": "integer"
+                  },
+                  "last_three": {
+                    "items": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "maxItems": 3,
+                    "title": "Last Three",
+                    "type": "array"
+                  },
+                  "input_sha256": {
+                    "title": "Input Sha256",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "group_id",
+                  "artifact_id",
+                  "status",
+                  "source_url",
+                  "checked_at",
+                  "lookup_id",
+                  "schema_version",
+                  "version_count",
+                  "last_three",
+                  "input_sha256"
+                ],
+                "title": "DependencyReport",
+                "type": "object"
+              }
+            },
+            "additionalProperties": false,
+            "properties": {
+              "report": {
+                "$ref": "#/$defs/DependencyReport"
+              }
+            },
+            "required": [
+              "report"
+            ],
+            "title": "SaveInput"
+          },
+          "name": "save_dependency_report",
+          "annotations": {
+            "read_only": false
+          },
+          "description": "Pass the complete report unchanged. Save canonical JSON in a fixed server directory.\n\n        No paths or arbitrary content accepted. A repeated identical report has the same receipt.\n        "
+        }
+      ],
+      "type": "mcp_list_tools"
+    },
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53b961f3c87d2a74f6c7a361367cd",
+      "arguments": "{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\"}",
+      "name": "get_google_maven_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"checked_at\": \"2026-09-24T15:02:46.819Z\", \"lookup_id\": \"27d5554f-eb85-489b-b336-60bc32cb1578\", \"versions\": [\"0.1\", \"0.2\", \"0.3\", \"1.0.0-alpha1\", \"1.0.0-alpha3\", \"1.0.0-beta01\", \"1.0.0-rc01\", \"1.0.0-rc02\", \"1.0.0\", \"1.0.1\", \"1.0.2\", \"1.1.0-alpha02\", \"1.1.0-alpha03\", \"1.1.0-alpha04\", \"1.1.0-alpha05\", \"1.1.0-beta01\", \"1.1.0-rc01\", \"1.1.0-rc02\", \"1.1.0-rc03\", \"1.1.0\", \"1.2.0-alpha01\", \"1.2.0-alpha02\", \"1.2.0-alpha03\", \"1.2.0-alpha04\", \"1.2.0-beta01\", \"1.2.0-beta02\", \"1.2.0-rc01\", \"1.2.0\", \"1.3.0-alpha01\", \"1.3.0-alpha02\", \"1.3.0-beta01\", \"1.3.0-rc01\", \"1.3.0\", \"1.3.1\", \"1.3.2\", \"1.4.0-alpha01\", \"1.5.0-alpha01\", \"1.5.0-alpha02\", \"1.5.0-alpha03\", \"1.5.0-alpha04\", \"1.5.0-alpha05\", \"1.5.0-beta01\", \"1.5.0-beta02\", \"1.5.0-beta03\", \"1.5.0-rc01\", \"1.5.0-rc02\", \"1.5.0\", \"1.6.0-alpha01\", \"1.6.0-alpha02\", \"1.6.0-alpha03\", \"1.6.0-beta01\", \"1.6.0-beta02\", \"1.6.0-rc01\", \"1.6.0\", \"1.7.0-alpha01\", \"1.7.0-alpha02\", \"1.7.0-beta01\", \"1.7.0-beta02\", \"1.7.0-rc01\", \"1.7.0\", \"1.8.0-alpha01\", \"1.8.0-alpha02\", \"1.8.0-alpha03\", \"1.8.0-alpha04\", \"1.8.0-alpha05\", \"1.8.0-alpha06\", \"1.8.0-alpha07\", \"1.8.0-beta01\", \"1.8.0-rc01\", \"1.8.0-rc02\", \"1.8.0\", \"1.9.0-alpha01\", \"1.9.0-alpha02\", \"1.9.0-alpha03\", \"1.9.0-alpha04\", \"1.9.0-alpha05\", \"1.9.0-beta01\", \"1.9.0-rc01\", \"1.9.0\", \"1.10.0-alpha01\", \"1.10.0-alpha02\", \"1.10.0-beta01\", \"1.10.0-rc01\", \"1.10.0\", \"1.10.1\", \"1.11.0-alpha01\", \"1.11.0-alpha02\", \"1.11.0-alpha03\", \"1.11.0-alpha04\", \"1.11.0-beta01\", \"1.11.0-beta02\", \"1.12.0-alpha01\", \"1.12.0-alpha03\", \"1.12.0-alpha04\", \"1.12.0-alpha05\", \"1.12.0-beta01\", \"1.12.0-rc01\", \"1.12.0\", \"1.13.0-alpha01\", \"1.13.0-alpha02\", \"1.13.0-alpha03\", \"1.13.0-alpha04\", \"1.13.0-alpha05\", \"1.13.0-beta01\", \"1.13.0-rc01\", \"1.13.0\", \"1.13.1\", \"1.14.0-alpha01\", \"1.15.0-alpha01\", \"1.15.0-alpha02\", \"1.15.0-beta01\", \"1.15.0-rc01\", \"1.15.0\", \"1.16.0-alpha01\", \"1.16.0-alpha02\", \"1.16.0-beta01\", \"1.16.0-rc01\", \"1.16.0\", \"1.17.0-alpha01\", \"1.17.0-beta01\", \"1.17.0-rc01\", \"1.17.0\", \"1.18.0-alpha01\", \"1.18.0-rc01\", \"1.18.0\", \"1.19.0-alpha01\", \"1.19.0-alpha02\", \"1.19.0-rc01\", \"1.19.0\", \"1.19.1\"]}",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53ba6aa4887d287c61ab768a7f0bf",
+      "arguments": "{\"lookup\":{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"status\":\"found\",\"source_url\":\"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\",\"checked_at\":\"2026-09-24T15:02:46.819Z\",\"lookup_id\":\"27d5554f-eb85-489b-b336-60bc32cb1578\",\"versions\":[\"0.1\",\"0.2\",\"0.3\",\"1.0.0-alpha1\",\"1.0.0-alpha3\",\"1.0.0-beta01\",\"1.0.0-rc01\",\"1.0.0-rc02\",\"1.0.0\",\"1.0.1\",\"1.0.2\",\"1.1.0-alpha02\",\"1.1.0-alpha03\",\"1.1.0-alpha04\",\"1.1.0-alpha05\",\"1.1.0-beta01\",\"1.1.0-rc01\",\"1.1.0-rc02\",\"1.1.0-rc03\",\"1.1.0\",\"1.2.0-alpha01\",\"1.2.0-alpha02\",\"1.2.0-alpha03\",\"1.2.0-alpha04\",\"1.2.0-beta01\",\"1.2.0-beta02\",\"1.2.0-rc01\",\"1.2.0\",\"1.3.0-alpha01\",\"1.3.0-alpha02\",\"1.3.0-beta01\",\"1.3.0-rc01\",\"1.3.0\",\"1.3.1\",\"1.3.2\",\"1.4.0-alpha01\",\"1.5.0-alpha01\",\"1.5.0-alpha02\",\"1.5.0-alpha03\",\"1.5.0-alpha04\",\"1.5.0-alpha05\",\"1.5.0-beta01\",\"1.5.0-beta02\",\"1.5.0-beta03\",\"1.5.0-rc01\",\"1.5.0-rc02\",\"1.5.0\",\"1.6.0-alpha01\",\"1.6.0-alpha02\",\"1.6.0-alpha03\",\"1.6.0-beta01\",\"1.6.0-beta02\",\"1.6.0-rc01\",\"1.6.0\",\"1.7.0-alpha01\",\"1.7.0-alpha02\",\"1.7.0-beta01\",\"1.7.0-beta02\",\"1.7.0-rc01\",\"1.7.0\",\"1.8.0-alpha01\",\"1.8.0-alpha02\",\"1.8.0-alpha03\",\"1.8.0-alpha04\",\"1.8.0-alpha05\",\"1.8.0-alpha06\",\"1.8.0-alpha07\",\"1.8.0-beta01\",\"1.8.0-rc01\",\"1.8.0-rc02\",\"1.8.0\",\"1.9.0-alpha01\",\"1.9.0-alpha02\",\"1.9.0-alpha03\",\"1.9.0-alpha04\",\"1.9.0-alpha05\",\"1.9.0-beta01\",\"1.9.0-rc01\",\"1.9.0\",\"1.10.0-alpha01\",\"1.10.0-alpha02\",\"1.10.0-beta01\",\"1.10.0-rc01\",\"1.10.0\",\"1.10.1\",\"1.11.0-alpha01\",\"1.11.0-alpha02\",\"1.11.0-alpha03\",\"1.11.0-alpha04\",\"1.11.0-beta01\",\"1.11.0-beta02\",\"1.12.0-alpha01\",\"1.12.0-alpha03\",\"1.12.0-alpha04\",\"1.12.0-alpha05\",\"1.12.0-beta01\",\"1.12.0-rc01\",\"1.12.0\",\"1.13.0-alpha01\",\"1.13.0-alpha02\",\"1.13.0-alpha03\",\"1.13.0-alpha04\",\"1.13.0-alpha05\",\"1.13.0-beta01\",\"1.13.0-rc01\",\"1.13.0\",\"1.13.1\",\"1.14.0-alpha01\",\"1.15.0-alpha01\",\"1.15.0-alpha02\",\"1.15.0-beta01\",\"1.15.0-rc01\",\"1.15.0\",\"1.16.0-alpha01\",\"1.16.0-alpha02\",\"1.16.0-beta01\",\"1.16.0-rc01\",\"1.16.0\",\"1.17.0-alpha01\",\"1.17.0-beta01\",\"1.17.0-rc01\",\"1.17.0\",\"1.18.0-alpha01\",\"1.18.0-rc01\",\"1.18.0\",\"1.19.0-alpha01\",\"1.19.0-alpha02\",\"1.19.0-rc01\",\"1.19.0\",\"1.19.1\"]}}",
+      "name": "summarize_dependency_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.core\", \"artifact_id\": \"core-ktx\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\", \"checked_at\": \"2026-09-24T15:02:46.819Z\", \"lookup_id\": \"27d5554f-eb85-489b-b336-60bc32cb1578\", \"schema_version\": 1, \"version_count\": 130, \"last_three\": [\"1.19.0-rc01\", \"1.19.0\", \"1.19.1\"], \"input_sha256\": \"ba5f7655c056d0dbcc092582faa02dab18dffcf149bde1be907493ef7cf7595f\"}",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53ba9276087d295b739f06d957691",
+      "arguments": "{\"report\":{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"status\":\"found\",\"source_url\":\"https://dl.google.com/dl/android/maven2/androidx/core/group-index.xml\",\"checked_at\":\"2026-09-24T15:02:46.819Z\",\"lookup_id\":\"27d5554f-eb85-489b-b336-60bc32cb1578\",\"schema_version\":1,\"version_count\":130,\"last_three\":[\"1.19.0-rc01\",\"1.19.0\",\"1.19.1\"],\"input_sha256\":\"ba5f7655c056d0dbcc092582faa02dab18dffcf149bde1be907493ef7cf7595f\"}}",
+      "name": "save_dependency_report",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"status\": \"saved\", \"lookup_id\": \"27d5554f-eb85-489b-b336-60bc32cb1578\", \"file_id\": \"5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6\", \"sha256\": \"5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6\", \"bytes\": 415}",
+      "status": "completed"
+    },
+    {
+      "id": "msg_0bb8d3129d60a866016ab53baad8e087d29128795be7fc91f3",
+      "content": [
+        {
+          "annotations": [],
+          "text": "{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"status\":\"found\",\"version_count\":130,\"last_three\":[\"1.19.0-rc01\",\"1.19.0\",\"1.19.1\"],\"file_id\":\"5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6\"}",
+          "type": "output_text",
+          "logprobs": []
+        }
+      ],
+      "role": "assistant",
+      "status": "completed",
+      "type": "message",
+      "phase": "final_answer"
+    }
+  ],
+  "parallel_tool_calls": true,
+  "temperature": 1.0,
+  "tool_choice": "auto",
+  "tools": [
+    {
+      "server_label": "dependency_composition",
+      "type": "mcp",
+      "allowed_tools": [
+        "get_google_maven_versions",
+        "summarize_dependency_versions",
+        "save_dependency_report"
+      ],
+      "authorization": "[REDACTED]",
+      "headers": "[REDACTED]",
+      "require_approval": "never",
+      "server_description": null,
+      "server_url": "https://day19-132-243-120-220.sslip.io/mcp"
+    }
+  ],
+  "top_p": 0.98,
+  "background": false,
+  "completed_at": 1790262187.0,
+  "max_output_tokens": 16384,
+  "max_tool_calls": null,
+  "moderation": null,
+  "previous_response_id": null,
+  "prompt_cache_key": null,
+  "prompt_cache_retention": "24h",
+  "reasoning": {
+    "context": "all_turns",
+    "effort": "none",
+    "mode": "standard",
+    "summary": null
+  },
+  "safety_identifier": null,
+  "service_tier": "default",
+  "status": "completed",
+  "text": {
+    "format": {
+      "type": "text"
+    },
+    "verbosity": "medium"
+  },
+  "top_logprobs": 0,
+  "truncation": "disabled",
+  "usage": {
+    "input_tokens": 3849,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 1419,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5268
+  },
+  "user": null,
+  "access_programs": null,
+  "billing": {
+    "payer": "developer"
+  },
+  "frequency_penalty": 0.0,
+  "presence_penalty": 0.0,
+  "store": false,
+  "tool_usage": {
+    "image_gen": {
+      "input_tokens": 0,
+      "input_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "output_tokens": 0,
+      "output_tokens_details": {
+        "image_tokens": 0,
+        "text_tokens": 0
+      },
+      "total_tokens": 0
+    },
+    "web_search": {
+      "num_requests": 0
+    }
+  }
+}

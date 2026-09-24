@@ -1,0 +1,33 @@
+{
+  "gate": "6.4",
+  "status": "PASS",
+  "checked_at": "2026-09-24T15:02:26.120658+00:00",
+  "readiness": "readiness-gate-20260924.json",
+  "source_version_count": 130,
+  "full_lookup": true,
+  "truncation": false,
+  "lookup_utf8_bytes": 2079,
+  "generated_token_upper_bound": 3892,
+  "required_with_margin": 11880,
+  "max_output_tokens": 16384,
+  "estimated_context_upper_bound": 67162,
+  "deadline_seconds": 600,
+  "launcher_deadline_seconds": 660,
+  "model_source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+  "model_limits_verified_from_official_docs": true,
+  "offline_payload_chain": "PASS",
+  "backend_health": 200,
+  "backend_route": true,
+  "model_requests_so_far": 0,
+  "runtime_revision": "def6cc340e666afd",
+  "installer_revision": "2da85c77bb4be5e0",
+  "evidence": {
+    "preflight-20260924.json": "3c231477cedf7b41011b4dfeeeef7c868026387ae00b5499ce7de6ac5162fd66",
+    "prelive-sizing-20260924.json": "ef4b33236afcfbec59a944e87f6853e8d9aeb149d1432826461a227fba9ac960",
+    "prelive-configuration-20260924.json": "34bb9d10dc023414816af80d5a5955aa9c37d0b16fea81831ebf1306b5a4913a",
+    "prelive-offline-operation-20260924.json": "b41f1635ef9db4ef07c60ba9c39e7f8e0d57ed996ca7eebf9df6075bde77adb1",
+    "prelive-offline-events-20260924.json": "e081442bec85368d78741faf0cb2f083e1572a7bd799ec2c2db4bb013537018b",
+    "prelive-offline-file-read-20260924.json": "da4117d6066186562a35e5ef7c22404e92f9d046ae5685f11fc70080a1e00a28",
+    "prelive-offline-verdict-20260924.json": "3eb39584cd2ba9a9ec59f412635ec425b9871c3f2b2ee49e9d92dc6f113c5320"
+  }
+}

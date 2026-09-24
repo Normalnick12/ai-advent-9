@@ -1,0 +1,126 @@
+{
+  "status": "BLOCKED",
+  "stage": "deployment/readiness",
+  "task": "6.3",
+  "source_snapshot": "def6cc340e666afd",
+  "offline_gate": "PASS",
+  "offline_evidence": "offline-gate.json",
+  "ssh": {
+    "started_at": "2026-09-24T16:20:58.730969+03:00",
+    "ended_at": "2026-09-24T16:21:18.753964+03:00",
+    "elapsed_seconds": 20.022,
+    "target": "aiadvent@132.243.120.220",
+    "port": 22,
+    "fingerprint": "SHA256:5ApeaiG/In7nhjSunJqmudMrnvAoNqCggDwq9D1cghk",
+    "connection_attempts": 1,
+    "connect_timeout_seconds": 20,
+    "overall_timeout_seconds": 35,
+    "batch_mode": true,
+    "identities_only": true,
+    "strict_host_key_checking": true,
+    "password_authentication": false,
+    "exit_code": 255,
+    "overall_timeout": false,
+    "stages": {
+      "tcp_connected": true,
+      "local_banner_sent": true,
+      "remote_banner_received": false,
+      "host_key_verified": false,
+      "authenticated": false,
+      "remote_command_sent": false
+    },
+    "diagnostic": [
+      "debug1: Connecting to 132.243.120.220 [132.243.120.220] port 22.",
+      "debug1: Connection established.",
+      "debug1: Local version string SSH-2.0-OpenSSH_for_Windows_9.5",
+      "Connection timed out during banner exchange",
+      "Connection to 132.243.120.220 port 22 timed out"
+    ],
+    "stdout": "",
+    "evidence": ".local/day19-deploy/ssh-20260924T132058Z",
+    "success": false,
+    "remote_mutations": false,
+    "prior_success": "User confirmed: same host/user/agent fingerprint, strict host-key verification, whoami=aiadvent, exit=0."
+  },
+  "verbose_log": ".local/day19-deploy/ssh-20260924T132058Z/ssh-debug.log",
+  "proven_failure": "TCP established; local SSH identification sent; no remote SSH banner within 20 seconds. No host-key exchange, authentication or remote command.",
+  "root_cause": "Not established from client evidence; requires provider console inspection.",
+  "prior_success_difference": "Previously host-key verification and public-key authentication completed and whoami returned aiadvent. This attempt stopped before either stage.",
+  "key_and_known_hosts_changes": false,
+  "vps_changes": false,
+  "deployment": "NOT_STARTED",
+  "old_endpoints_state": "NOT_PROVEN",
+  "pre_live": "NOT_STARTED",
+  "live_attempts": 0,
+  "live_verdicts": {
+    "tool_execution": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "selection_order": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "lookup_to_summary": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "summary_to_save": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "report_correctness": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "file_persistence": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "final_text_accuracy": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "chain": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    },
+    "full_acceptance": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run",
+      "evidence": "No live Responses request, MCP trace or file read exists."
+    }
+  },
+  "tasks_complete": 21,
+  "tasks_open": [
+    "6.3",
+    "6.4",
+    "7.1",
+    "7.2",
+    "7.3"
+  ],
+  "next_step": "Open FirstVDS console and inspect SSH listener/service and logs around 2026-09-24 13:20:58-13:21:18 UTC. Do not change SSH/UFW or restart services before reading diagnostics.",
+  "console_read_only_commands": [
+    "date -u; uptime",
+    "sudo systemctl status ssh --no-pager",
+    "sudo ss -ltnp '( sport = :22 )'",
+    "sudo journalctl -u ssh --since \"2026-09-24 13:20:30 UTC\" --until \"2026-09-24 13:22:00 UTC\" --no-pager"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "status": "PREPARATION_PASS_INSTALLER_NOT_STARTED",
+  "recorded_at": "2026-09-24T14:03:44.911784+00:00",
+  "revision": "def6cc340e666afd",
+  "ssh_target": "aiadvent@132.243.120.220",
+  "ssh_identity": "C:/Users/Nikita/.ssh/ai_advent_vps_2026.pub",
+  "ssh_options": [
+    "BatchMode=yes",
+    "IdentitiesOnly=yes",
+    "StrictHostKeyChecking=yes",
+    "ConnectionAttempts=1",
+    "ConnectTimeout=20"
+  ],
+  "installer_review": {
+    "creates": [
+      "system user/group day19",
+      "release and virtualenv under /opt/day19/releases/def6cc340e666afd",
+      "/var/lib/day19/reports (0700)",
+      "/etc/day19/composition.env (0640, generated Bearer token)",
+      "/opt/day19/current symlink",
+      "day19-composition systemd unit"
+    ],
+    "other_changes": [
+      "adds aiadvent to day19 group",
+      "installs Python dependencies in isolated virtualenv",
+      "systemd daemon-reload and enable --now day19-composition",
+      "backs up Caddyfile; validates appended Day19 host; writes Caddyfile and reloads Caddy"
+    ],
+    "does_not_change": [
+      "SSH configuration",
+      "UFW configuration",
+      "Day18 unit or SQLite data"
+    ],
+    "partial_failure_note": "Day19 service starts before Caddy validation. No automatic rollback; late failure can leave partial deployment."
+  },
+  "archive_sha256": "5705f07160d698dbd15632cbaf12269eb50a26e3e63d69a192da15506893364f",
+  "archive_local": "PASS",
+  "archive_manifest_local": "PASS",
+  "dns": {
+    "status": "PASS",
+    "checked_at": "2026-09-24T13:59:32.7534595+00:00",
+    "hostname": "day19-132-243-120-220.sslip.io",
+    "A": [
+      "132.243.120.220"
+    ],
+    "AAAA": []
+  },
+  "staging_creation": "PASS",
+  "upload": "PASS",
+  "remote_archive_verification": "PASS",
+  "remote_archive_sha256": "5705f07160d698dbd15632cbaf12269eb50a26e3e63d69a192da15506893364f",
+  "unpack": "PASS",
+  "remote_manifest": "PASS",
+  "files_verified": 17,
+  "installer_sha256": "cc1f52adac66e19c26cfa042f3da551b33000ba1e6377465c822205134dce7b4",
+  "installer_matches_reviewed_source": true,
+  "staging": "/home/aiadvent/day19-deploy/def6cc340e666afd",
+  "unpacked_source": "/home/aiadvent/day19-deploy/def6cc340e666afd/source",
+  "sudo_commands": 0,
+  "installer_invocations": 0,
+  "services_or_system_configuration_changed": false,
+  "vps_changes": "Only staging directory, uploaded archive and unpacked source under aiadvent home",
+  "deployment_readiness": "NOT_COMPLETED",
+  "pre_live": "NOT_STARTED",
+  "live_attempts": 0,
+  "task_6_3_complete": false,
+  "stop_reason": "Explicit user instruction to stop before installer execution"
+}

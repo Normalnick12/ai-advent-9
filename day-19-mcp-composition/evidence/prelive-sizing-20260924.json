@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "measured_at": "2026-09-24T14:59:29.651506+00:00",
+  "model": "gpt-5.6",
+  "resolved_alias": "gpt-5.6-sol",
+  "model_limits_source": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+  "model_limits_checked": "2026-09-24",
+  "context_window": 1050000,
+  "model_max_output_tokens": 128000,
+  "method": "UTF-8 byte upper bound; pretty ASCII envelopes; 2x growth plus framing reserve",
+  "uncertainty": "Conservative estimate, not provider billing; future lookup may grow. No truncation or retries.",
+  "measurements": {
+    "lookup": {
+      "canonical_utf8_bytes": 2079,
+      "pretty_ascii_bytes": 2760
+    },
+    "lookup_arguments": {
+      "canonical_utf8_bytes": 54,
+      "pretty_ascii_bytes": 62
+    },
+    "summary_arguments": {
+      "canonical_utf8_bytes": 2090,
+      "pretty_ascii_bytes": 3054
+    },
+    "report": {
+      "canonical_utf8_bytes": 415,
+      "pretty_ascii_bytes": 473
+    },
+    "save_arguments": {
+      "canonical_utf8_bytes": 426,
+      "pretty_ascii_bytes": 519
+    },
+    "receipt": {
+      "canonical_utf8_bytes": 235,
+      "pretty_ascii_bytes": 255
+    },
+    "schemas": {
+      "canonical_utf8_bytes": 5911,
+      "pretty_ascii_bytes": 10396
+    },
+    "prompt": {
+      "canonical_utf8_bytes": 3509,
+      "pretty_ascii_bytes": 3517
+    },
+    "final": {
+      "canonical_utf8_bytes": 215,
+      "pretty_ascii_bytes": 257
+    }
+  },
+  "full_version_count": 130,
+  "generated_token_upper_bound": 3892,
+  "required_with_margin": 11880,
+  "max_output_tokens": 16384,
+  "output_margin": 12492,
+  "estimated_context_upper_bound": 67162,
+  "context_margin": 982838,
+  "deadline_seconds": 600,
+  "request_body_limit_bytes": 33554432
+}

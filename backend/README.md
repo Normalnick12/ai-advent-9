@@ -65,3 +65,29 @@ server log с output. Final prose отдельно не доказывает inv
 
 Offline: из `backend` выполните `.venv/Scripts/python.exe -m pytest tests/test_dependency_watch.py tests/test_mcp_lab.py -q`.
 Deployment, backup и recovery — в [scripts](../scripts/README.md#day-18--dependency-watch).
+
+## Композиция MCP — Day 19
+
+`POST /api/v1/mcp-composition/run` принимает только `{prompt: nonblank string}`
+(до 12000 символов). Один native Responses request: `gpt-5.6`, reasoning none,
+auto, три tools одного сервера, store=false, max_retries=0. Backend сохраняет
+actual arguments и outputs, не составляет аргументы следующих steps.
+
+В backend environment: `DAY19_MCP_SERVER_URL=https://<day19-host>/mcp`,
+`DAY19_MCP_TOKEN` без префикса Bearer, `DAY19_MAX_OUTPUT_TOKENS` и
+`DAY19_DEADLINE_SECONDS`. Последние два значения выбираются только по pre-live
+sizing. Без полной конфигурации операция возвращает not_sent/configuration_error;
+старые Days не зависят от этих настроек. `OPENAI_API_KEY` остаётся только на backend.
+После настройки запускайте backend через `scripts/dev.ps1 backend` в управляемой
+терминальной сессии; `/health` не подтверждает доступность OpenAI.
+
+`backend/.local/day19/evidence/<operation_id>/` содержит предварительный
+`attempt.json`, исходный `response.json` со всеми ordered native items и отдельный
+`operation.json` (проекция calls/final_text/размеры). При provider error — `error.json`;
+timeout означает unknown. При недоступном evidence до dispatch запрос не отправляется.
+Секреты редактируются, данные tools не чинятся. Verifier сохраняет вердикт отдельно.
+
+Проверки: из backend `.venv/Scripts/python.exe -m pytest tests/test_mcp_composition.py
+tests/test_mcp_lab.py tests/test_dependency_watch.py tests/test_dependency_watch_evidence.py
+tests/test_dependency_watch_summary.py tests/test_api.py -q` (одной командой).
+CLI, gates и независимое чтение описаны в [scripts](../scripts/README.md#day-19--композиция-mcp).

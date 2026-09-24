@@ -305,3 +305,84 @@ next_run_at=null, разные boot IDs и сохранённый prefix executi
 расходует max_runs; его наличие остаётся в evidence и не превращается в success.
 Полный безопасный JSON нужен для review; token/пароль отсутствуют. `post` только читает
 и может быть повторён после проверки причины ошибки; новый watch он не создаёт.
+
+## Day 19 — композиция MCP
+
+Порядок: offline → изолированное deployment/readiness → pre-live sizing → одна
+live-попытка. Поручение на все эти этапы достаточно; технические gates не требуют
+нового разрешения на каждый переход. Не пройденный gate останавливает следующий.
+Нет нового Android экрана, scheduler или SQLite Day 19.
+
+Из `day-19-mcp-composition` создайте отдельный `.venv`, установите
+`requirements-dev.txt` и выполните `.venv/Scripts/python.exe -m pytest tests -q`.
+Windows требует Developer Mode для реального symlink-теста. Его нельзя пропускать
+ради PASS. Backend regression command приведён в [backend](../backend/README.md#композиция-mcp--day-19).
+Тесты используют MockTransport и временные каталоги, без Google Maven/OpenAI/VPS.
+
+Deployment artifacts: [systemd](../day-19-mcp-composition/deploy/day19-composition.service),
+[Caddy fragment](../day-19-mcp-composition/deploy/Caddyfile.fragment),
+[installer](../day-19-mcp-composition/deploy/install.py),
+[readiness](../day-19-mcp-composition/deploy/readiness.py).
+Отдельные user/process `day19`, loopback 8019, host с HTTPS `/mcp`, state
+`/var/lib/day19/reports` (0700), protected `/etc/day19/composition.env` (0640),
+release `/opt/day19/releases/<manifest-revision>`, current symlink. OpenAI key
+на VPS не нужен. MCP Bearer обязателен до discovery; Host/Origin проверяются.
+Запрос ограничен 32 MiB, upstream XML — 2 MiB и 15 s. Файлы накапливаются по hash;
+автоматического удаления нет. Сверяйте свободное место до эксперимента.
+
+После offline создайте reviewed snapshot: из Day 19
+`.venv/Scripts/python.exe deploy/snapshot.py ../.local/day19-deploy/snapshot`.
+Сохраните manifest и archive SHA-256, передайте snapshot на уже настроенный VPS,
+сверьте hash и распакуйте в новый каталог. Installer вызывается от root как
+`python3 deploy/install.py <unpacked-source> <day19-host>` и отказывается от повторной
+первой установки. Он добавляет отдельный Caddy host, проверяет конфигурацию и
+reload Caddy, не рестартует Day 18 и не меняет SSH/firewall. При частичной ошибке
+сначала исследуйте состояние. До/после сохраните discovery старых endpoints,
+PID/start time Day 18 и исходный Caddyfile. Readiness:
+`sudo -u day19 /opt/day19/current/.venv/bin/python /opt/day19/current/deploy/readiness.py`.
+Это TLS/auth/discovery/manifest/permissions, без model generation и создания watch.
+
+Для фактической частичной установки 24 сентября initial install повторять нельзя.
+Проверенное состояние, новый архив и порядок Caddy-only recovery описаны в
+[deployment handoff](../day-19-mcp-composition/DEPLOYMENT-HANDOFF.md).
+Исправленный installer получает переменные из systemd Environment Caddy и валидирует
+candidate до создания Day 19 ресурсов. Режим `--resume-caddy-from <existing-revision>`
+сверяет прежний runtime и backup, сохраняет credentials/releases и меняет только
+Caddy route. Оператор успешно выполнил resume и readiness; pre-live тоже PASS.
+Единственная live-попытка и независимая проверка завершены: chain/final/full acceptance PASS.
+Операторский export server events и actual file bytes сохранён отдельно, прежняя трасса
+и предварительные NOT_PROVEN неизменны. Результат и evidence в handoff; launcher не повторять.
+
+Pre-live: установите Day 19 URL/token только в окружении локального процесса.
+`preflight.py <new-preflight.json>` делает один direct MCP lookup core-ktx,
+сохраняет полный ответ и не вызывает summarize/save или модель.
+`sizing.py <preflight.json> <readiness.json> <new-sizing.json>` измеряет все объекты,
+schemas и prompt, downstream arguments и final, использует консервативную оценку
+по UTF-8 bytes с запасом. Проверенные model limits имеют ссылку в artifact.
+Это estimate, не billing. Полный список также прогоняется через offline fixture
+перед live; insufficient budget блокирует live, без сокращения/другого artifact.
+
+После PASS всех gates запустите backend с выбранными budget/deadline и выполните
+ровно один раз из Day 19:
+` .venv/Scripts/python.exe launch.py ../.local/day19-live/attempt --deadline 660`.
+Deadline launcher должен превышать backend deadline. Уже существующий attempt
+directory запрещает повторную отправку. Сохраните output и native backend evidence;
+на timeout/ошибку/неверную цепочку не делайте retry или forced continuation.
+
+Независимый collector выполняется после попытки отдельно от tools:
+`sudo -u day19 /opt/day19/current/.venv/bin/python /opt/day19/current/collect.py file
+<64hex-file-id> <operation-id> <lookup-id> <revision> <endpoint>` (одна команда).
+Он читает actual bytes только из fixed root, экспортирует base64/size/hash/time;
+не сериализует report и не вызывает save. Журнал:
+`sudo /opt/day19/current/.venv/bin/python /opt/day19/current/collect.py events <since>`.
+Сохраните stdout каждого как отдельный JSON. Затем локально:
+`verify.py <operation.json> <events.json> <file-read.json> <new-verdict.json>`.
+Если response утрачен, сохраняйте unknown и read-only диагностику, не создавайте
+недостающий файл. Chain и final_text_accuracy оцениваются независимо; original
+evidence неизменно. Одна попытка не доказывает надёжность будущих запусков.
+
+Rollback: остановить только `day19-composition`, убрать только добавленный Day 19
+host block, выполнить Caddy validate/reload. `/etc/day19/Caddyfile.before-day19`
+можно восстановить целиком лишь после проверки отсутствия последующих изменений.
+Reports и evidence сохранить. Day 18 process/SQLite не трогать. Finish/archive/
+commit/push остаются отдельной задачей пользователя.

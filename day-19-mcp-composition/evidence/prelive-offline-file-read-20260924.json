@@ -1,0 +1,12 @@
+{
+  "operation_id": "offline-control",
+  "lookup_id": "43b61f4c-abcf-4a3d-a3ce-6426f0d90382",
+  "revision": "offline",
+  "endpoint": "offline",
+  "file_id": "d4ce23264129b9b59d11f0fd23469bfe5f7045cb42fea8c26660f9090efe67ae",
+  "read_at": "2026-09-24T14:59:30.440248+00:00",
+  "status": "read",
+  "bytes": 415,
+  "sha256": "d4ce23264129b9b59d11f0fd23469bfe5f7045cb42fea8c26660f9090efe67ae",
+  "base64": "eyJhcnRpZmFjdF9pZCI6ImNvcmUta3R4IiwiY2hlY2tlZF9hdCI6IjIwMjYtMDktMjRUMTQ6NTk6MzAuMzc5WiIsImdyb3VwX2lkIjoiYW5kcm9pZHguY29yZSIsImlucHV0X3NoYTI1NiI6ImJhNDliNjdkOTA5ZmFmNDk2MjhhYjBhODRhNzFjZWJjYjc0ZTgyYzBmYjE5YjAyZTIyZTE4ODg4OTBkZDVmNDYiLCJsYXN0X3RocmVlIjpbIjEuMTkuMC1yYzAxIiwiMS4xOS4wIiwiMS4xOS4xIl0sImxvb2t1cF9pZCI6IjQzYjYxZjRjLWFiY2YtNGEzZC1hM2NlLTY0MjZmMGQ5MDM4MiIsInNjaGVtYV92ZXJzaW9uIjoxLCJzb3VyY2VfdXJsIjoiaHR0cHM6Ly9kbC5nb29nbGUuY29tL2RsL2FuZHJvaWQvbWF2ZW4yL2FuZHJvaWR4L2NvcmUvZ3JvdXAtaW5kZXgueG1sIiwic3RhdHVzIjoiZm91bmQiLCJ2ZXJzaW9uX2NvdW50IjoxMzB9Cg=="
+}

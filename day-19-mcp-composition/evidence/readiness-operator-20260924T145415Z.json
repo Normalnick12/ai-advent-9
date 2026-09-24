@@ -1,0 +1,493 @@
+{
+  "checked_at": "2026-09-24T14:54:15.488348+00:00",
+  "endpoint": "https://day19-132-243-120-220.sslip.io/mcp",
+  "manifest": {
+    "revision": "def6cc340e666afd",
+    "files": {
+      "collect.py": "ca0cec2bcba1e6aa11ba4470dd0490a0516f61901ad6fa2c406ef484c8f6abd0",
+      "composition/__init__.py": "49784ee5445b35cbb71eae25d1974472e73e58f17a2a9984b555a930d52fa2e2",
+      "composition/contracts.py": "f7386ae9e20f65f7522a59d7b35a098587ebdea5c332f1d2b86ecd00162cc491",
+      "composition/lookup.py": "0287b823f8a4186ab92c57a56b2c97c474345ae8e97cb508b085301f1e8718f0",
+      "composition/report.py": "8291ce65376c02c49673282c6833984d88227e52839fdd22afa390110f017d2c",
+      "composition/server.py": "27021ebe044e4448ecfabd6de16eea1b272eb5d104b0df4b945e7169fcd70b1d",
+      "composition/storage.py": "8417352d101fb593667784ab53e0ebc414a4f12c51cf613ac98d443fa34097a0",
+      "deploy/Caddyfile.fragment": "53ebb39ca291b621edd1ae4d427780331be23f94bccf26e2ad33cca66146a26b",
+      "deploy/day19-composition.service": "160fab594571b4d82773e6a523dbad9b1313ccc7571f48906268499c076c6a36",
+      "deploy/install.py": "cc1f52adac66e19c26cfa042f3da551b33000ba1e6377465c822205134dce7b4",
+      "deploy/readiness.py": "cf83d2e7e6bb3487078c7245c2a665217579a134ffdc50b11aa000e8c7454f65",
+      "deploy/service.env.example": "2c25ce396d76a19cfcd7684961619a4c853f90ac2e0b9a7aa0e2ea1a71d57b98",
+      "deploy/snapshot.py": "dcb44e97e57196fbb3522662fcbea12ca62d2ee48afd48daff09aa580d613f18",
+      "launch.py": "9a6745aaf82479b42faf85b7e4b7aff149d65a07c84290326a29b079081b617e",
+      "requirements.txt": "87053f2b1954132272e077aa08f1183801753bede47c887ba5bc82508f8f69c3",
+      "run.py": "b22ac72487f9b8ff0cf0fc0ca1b643eb5177b4b279a3bac4a55152332f03d8bb",
+      "verify.py": "9b866a63068a33c9937c3e32489379958e36a9954a8e4c588ac4e842f39e4504"
+    }
+  },
+  "packages": {
+    "mcp": "2.2.0",
+    "httpx": "0.28.1",
+    "pydantic": "2.13.5",
+    "defusedxml": "0.7.1",
+    "uvicorn": "0.53.0"
+  },
+  "tls": {
+    "protocol": "TLSv1.3",
+    "certificate": {
+      "subject": [
+        [
+          [
+            "commonName",
+            "day19-132-243-120-220.sslip.io"
+          ]
+        ]
+      ],
+      "issuer": [
+        [
+          [
+            "countryName",
+            "US"
+          ]
+        ],
+        [
+          [
+            "organizationName",
+            "Let's Encrypt"
+          ]
+        ],
+        [
+          [
+            "commonName",
+            "YE2"
+          ]
+        ]
+      ],
+      "version": 3,
+      "serialNumber": "053BD3A5FB6D3E82C12EF28AE1AE79EB8F7D",
+      "notBefore": "Sep 24 13:46:07 2026 GMT",
+      "notAfter": "Dec 23 13:46:06 2026 GMT",
+      "subjectAltName": [
+        [
+          "DNS",
+          "day19-132-243-120-220.sslip.io"
+        ]
+      ],
+      "caIssuers": [
+        "http://ye2.i.lencr.org/"
+      ],
+      "crlDistributionPoints": [
+        "http://ye2.c.lencr.org/126.crl"
+      ]
+    }
+  },
+  "auth_missing": 401,
+  "auth_invalid": 401,
+  "tools": [
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true,
+        "readOnlyHint": true
+      },
+      "description": "Fetch ALL Google Maven versions in source order. Pass the ENTIRE result to summarize.",
+      "inputSchema": {
+        "properties": {
+          "group_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+            "title": "Artifact Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id",
+          "artifact_id"
+        ],
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Coordinates"
+      },
+      "name": "get_google_maven_versions",
+      "outputSchema": {
+        "properties": {
+          "group_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "found",
+              "group_not_found",
+              "artifact_not_found",
+              "no_versions"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "lookup_id": {
+            "title": "Lookup Id",
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "group_id",
+          "artifact_id",
+          "status",
+          "source_url",
+          "checked_at",
+          "lookup_id",
+          "versions"
+        ],
+        "type": "object",
+        "additionalProperties": false,
+        "title": "LookupResult"
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": true
+      },
+      "description": "Pass the complete lookup object unchanged. Compute count, last three and hash without I/O.",
+      "inputSchema": {
+        "properties": {
+          "lookup": {
+            "$ref": "#/$defs/LookupResult"
+          }
+        },
+        "required": [
+          "lookup"
+        ],
+        "type": "object",
+        "$defs": {
+          "LookupResult": {
+            "additionalProperties": false,
+            "properties": {
+              "group_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "artifact_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                "title": "Artifact Id",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "found",
+                  "group_not_found",
+                  "artifact_not_found",
+                  "no_versions"
+                ],
+                "title": "Status",
+                "type": "string"
+              },
+              "source_url": {
+                "title": "Source Url",
+                "type": "string"
+              },
+              "checked_at": {
+                "title": "Checked At",
+                "type": "string"
+              },
+              "lookup_id": {
+                "title": "Lookup Id",
+                "type": "string"
+              },
+              "versions": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Versions",
+                "type": "array"
+              }
+            },
+            "required": [
+              "group_id",
+              "artifact_id",
+              "status",
+              "source_url",
+              "checked_at",
+              "lookup_id",
+              "versions"
+            ],
+            "title": "LookupResult",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "title": "SummaryInput"
+      },
+      "name": "summarize_dependency_versions",
+      "outputSchema": {
+        "properties": {
+          "group_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "artifact_id": {
+            "maxLength": 256,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+            "title": "Artifact Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "found",
+              "group_not_found",
+              "artifact_not_found",
+              "no_versions"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "source_url": {
+            "title": "Source Url",
+            "type": "string"
+          },
+          "checked_at": {
+            "title": "Checked At",
+            "type": "string"
+          },
+          "lookup_id": {
+            "title": "Lookup Id",
+            "type": "string"
+          },
+          "schema_version": {
+            "maximum": 1,
+            "minimum": 1,
+            "title": "Schema Version",
+            "type": "integer"
+          },
+          "version_count": {
+            "minimum": 0,
+            "title": "Version Count",
+            "type": "integer"
+          },
+          "last_three": {
+            "items": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 3,
+            "title": "Last Three",
+            "type": "array"
+          },
+          "input_sha256": {
+            "title": "Input Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id",
+          "artifact_id",
+          "status",
+          "source_url",
+          "checked_at",
+          "lookup_id",
+          "schema_version",
+          "version_count",
+          "last_three",
+          "input_sha256"
+        ],
+        "type": "object",
+        "additionalProperties": false,
+        "title": "DependencyReport"
+      }
+    },
+    {
+      "annotations": {
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false,
+        "readOnlyHint": false
+      },
+      "description": "Pass the complete report unchanged. Save canonical JSON in a fixed server directory.\n\n        No paths or arbitrary content accepted. A repeated identical report has the same receipt.\n        ",
+      "inputSchema": {
+        "properties": {
+          "report": {
+            "$ref": "#/$defs/DependencyReport"
+          }
+        },
+        "required": [
+          "report"
+        ],
+        "type": "object",
+        "$defs": {
+          "DependencyReport": {
+            "additionalProperties": false,
+            "properties": {
+              "group_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_-]*(\\.[A-Za-z0-9_][A-Za-z0-9_-]*)*$",
+                "title": "Group Id",
+                "type": "string"
+              },
+              "artifact_id": {
+                "maxLength": 256,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9_.-]*$",
+                "title": "Artifact Id",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "found",
+                  "group_not_found",
+                  "artifact_not_found",
+                  "no_versions"
+                ],
+                "title": "Status",
+                "type": "string"
+              },
+              "source_url": {
+                "title": "Source Url",
+                "type": "string"
+              },
+              "checked_at": {
+                "title": "Checked At",
+                "type": "string"
+              },
+              "lookup_id": {
+                "title": "Lookup Id",
+                "type": "string"
+              },
+              "schema_version": {
+                "maximum": 1,
+                "minimum": 1,
+                "title": "Schema Version",
+                "type": "integer"
+              },
+              "version_count": {
+                "minimum": 0,
+                "title": "Version Count",
+                "type": "integer"
+              },
+              "last_three": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maxItems": 3,
+                "title": "Last Three",
+                "type": "array"
+              },
+              "input_sha256": {
+                "title": "Input Sha256",
+                "type": "string"
+              }
+            },
+            "required": [
+              "group_id",
+              "artifact_id",
+              "status",
+              "source_url",
+              "checked_at",
+              "lookup_id",
+              "schema_version",
+              "version_count",
+              "last_three",
+              "input_sha256"
+            ],
+            "title": "DependencyReport",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "title": "SaveInput"
+      },
+      "name": "save_dependency_report",
+      "outputSchema": {
+        "properties": {
+          "status": {
+            "const": "saved",
+            "title": "Status",
+            "type": "string"
+          },
+          "lookup_id": {
+            "title": "Lookup Id",
+            "type": "string"
+          },
+          "file_id": {
+            "title": "File Id",
+            "type": "string"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "bytes": {
+            "exclusiveMinimum": 0,
+            "title": "Bytes",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "status",
+          "lookup_id",
+          "file_id",
+          "sha256",
+          "bytes"
+        ],
+        "type": "object",
+        "additionalProperties": false,
+        "title": "SaveReceipt"
+      }
+    }
+  ],
+  "foreign_host": 421,
+  "foreign_origin": 403,
+  "reports_root": {
+    "path": "/var/lib/day19/reports",
+    "uid": 994,
+    "mode": "0o700",
+    "writable": true
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "tool_execution": {
+    "status": "PASS",
+    "reason": "actual_inputs_checked",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "selection_order": {
+    "status": "NOT_PROVEN",
+    "reason": "insufficient_evidence",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "report_correctness": {
+    "status": "PASS",
+    "reason": "exact",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "file_persistence": {
+    "status": "NOT_PROVEN",
+    "reason": "insufficient_evidence",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "final_text_accuracy": {
+    "status": "NOT_PROVEN",
+    "reason": "expected_file_not_independently_confirmed",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "data_transfer": {
+    "status": "PASS",
+    "reason": "both_boundaries",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ],
+    "lookup_to_summary": {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "summary_to_save": {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    }
+  },
+  "tool_checks": [
+    {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "calls[0]"
+      ]
+    },
+    {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "calls[1]"
+      ]
+    },
+    {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "calls[2]"
+      ]
+    }
+  ],
+  "chain": {
+    "status": "NOT_PROVEN",
+    "reason": "five_mechanism_verdicts",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  },
+  "full_acceptance": {
+    "status": "NOT_PROVEN",
+    "reason": "chain_final_and_found",
+    "evidence": [
+      "operation.calls",
+      "server-events.json",
+      "file-read.json"
+    ]
+  }
+}

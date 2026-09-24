@@ -1,0 +1,70 @@
+{
+  "checked_at": "2026-09-24T15:33:48.182347+00:00",
+  "scope": "Day 19 finalization; no new model, MCP, network runtime or VPS calls",
+  "run": [
+    {
+      "check": "strict OpenSpec change validation before archive",
+      "result": "PASS"
+    },
+    {
+      "check": "exact sync of 8 service and 9 experiment requirements plus strict validation",
+      "result": "PASS"
+    },
+    {
+      "check": "source hash comparison against offline gate and installer regression evidence",
+      "result": "PASS",
+      "files": 31
+    },
+    {
+      "check": "Python syntax, JSON evidence parsing, immutable raw evidence hashes",
+      "result": "PASS"
+    },
+    {
+      "check": "scoped Markdown links after archive and root Day README index",
+      "result": "PASS"
+    },
+    {
+      "check": "scoped forbidden files and secret scan",
+      "result": "PASS"
+    },
+    {
+      "check": "staged scope, forbidden-file and secret scan, Python syntax and JSON",
+      "result": "PASS",
+      "files": 85
+    },
+    {
+      "check": "staged evidence equals working bytes exactly",
+      "result": "PASS",
+      "files": 39
+    },
+    {
+      "check": "git diff --cached --check with intentional CRLF evidence attribute",
+      "result": "PASS"
+    }
+  ],
+  "reused": [
+    {
+      "scenario": "offline test suites",
+      "passed": 280,
+      "source": "offline-gate.json"
+    },
+    {
+      "scenario": "installer regression suite after Caddy environment fix",
+      "passed": 19,
+      "source": "caddy-recovery-20260924.json"
+    },
+    {
+      "scenario": "fixed three-call MCP offline control and full payload control",
+      "result": "PASS",
+      "source": "prelive-offline-verdict-20260924.json"
+    },
+    {
+      "scenario": "one live operation, independent operator export and separate verifier verdicts",
+      "result": "PASS",
+      "operation_id": "085e5b0a-863f-4a62-abd9-f62359a2393d",
+      "source": "live-20260924/operator-verification-20260924T151255Z/verdict-final.json"
+    }
+  ],
+  "openspec_archive": "openspec/changes/archive/2026-09-24-day-19-mcp-composition",
+  "evidence_git_attributes": "evidence/** -text whitespace=cr-at-eol preserves exact bytes and permits intentional CRLF without disabling other whitespace checks"
+}

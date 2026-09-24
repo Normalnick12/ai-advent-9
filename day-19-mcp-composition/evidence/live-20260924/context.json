@@ -1,0 +1,56 @@
+{
+  "operation_id": "085e5b0a-863f-4a62-abd9-f62359a2393d",
+  "response_id": "resp_0bb8d3129d60a866016ab53b939fb087d2aee44e0d0447cebe",
+  "provider_status": "completed",
+  "model": "gpt-5.6-sol",
+  "usage": {
+    "input_tokens": 3849,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 1419,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5268
+  },
+  "calls": [
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53b961f3c87d2a74f6c7a361367cd",
+      "name": "get_google_maven_versions",
+      "server_label": "dependency_composition",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53ba6aa4887d287c61ab768a7f0bf",
+      "name": "summarize_dependency_versions",
+      "server_label": "dependency_composition",
+      "status": "completed",
+      "error": null
+    },
+    {
+      "id": "mcp_0bb8d3129d60a866016ab53ba9276087d295b739f06d957691",
+      "name": "save_dependency_report",
+      "server_label": "dependency_composition",
+      "status": "completed",
+      "error": null
+    }
+  ],
+  "file_id": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+  "lookup_id": "27d5554f-eb85-489b-b336-60bc32cb1578",
+  "file_bytes_claimed": 415,
+  "since": "2026-09-24T15:02:41.706446+00:00",
+  "runtime_revision": "def6cc340e666afd",
+  "endpoint": "https://day19-132-243-120-220.sslip.io/mcp",
+  "provider_requests": 1,
+  "automatic_retries": 0,
+  "raw_evidence_sha256": {
+    "attempt.json": "31f7525aa3ad0914c3065a18bc26a3f24bd9c272cb84744ccbdea7e02f9d1d37",
+    "response.json": "1f73ae7c3589d652f9de13a1bc98d95eb7397a82f70f028ad7cbab4294be8216",
+    "operation.json": "8bea6625c06d41b813b46c88eb586ec401c7222ed9c8a723ac45a2c1910ca0b0",
+    "dispatch.json": "48cb4394f12ab61eb59683550d27a13637ab255195d14c01a5eecd64bce89e0b",
+    "backend-response.bin": "4b5ab1374e602474e99b5b7f0c2b2c58140778c92df69db0525c9add62bcae0f"
+  }
+}

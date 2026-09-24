@@ -1,0 +1,12 @@
+{
+  "operation_id": "085e5b0a-863f-4a62-abd9-f62359a2393d",
+  "lookup_id": "27d5554f-eb85-489b-b336-60bc32cb1578",
+  "revision": "def6cc340e666afd",
+  "endpoint": "https://day19-132-243-120-220.sslip.io/mcp",
+  "file_id": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+  "read_at": "2026-09-24T15:12:55.291239+00:00",
+  "status": "read",
+  "bytes": 415,
+  "sha256": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+  "base64": "eyJhcnRpZmFjdF9pZCI6ImNvcmUta3R4IiwiY2hlY2tlZF9hdCI6IjIwMjYtMDktMjRUMTU6MDI6NDYuODE5WiIsImdyb3VwX2lkIjoiYW5kcm9pZHguY29yZSIsImlucHV0X3NoYTI1NiI6ImJhNWY3NjU1YzA1NmQwZGJjYzA5MjU4MmZhYTAyZGFiMThkZmZjZjE0OWJkZTFiZTkwNzQ5M2VmN2NmNzU5NWYiLCJsYXN0X3RocmVlIjpbIjEuMTkuMC1yYzAxIiwiMS4xOS4wIiwiMS4xOS4xIl0sImxvb2t1cF9pZCI6IjI3ZDU1NTRmLWViODUtNDg5Yi1iMzM2LTYwYmMzMmNiMTU3OCIsInNjaGVtYV92ZXJzaW9uIjoxLCJzb3VyY2VfdXJsIjoiaHR0cHM6Ly9kbC5nb29nbGUuY29tL2RsL2FuZHJvaWQvbWF2ZW4yL2FuZHJvaWR4L2NvcmUvZ3JvdXAtaW5kZXgueG1sIiwic3RhdHVzIjoiZm91bmQiLCJ2ZXJzaW9uX2NvdW50IjoxMzB9Cg=="
+}

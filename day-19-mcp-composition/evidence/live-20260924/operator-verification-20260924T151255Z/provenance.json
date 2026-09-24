@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-09-24T15:17:24.152991+00:00",
+  "operation_id": "085e5b0a-863f-4a62-abd9-f62359a2393d",
+  "provenance": "Operator-supplied independent journal/file export from term.txt; no remote calls during verification",
+  "raw_export_sha256": "47a47906a68c59d9bcebe5ca8bd7624af45543174eb5bf10a50f7491f1ed8c40",
+  "events": 7,
+  "file_bytes": 415,
+  "file_sha256": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+  "association_matches": true,
+  "verifier_sha256": "9b866a63068a33c9937c3e32489379958e36a9954a8e4c588ac4e842f39e4504",
+  "prior_artifact_hashes": {
+    "attempt.json": "31f7525aa3ad0914c3065a18bc26a3f24bd9c272cb84744ccbdea7e02f9d1d37",
+    "backend-response.bin": "4b5ab1374e602474e99b5b7f0c2b2c58140778c92df69db0525c9add62bcae0f",
+    "collection.json": "ab66a04f5475a10025d0e7d569c32e34f727087bae22eb3f2186b6b5068e6760",
+    "collector-transport.json": "6776bdf22dc8a84a214097186b8a8b21f2ae34ad4afc1868c972d03beb02764d",
+    "context.json": "a854ec2d53b9dae03f9ed8987a32aeee7587cd005dff8214574f4515832dcb40",
+    "dispatch.json": "48cb4394f12ab61eb59683550d27a13637ab255195d14c01a5eecd64bce89e0b",
+    "file-read.json": "8079537087853c7ee2a018866a13b0a34ad31d4695e88c9a25cf24b58ae99535",
+    "operation.json": "8bea6625c06d41b813b46c88eb586ec401c7222ed9c8a723ac45a2c1910ca0b0",
+    "response.json": "1f73ae7c3589d652f9de13a1bc98d95eb7397a82f70f028ad7cbab4294be8216",
+    "result-initial.json": "5ba36be53f54a9038a87a3ff23bd2e079203359e67c445ffedab2329c06a1944",
+    "server-events.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "verdict-initial.json": "31766cbd0893ea743fce4c5ea1b562fa22e8aaa74a4ea37d12a199736da93476"
+  },
+  "operation_input": "../operation.json",
+  "events_input": "server-events.json",
+  "disk_input": "file-read.json",
+  "verdict_output": "verdict-final.json"
+}

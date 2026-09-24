@@ -1,0 +1,151 @@
+{
+  "status": "BLOCKED",
+  "stage": "deployment/readiness",
+  "task": "6.3",
+  "recorded_at": "2026-09-24T13:44:55.811415+00:00",
+  "source_snapshot": "def6cc340e666afd",
+  "offline": {
+    "status": "PASS",
+    "reused": true,
+    "tests": 280,
+    "rerun_tests": 0,
+    "runtime_hashes_unchanged": true,
+    "evidence": "offline-gate.json"
+  },
+  "ssh": {
+    "started_at": "2026-09-24T13:40:29.509790+00:00",
+    "ended_at": "2026-09-24T13:40:30.680664+00:00",
+    "elapsed_seconds": 1.169,
+    "target": "aiadvent@132.243.120.220",
+    "port": 22,
+    "fingerprint": "SHA256:5ApeaiG/In7nhjSunJqmudMrnvAoNqCggDwq9D1cghk",
+    "connection_attempts": 1,
+    "connect_timeout_seconds": 20,
+    "overall_timeout_seconds": 35,
+    "batch_mode": true,
+    "identities_only": true,
+    "strict_host_key_checking": true,
+    "password_authentication": false,
+    "exit_code": 0,
+    "overall_timeout": false,
+    "stages": {
+      "tcp_connected": true,
+      "local_banner_sent": true,
+      "remote_banner_received": true,
+      "host_key_verified": true,
+      "authenticated": true,
+      "remote_command_sent": true
+    },
+    "diagnostic": [
+      "debug1: Connecting to 132.243.120.220 [132.243.120.220] port 22.",
+      "debug1: Connection established.",
+      "debug1: Local version string SSH-2.0-OpenSSH_for_Windows_9.5",
+      "debug1: Remote protocol version 2.0, remote software version OpenSSH_9.6p1 Ubuntu-3ubuntu13.19",
+      "debug1: Host '132.243.120.220' is known and matches the ED25519 host key.",
+      "Authenticated to 132.243.120.220 ([132.243.120.220]:22) using \"publickey\".",
+      "debug1: Sending command: whoami",
+      "debug1: Exit status 0"
+    ],
+    "stdout": "aiadvent",
+    "evidence": ".local/day19-deploy/ssh-20260924T134029Z",
+    "success": true,
+    "remote_mutations": false,
+    "prior_success": "User confirmed: same host/user/agent fingerprint, strict host-key verification, whoami=aiadvent, exit=0."
+  },
+  "inventory_evidence": ".local/day19-deploy/inventory-20260924T1340.txt",
+  "inventory_at": "2026-09-24T13:41:01Z",
+  "sudo": {
+    "command": "sudo -n -l",
+    "status": "BLOCKED",
+    "diagnostic": "sudo: a password is required"
+  },
+  "day18": {
+    "active_state": "active",
+    "main_pid": 1763,
+    "exec_start": "Wed 2026-09-23 20:33:12 CEST",
+    "release": "/opt/day18/releases/5b11f8d9e5a87a25",
+    "listen": "127.0.0.1:8018",
+    "restarted": false,
+    "data_modified": false,
+    "https_endpoint": "NOT_PROVEN: not checked in this stage"
+  },
+  "day19": {
+    "deployment": "NOT_STARTED",
+    "loopback_8019_available": true,
+    "existing_directories_observed": false,
+    "public_endpoint": "NOT_DEPLOYED",
+    "root_permissions": "NOT_PROVEN",
+    "tls_auth_discovery": "NOT_PROVEN"
+  },
+  "caddy": {
+    "existing_route": "{$DAY18_MCP_PUBLIC_HOST} -> 127.0.0.1:8018",
+    "modified": false
+  },
+  "disk": {
+    "available_reported": "55G",
+    "filesystem": "/dev/vda3"
+  },
+  "python_version": "3.12.3",
+  "vps_changes": false,
+  "ssh_configuration_changes": false,
+  "snapshot_uploaded": false,
+  "pre_live": "NOT_STARTED",
+  "live_attempts": 0,
+  "live_verdicts": {
+    "tool_execution": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "selection_order": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "lookup_to_summary": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "summary_to_save": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "report_correctness": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "file_persistence": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "final_text_accuracy": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "chain": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    },
+    "full_acceptance": {
+      "status": "NOT_PROVEN",
+      "reason": "live_not_started",
+      "origin": "gate_status_not_verifier_run"
+    }
+  },
+  "tasks_complete": 21,
+  "tasks_open": [
+    "6.3",
+    "6.4",
+    "7.1",
+    "7.2",
+    "7.3"
+  ],
+  "next_step": "Interactive sudo deployment using DEPLOYMENT-HANDOFF.md, then readiness; never submit a password in chat.",
+  "video_instructions": "../VIDEO.md"
+}

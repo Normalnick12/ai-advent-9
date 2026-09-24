@@ -1,0 +1,20 @@
+{
+  "status": "BLOCKED",
+  "date": "2026-09-24",
+  "preceding_gate": "offline-gate.json",
+  "source_snapshot": "def6cc340e666afd",
+  "stage": "deployment/readiness",
+  "task": "6.3",
+  "ssh_target": "aiadvent@132.243.120.220",
+  "probe": "Read-only SSH inventory with BatchMode=yes, StrictHostKeyChecking=yes, ConnectTimeout=10",
+  "exit_code": 1,
+  "diagnostic": "Connection timed out during banner exchange\nConnection to 132.243.120.220 port 22 timed out",
+  "authentication_reached": false,
+  "remote_commands_executed": false,
+  "vps_mutations": false,
+  "old_endpoints_state": "NOT_PROVEN: SSH readiness could not start",
+  "deployment": "NOT_STARTED",
+  "pre_live": "NOT_STARTED",
+  "live_attempts": 0,
+  "next_requirement": "Restore working SSH connectivity, then resume task 6.3 before pre-live or live. No model call has been sent."
+}

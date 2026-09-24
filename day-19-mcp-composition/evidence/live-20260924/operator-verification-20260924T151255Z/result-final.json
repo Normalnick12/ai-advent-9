@@ -1,0 +1,161 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-09-24T15:19:25.222141+00:00",
+  "operation_id": "085e5b0a-863f-4a62-abd9-f62359a2393d",
+  "response_id": "resp_0bb8d3129d60a866016ab53b939fb087d2aee44e0d0447cebe",
+  "provider_requests": 1,
+  "new_provider_requests_during_verification": 0,
+  "new_mcp_calls_during_verification": 0,
+  "new_vps_calls_during_verification": 0,
+  "runtime_revision": "def6cc340e666afd",
+  "installer_revision": "2da85c77bb4be5e0",
+  "model": "gpt-5.6-sol",
+  "usage": {
+    "input_tokens": 3849,
+    "input_tokens_details": {
+      "cache_write_tokens": 0,
+      "cached_tokens": 0
+    },
+    "output_tokens": 1419,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 5268
+  },
+  "verdicts": {
+    "tool_execution": {
+      "status": "PASS",
+      "reason": "actual_inputs_checked",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "selection_order": {
+      "status": "PASS",
+      "reason": "server_temporal_order",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "report_correctness": {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "file_persistence": {
+      "status": "PASS",
+      "reason": "independent_bytes_compared",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "final_text_accuracy": {
+      "status": "PASS",
+      "reason": "exact",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "data_transfer": {
+      "status": "PASS",
+      "reason": "both_boundaries",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ],
+      "lookup_to_summary": {
+        "status": "PASS",
+        "reason": "exact",
+        "evidence": [
+          "operation.calls",
+          "server-events.json",
+          "file-read.json"
+        ]
+      },
+      "summary_to_save": {
+        "status": "PASS",
+        "reason": "exact",
+        "evidence": [
+          "operation.calls",
+          "server-events.json",
+          "file-read.json"
+        ]
+      }
+    },
+    "tool_checks": [
+      {
+        "status": "PASS",
+        "reason": "exact",
+        "evidence": [
+          "calls[0]"
+        ]
+      },
+      {
+        "status": "PASS",
+        "reason": "exact",
+        "evidence": [
+          "calls[1]"
+        ]
+      },
+      {
+        "status": "PASS",
+        "reason": "exact",
+        "evidence": [
+          "calls[2]"
+        ]
+      }
+    ],
+    "chain": {
+      "status": "PASS",
+      "reason": "five_mechanism_verdicts",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    },
+    "full_acceptance": {
+      "status": "PASS",
+      "reason": "chain_final_and_found",
+      "evidence": [
+        "operation.calls",
+        "server-events.json",
+        "file-read.json"
+      ]
+    }
+  },
+  "raw_final_text": "{\"group_id\":\"androidx.core\",\"artifact_id\":\"core-ktx\",\"status\":\"found\",\"version_count\":130,\"last_three\":[\"1.19.0-rc01\",\"1.19.0\",\"1.19.1\"],\"file_id\":\"5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6\"}",
+  "verified_file": {
+    "file_id": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+    "sha256": "5bac0dfe3e5a4ef6086402ea2b201d9e3a5e8f320cb6221219647c8557f2c2c6",
+    "bytes": 415,
+    "read_at": "2026-09-24T15:12:55.291239+00:00"
+  },
+  "evidence": {
+    "original_operation": "../operation.json",
+    "original_response": "../response.json",
+    "initial_verdict": "../verdict-initial.json",
+    "operator_export": "operator-export.txt",
+    "events": "server-events.json",
+    "independent_read": "file-read.json",
+    "actual_file_bytes": "file-bytes.json",
+    "final_verdict": "verdict-final.json",
+    "provenance": "provenance.json"
+  },
+  "all_prior_artifacts_unchanged": true,
+  "preliminary_not_proven_preserved": true,
+  "claim_limit": "One successful observed attempt; no claim of general reliability"
+}

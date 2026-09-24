@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "gate": "6.3",
+  "checked_at": "2026-09-24T14:58:47.952627+00:00",
+  "operator_exit_code": 0,
+  "operator_provenance": "User supplied complete stdout of interactive readiness.py as day19; exit code confirmed by user",
+  "raw_attachment_sha256": "823d3360c327736a5abeb0075f87ebb58f313ba7d93e27e3cb00a87da5d1ea0c",
+  "json_extraction": "First complete JSON object; remaining SSH connection-closed line retained in raw evidence",
+  "operator_json": "readiness-operator-20260924T145415Z.json",
+  "raw_attachment": "readiness-operator-20260924T145415Z.txt",
+  "independent_public_checks": "readiness-after-resume-20260924T144933Z.json",
+  "manifest_packages_schemas_equal": true,
+  "runtime_revision": "def6cc340e666afd",
+  "installer_revision": "2da85c77bb4be5e0",
+  "writable_root": {
+    "path": "/var/lib/day19/reports",
+    "uid": 994,
+    "mode": "0o700",
+    "writable": true
+  },
+  "old_day18": "PASS: unchanged PID/release/health/discovery in independent checks",
+  "live_attempts": 0
+}
