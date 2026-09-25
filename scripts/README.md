@@ -386,3 +386,76 @@ host block, выполнить Caddy validate/reload. `/etc/day19/Caddyfile.befo
 можно восстановить целиком лишь после проверки отсутствия последующих изменений.
 Reports и evidence сохранить. Day 18 process/SQLite не трогать. Finish/archive/
 commit/push остаются отдельной задачей пользователя.
+
+## Day 20 — подготовка и один отдельный live
+
+Команды ниже выполняются из корня репозитория в PowerShell 7.
+Новый deployment, Android build и серверный save не нужны. Для восстановления
+существующего credential отдельно разрешили чтение env через SSH; это не часть
+model flow, VPS не изменялся.
+
+Offline suite (fakes и synthetic traces; без внешних research/lookup calls):
+
+```powershell
+Push-Location backend
+.venv/Scripts/python.exe -m pytest tests/test_mcp_orchestration.py ../day-20-mcp-orchestration/tests tests/test_mcp_composition.py tests/test_mcp_lab.py tests/test_dependency_watch.py tests/test_dependency_watch_summary.py tests/test_dependency_watch_evidence.py tests/test_api.py -q
+Pop-Location
+```
+
+Подготовка: задайте локально переменные из [backend README](../backend/README.md).
+Старые Day 19 SSH launchers не применять. Запустите backend в отдельной
+управляемой терминальной сессии: `pwsh -File scripts/dev.ps1 backend`;
+в другой сессии — `pwsh -File scripts/dev.ps1 status`.
+`/health` подтверждает FastAPI, а не OpenAI или MCP credentials.
+
+Discovery-only проверка использует существующий Day 16 venv (`mcp==2.2.0`)
+и переменные текущего shell; она не загружает backend `.env` автоматически.
+Выберите новый output filename:
+
+```powershell
+day-16-mcp-discovery/.venv/Scripts/python.exe day-20-mcp-orchestration/readiness.py .local/day20-readiness.json
+backend/.venv/Scripts/python.exe day-20-mcp-orchestration/sizing.py .local/day20-sizing.json
+```
+
+Readiness выполняет только protocol negotiation и `tools/list`, без `tools/call`.
+Она сохраняет definitions и blockers отдельно от model trace. Если token отсутствует,
+Dependency discovery получает `NOT_PROVEN`. Отдельно разрешённое восстановление
+credential уже выполнено; секрет передан process environment и в Git не хранится.
+
+Единственная live-попытка уже выполнена. Следующая команда документирует запуск
+эксперимента; для просмотра результата её повторять не нужно:
+
+**Команда отправки (не offline-просмотр):**
+
+```powershell
+backend/.venv/Scripts/python.exe day-20-mcp-orchestration/run.py --live
+```
+
+Это одна отправка; deadline CLI по умолчанию 930 секунд. Без `--live` запрос
+не отправляется. Модель исследует repository и выбирает по одному артефакту
+для хранения и фоновой работы. По полученным coordinates она может обратиться
+к другому серверу за публикациями и сводкой. Между ветками допускается любой
+порядок, сохраняющий их зависимости. Не повторяйте live ради лучшего результата.
+
+На завершении CLI покажет `report.md`. На потере HTTP-ответа сначала найдите
+новый attempt directory в `backend/.local/day20`; повторная отправка запрещена.
+Сохранённые данные можно проверять без сети:
+
+```powershell
+backend/.venv/Scripts/python.exe day-20-mcp-orchestration/verify.py backend/.local/day20/<operation-id>
+```
+
+Если `review` уже существует, используйте `--output <новый-каталог>`.
+На видео можно показать задачу и два descriptors, затем фактическую DeepWiki
+capability, две найденные зависимости и их Maven summaries в отчёте.
+Отдельно покажите flow verdict, final facts и ограничения. Это демонстрация
+сохранённой первой попытки, не повтор сценария. Пользователь подтвердил запись видео.
+
+Сохранённую в Git попытку можно проверить без backend, credentials и сети:
+
+```powershell
+backend/.venv/Scripts/python.exe day-20-mcp-orchestration/verify.py day-20-mcp-orchestration/evidence/live-20260925 --output .local/day20-offline-review
+```
+
+Output directory должен быть новым. Исходные файлы не перезаписываются.
+Проверка воспроизводит также сохранённые provenance FAIL / NOT_PROVEN.

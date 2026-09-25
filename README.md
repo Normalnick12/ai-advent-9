@@ -23,5 +23,6 @@
 - [День 17 — первый MCP-инструмент](day-17-android-dependency-mcp/README.md)
 - [День 18 — фоновые проверки зависимостей](day-18-dependency-watch/README.md)
 - [День 19 — композиция MCP-инструментов](day-19-mcp-composition/README.md)
+- [День 20 — оркестрация нескольких MCP-серверов](day-20-mcp-orchestration/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.

@@ -1,0 +1,22 @@
+{
+  "kind": "offline_configuration",
+  "measured_at": "2026-09-25T13:12:34.106011+00:00",
+  "model": "gpt-5.6",
+  "tool_choice": "auto",
+  "reasoning_effort": "none",
+  "store": false,
+  "max_retries": 0,
+  "max_output_tokens": 32768,
+  "deadline_seconds": 900,
+  "historical_source": "day-19-mcp-composition\\evidence\\preflight-20260924.json",
+  "source_sha256": "3c231477cedf7b41011b4dfeeeef7c868026387ae00b5499ce7de6ac5162fd66",
+  "historical_version_count": 130,
+  "one_full_summary_arguments_bytes": 3054,
+  "two_full_transfers_bytes": 6108,
+  "research_arguments_allowance": 8192,
+  "final_and_framing_allowance": 4096,
+  "estimate_with_2x_transfer_growth": 24504,
+  "sizing_status": "PASS",
+  "rationale": "UTF-8 byte upper bound for two historical full transfers, 2x growth plus research/final allowance; 900s finite deadline.",
+  "limitations": "Not actual Room/WorkManager sizes, not tokenizer usage, latency prediction or guaranteed fit. Future research/calls can exceed allowances; incomplete is retained without retry."
+}

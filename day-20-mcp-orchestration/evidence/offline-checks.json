@@ -1,0 +1,44 @@
+{
+  "kind": "offline_gate",
+  "checked_at": "2026-09-25T13:21:36.080856+00:00",
+  "tests": {
+    "passed": 110,
+    "suite": "Day20 focused + Day17/18/19 MCP + backend API",
+    "network": "fakes and synthetic traces only; readiness separately recorded",
+    "warning": "existing Starlette TestClient httpx deprecation",
+    "final_report_recheck": "20 passed"
+  },
+  "syntax_checked": [
+    "backend/app/mcp_orchestration_api.py",
+    "backend/app/mcp_orchestration_models.py",
+    "backend/app/mcp_orchestration_service.py",
+    "backend/tests/test_mcp_orchestration.py",
+    "day-20-mcp-orchestration/readiness.py",
+    "day-20-mcp-orchestration/run.py",
+    "day-20-mcp-orchestration/sizing.py",
+    "day-20-mcp-orchestration/tests/test_flow.py",
+    "day-20-mcp-orchestration/verify.py",
+    "backend/app/main.py"
+  ],
+  "json_files_parsed": 3,
+  "root_readme_link": "PASS",
+  "secret_and_local_file_scan": "PASS",
+  "openai_sdk": "2.54.0",
+  "sizing": "PASS: 24504 estimated bytes/tokens allowance <= 32768 output budget; deadline 900s",
+  "readiness": {
+    "backend_health": "PASS",
+    "day20_route": "PASS",
+    "deepwiki_tools_list": "PASS",
+    "dependency_composition": "NOT_PROVEN: local URL/token missing"
+  },
+  "live_attempts": 0,
+  "source_truth": "NOT_PROVEN",
+  "video_recorded": false,
+  "adaptation": "Current DeepWiki tools/list publishes ask_wiki_question, not old ask_question; outputSchema result:string.",
+  "remaining_tasks": [
+    "5.2 Dependency credentials/discovery",
+    "6.1 single explicit live",
+    "6.2 saved live verification",
+    "6.3 factual results/video"
+  ]
+}

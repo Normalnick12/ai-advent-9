@@ -1,0 +1,55 @@
+{
+  "kind": "local_config_readiness_check",
+  "checked_at": "2026-09-25T13:26:58.693877+00:00",
+  "task": "5.2",
+  "task_status": "BLOCKED",
+  "completed_tasks": 12,
+  "total_tasks": 16,
+  "configuration": {
+    "endpoint": "https://day19-132-243-120-220.sslip.io/mcp",
+    "url_source": ".local/day19-prelive/backend-configuration.json",
+    "corroborating_source": "day-19-mcp-composition/evidence/prelive-configuration-20260924.json",
+    "token_available": false,
+    "saved_authorization": "redacted",
+    "checked_environment_scopes": [
+      "Process",
+      "User",
+      "Machine"
+    ],
+    "checked_env_paths": [
+      ".env",
+      "backend/.env",
+      "day-19-mcp-composition/.env"
+    ],
+    "checked_local_directories": [
+      ".local/day19-deploy",
+      ".local/day19-prelive",
+      ".local/day19-live",
+      ".local/day19-offline",
+      "backend/.local/day19"
+    ],
+    "local_backend_configuration_changed": false
+  },
+  "deepwiki": {
+    "status": "PASS",
+    "basis": "retained protocol/tools-list evidence; no new remote calls",
+    "evidence": "day-20-mcp-orchestration/evidence/readiness-20260925.json",
+    "checked_at": "2026-09-25T13:15:26.396843+00:00"
+  },
+  "dependency_composition": {
+    "status": "NOT_PROVEN",
+    "blocker": "Existing DAY19_MCP_TOKEN unavailable locally; authenticated discovery not performed"
+  },
+  "backend": {
+    "health": "PASS",
+    "restarted": false,
+    "reason": "Complete local MCP configuration unavailable"
+  },
+  "network_this_step": "localhost health only",
+  "ssh": false,
+  "deployment": false,
+  "tools_called": false,
+  "model_called": false,
+  "live_ready": false,
+  "next_step": "Provide existing DAY19_MCP_TOKEN locally, configure retained URL, restart backend via dev.ps1 and run discovery only."
+}

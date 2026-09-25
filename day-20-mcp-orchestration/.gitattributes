@@ -1,0 +1,4 @@
+# Preserve exact evidence bytes across platforms, as in Day 19.
+evidence/** -text whitespace=cr-at-eol
+# Retained generated report has three empty blockquote lines ("> "); preserve the original bytes.
+evidence/live-20260925/review/report.md whitespace=cr-at-eol,-blank-at-eol

@@ -1,0 +1,307 @@
+{
+  "observed_flow": {
+    "status": "PASS",
+    "reason": "runtime flow, not source truth"
+  },
+  "checks": {
+    "registration": {
+      "status": "PASS",
+      "reason": "two independent descriptors, allowlists and auto"
+    },
+    "import_deepwiki": {
+      "status": "PASS",
+      "reason": "native tool definitions"
+    },
+    "import_dependency_composition": {
+      "status": "PASS",
+      "reason": "native tool definitions"
+    },
+    "execution": {
+      "status": "PASS",
+      "reason": "all observed calls checked"
+    },
+    "both_servers_called": {
+      "status": "PASS",
+      "reason": "actual server labels"
+    },
+    "two_branches": {
+      "status": "PASS",
+      "reason": "two lookups and two summaries; extras remain visible"
+    },
+    "evidence": {
+      "status": "PASS",
+      "reason": "available records read"
+    }
+  },
+  "branches": [
+    {
+      "coordinates": "androidx.room:room-runtime",
+      "lookup_id": "e4fedc19-cc9f-4468-9fb9-9cff285c8d5c",
+      "lookup_call": "mcp_0e5536fbc312b329016ab67e59c5b087d295239c937ced8209",
+      "summary_call": "mcp_0e5536fbc312b329016ab67e61a91887d2bf985d5349194480",
+      "research_call": "mcp_0e5536fbc312b329016ab67e43446887d29313c98ead4ef1fc",
+      "research_excerpt": "The Now in Android project uses `androidx.room:room-runtime` for local data storage and `androidx.work:work-runtime-ktx` for background work/synchronization. Both artifacts are defined in the `gradle/libs.versions.toml` file, which acts as a version catalog for the project's dependencies .\n\n## Loca",
+      "facts": {
+        "status": "found",
+        "group_id": "androidx.room",
+        "artifact_id": "room-runtime",
+        "source_url": "https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml",
+        "checked_at": "2026-09-25T13:59:54.257Z",
+        "lookup_id": "e4fedc19-cc9f-4468-9fb9-9cff285c8d5c",
+        "schema_version": 1,
+        "version_count": 92,
+        "last_three": [
+          "2.8.3",
+          "2.8.4",
+          "2.8.5"
+        ],
+        "input_sha256": "72363311799b1194c3a5363780c026dffce66a756c7d2222520dc54fc1c64d55"
+      },
+      "checks": {
+        "distinct_dependency": {
+          "status": "PASS",
+          "reason": "coordinate used once"
+        },
+        "research_to_lookup": {
+          "status": "PASS",
+          "reason": "explicit coordinate in raw research"
+        },
+        "research_order": {
+          "status": "PASS",
+          "reason": "observed Responses runtime dependency order"
+        },
+        "lookup_to_summary": {
+          "status": "PASS",
+          "reason": "full result of this lookup"
+        },
+        "summary_order": {
+          "status": "PASS",
+          "reason": "observed Responses runtime dependency order"
+        },
+        "summary_facts": {
+          "status": "PASS",
+          "reason": "independent count/last_three/hash"
+        }
+      },
+      "repository_claim": {
+        "role": "local_storage",
+        "declared_version": "2.8.3",
+        "explanation": "Цитаты наблюдались в исследовании DeepWiki: объявление версии и координат — в gradle/libs.versions.toml, использование алиаса — в build-logic/convention/src/main/kotlin/AndroidRoomConventionPlugin.kt. Точная ревизия и GitHub URL индексом не предоставлены. Публикации проверены по https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml; три элемента сохранены в порядке источника.",
+        "source_url": "https://deepwiki.com/search/return-verbatim-lines-not-para_842f0ac8-e6dd-453d-94e2-6d5cade94ae3",
+        "revision": null,
+        "provenance": {
+          "status": "FAIL",
+          "reason": "final excerpt/link/revision occur in observed research"
+        }
+      },
+      "declared_publication": {
+        "status": "NOT_PROVEN",
+        "declared_version": "2.8.3",
+        "published": null,
+        "reason": "membership only; repository usage/revision not independently verified"
+      }
+    },
+    {
+      "coordinates": "androidx.work:work-runtime-ktx",
+      "lookup_id": "50298fcd-ceda-41e5-8b36-c71e5aab92a7",
+      "lookup_call": "mcp_0e5536fbc312b329016ab67e63520087d293a3fe75d84ab2d9",
+      "summary_call": "mcp_0e5536fbc312b329016ab67e6a2d8087d2950679b926ddb242",
+      "research_call": "mcp_0e5536fbc312b329016ab67e43446887d29313c98ead4ef1fc",
+      "research_excerpt": "The Now in Android project uses `androidx.room:room-runtime` for local data storage and `androidx.work:work-runtime-ktx` for background work/synchronization. Both artifacts are defined in the `gradle/libs.versions.toml` file, which acts as a version catalog for the project's dependencies .\n\n## Local Data Storage Artifact\n\nThe Maven artifact used for local d",
+      "facts": {
+        "status": "found",
+        "group_id": "androidx.work",
+        "artifact_id": "work-runtime-ktx",
+        "source_url": "https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml",
+        "checked_at": "2026-09-25T14:00:04.211Z",
+        "lookup_id": "50298fcd-ceda-41e5-8b36-c71e5aab92a7",
+        "schema_version": 1,
+        "version_count": 91,
+        "last_three": [
+          "2.12.0-beta01",
+          "2.12.0-rc01",
+          "2.12.0"
+        ],
+        "input_sha256": "20a53a61f5469702f8f79950d11b4cf2dde52e93fcc3ee6155e6820632e648a6"
+      },
+      "checks": {
+        "distinct_dependency": {
+          "status": "PASS",
+          "reason": "coordinate used once"
+        },
+        "research_to_lookup": {
+          "status": "PASS",
+          "reason": "explicit coordinate in raw research"
+        },
+        "research_order": {
+          "status": "PASS",
+          "reason": "observed Responses runtime dependency order"
+        },
+        "lookup_to_summary": {
+          "status": "PASS",
+          "reason": "full result of this lookup"
+        },
+        "summary_order": {
+          "status": "PASS",
+          "reason": "observed Responses runtime dependency order"
+        },
+        "summary_facts": {
+          "status": "PASS",
+          "reason": "independent count/last_three/hash"
+        }
+      },
+      "repository_claim": {
+        "role": "background_work",
+        "declared_version": "2.10.0",
+        "explanation": "Цитаты наблюдались в исследовании DeepWiki: объявление версии и координат — в gradle/libs.versions.toml, использование алиаса — в sync/work/build.gradle.kts. Точная ревизия и GitHub URL индексом не предоставлены. Публикации проверены по https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml; три элемента сохранены в порядке источника.",
+        "source_url": "https://deepwiki.com/search/return-verbatim-lines-not-para_842f0ac8-e6dd-453d-94e2-6d5cade94ae3",
+        "revision": null,
+        "provenance": {
+          "status": "FAIL",
+          "reason": "final excerpt/link/revision occur in observed research"
+        }
+      },
+      "declared_publication": {
+        "status": "NOT_PROVEN",
+        "declared_version": "2.10.0",
+        "published": null,
+        "reason": "membership only; repository usage/revision not independently verified"
+      }
+    }
+  ],
+  "call_checks": [
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e43446887d29313c98ead4ef1fc"
+    },
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e50575087d2b076c6576e68d484"
+    },
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e59c5b087d295239c937ced8209"
+    },
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e61a91887d2bf985d5349194480"
+    },
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e63520087d293a3fe75d84ab2d9"
+    },
+    {
+      "status": "PASS",
+      "reason": "mcp_0e5536fbc312b329016ab67e6a2d8087d2950679b926ddb242"
+    }
+  ],
+  "calls": [
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e43446887d29313c98ead4ef1fc",
+      "arguments": "{\"repoName\":\"android/nowinandroid\",\"question\":\"Find one concrete Maven artifact actually used for local data storage and one concrete Maven artifact actually used for background work/synchronization. For each, provide exact repository excerpts showing group:artifact coordinates and the declared version or version-catalog reference plus exact excerpt resolving that reference to a version. Also provide observed GitHub source URLs and the revision/branch/commit represented by the documentation. Do not infer current main if unproven.\"}",
+      "name": "ask_wiki_question",
+      "server_label": "deepwiki",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "The Now in Android project uses `androidx.room:room-runtime` for local data storage and `androidx.work:work-runtime-ktx` for background work/synchronization. Both artifacts are defined in the `gradle/libs.versions.toml` file, which acts as a version catalog for the project's dependencies .\n\n## Local Data Storage Artifact\n\nThe Maven artifact used for local data storage is `androidx.room:room-runtime` .\n\n*   **Group:Artifact Coordinates**: `androidx.room:room-runtime` \n*   **Declared Version/Version-Catalog Reference**: The version is referenced as `version.ref = \"room\"` . This reference resolves to version `2.8.3` in the `[versions]` section of the `libs.versions.toml` file .\n*   **Observed GitHub Source URL**: The Room Persistence Library is part of Android Jetpack, and its source can be found on the AndroidX GitHub repository. A relevant source for Room is the `androidx.room` project within the AndroidX repository.\n*   **Revision/Branch/Commit**: The documentation for the Now in Android project does not specify a particular commit or branch for external libraries. However, the `build-logic/convention/src/main/kotlin/AndroidRoomConventionPlugin.kt` file shows how the Room plugin is applied and configured, including schema directory setup for auto-migrations . The `AndroidRoomConventionPlugin` also explicitly adds `room.runtime` and `room.ktx` as implementation dependencies .\n\n## Background Work/Synchronization Artifact\n\nThe Maven artifact used for background work and synchronization is `androidx.work:work-runtime-ktx` .\n\n*   **Group:Artifact Coordinates**: `androidx.work:work-runtime-ktx` \n*   **Declared Version/Version-Catalog Reference**: The version is referenced as `version.ref = \"androidxWork\"` . This reference resolves to version `2.10.0` in the `[versions]` section of the `libs.versions.toml` file .\n*   **Observed GitHub Source URL**: WorkManager is part of Android Jetpack, and its source can be found on the AndroidX GitHub repository. A relevant source for WorkManager is the `androidx.work` project within the AndroidX repository.\n*   **Revision/Branch/Commit**: The documentation for the Now in Android project does not specify a particular commit or branch for external libraries. The `SyncWorker.kt` file demonstrates the usage of `androidx.work` for background synchronization tasks . The `SyncWorker` is a `CoroutineWorker` and uses `HiltWorker` for dependency injection .\n\n## Notes\n\nThe `gradle/libs.versions.toml` file is the central place for managing dependency versions in this project, as described in the \"Build System\" wiki page . The `app/dependencies/prodReleaseRuntimeClasspath.txt` file also lists these artifacts as part of the production release runtime classpath, confirming their usage  . The \"Overview\" wiki page and `AGENTS.md` also mention Room and WorkManager as key technologies for data management and background processing, respectively  .\n\nWiki pages you might want to explore:\n- [Overview (android/nowinandroid)](/wiki/android/nowinandroid#1)\n- [Build System (android/nowinandroid)](/wiki/android/nowinandroid#3)\n\nView this search on DeepWiki: https://deepwiki.com/search/find-one-concrete-maven-artifa_edfa9402-3355-4358-9bab-5c71085d2a2a\n",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e50575087d2b076c6576e68d484",
+      "arguments": "{\"repoName\":\"android/nowinandroid\",\"question\":\"Return verbatim lines (not paraphrases) from gradle/libs.versions.toml for the version declarations and library declarations of Room runtime and WorkManager runtime KTX. Include exact observed GitHub file URL(s), and identify any commit SHA/revision DeepWiki indexed if available. Also quote verbatim build/module lines proving each alias is used.\"}",
+      "name": "ask_wiki_question",
+      "server_label": "deepwiki",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "The DeepWiki index for the `android/nowinandroid` repository does not include commit SHAs or GitHub file URLs. \n\n## Room Runtime Declarations\n\nThe version for Room is declared as `room = \"2.8.3\"` in the `[versions]` section of `gradle/libs.versions.toml` .\n\nThe library declarations for Room runtime and Room KTX are found in the `[libraries]` section of `gradle/libs.versions.toml` :\n```toml\nroom-ktx = { group = \"androidx.room\", name = \"room-ktx\", version.ref = \"room\" }\nroom-runtime = { group = \"androidx.room\", name = \"room-runtime\", version.ref = \"room\" }\n```\nThe `room-runtime` and `room-ktx` aliases are used in `build-logic/convention/src/main/kotlin/AndroidRoomConventionPlugin.kt` :\n```kotlin\n\"implementation\"(libs.findLibrary(\"room.runtime\").get())\n\"implementation\"(libs.findLibrary(\"room.ktx\").get())\n```\n\n## WorkManager Runtime KTX Declarations\n\nThe version for WorkManager is declared as `androidxWork = \"2.10.0\"` in the `[versions]` section of `gradle/libs.versions.toml` .\n\nThe library declaration for WorkManager runtime KTX is found in the `[libraries]` section of `gradle/libs.versions.toml` :\n```toml\nandroidx-work-ktx = { group = \"androidx.work\", name = \"work-runtime-ktx\", version.ref = \"androidxWork\" }\n```\nThe `androidx-work-ktx` alias is used in `sync/work/build.gradle.kts` :\n```kotlin\nimplementation(libs.androidx.work.ktx)\n```\n\n## Notes\nThe provided context does not include GitHub file URLs or commit SHAs for the indexed files. \n\nWiki pages you might want to explore:\n- [Build System (android/nowinandroid)](/wiki/android/nowinandroid#3)\n\nView this search on DeepWiki: https://deepwiki.com/search/return-verbatim-lines-not-para_842f0ac8-e6dd-453d-94e2-6d5cade94ae3\n",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e59c5b087d295239c937ced8209",
+      "arguments": "{\"group_id\":\"androidx.room\",\"artifact_id\":\"room-runtime\"}",
+      "name": "get_google_maven_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.room\", \"artifact_id\": \"room-runtime\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml\", \"checked_at\": \"2026-09-25T13:59:54.257Z\", \"lookup_id\": \"e4fedc19-cc9f-4468-9fb9-9cff285c8d5c\", \"versions\": [\"2.0.0-alpha1\", \"2.0.0-beta01\", \"2.0.0-rc01\", \"2.0.0\", \"2.1.0-alpha01\", \"2.1.0-alpha02\", \"2.1.0-alpha03\", \"2.1.0-alpha04\", \"2.1.0-alpha05\", \"2.1.0-alpha06\", \"2.1.0-alpha07\", \"2.1.0-beta01\", \"2.1.0-rc01\", \"2.1.0\", \"2.2.0-alpha01\", \"2.2.0-alpha02\", \"2.2.0-beta01\", \"2.2.0-rc01\", \"2.2.0\", \"2.2.1\", \"2.2.2\", \"2.2.3\", \"2.2.4\", \"2.2.5\", \"2.2.6\", \"2.3.0-alpha01\", \"2.3.0-alpha02\", \"2.3.0-alpha03\", \"2.3.0-alpha04\", \"2.3.0-beta01\", \"2.3.0-beta02\", \"2.3.0-beta03\", \"2.3.0-rc01\", \"2.3.0\", \"2.4.0-alpha01\", \"2.4.0-alpha02\", \"2.4.0-alpha03\", \"2.4.0-alpha04\", \"2.4.0-alpha05\", \"2.4.0-beta01\", \"2.4.0-beta02\", \"2.4.0-rc01\", \"2.4.0\", \"2.4.1\", \"2.4.2\", \"2.4.3\", \"2.5.0-alpha01\", \"2.5.0-alpha02\", \"2.5.0-alpha03\", \"2.5.0-beta01\", \"2.5.0-beta02\", \"2.5.0-rc01\", \"2.5.0\", \"2.5.1\", \"2.5.2\", \"2.6.0-alpha01\", \"2.6.0-alpha02\", \"2.6.0-alpha03\", \"2.6.0-beta01\", \"2.6.0-rc01\", \"2.6.0\", \"2.6.1\", \"2.7.0-alpha01\", \"2.7.0-alpha02\", \"2.7.0-alpha03\", \"2.7.0-alpha04\", \"2.7.0-alpha05\", \"2.7.0-alpha06\", \"2.7.0-alpha07\", \"2.7.0-alpha08\", \"2.7.0-alpha09\", \"2.7.0-alpha10\", \"2.7.0-alpha11\", \"2.7.0-alpha12\", \"2.7.0-alpha13\", \"2.7.0-beta01\", \"2.7.0-rc01\", \"2.7.0-rc02\", \"2.7.0-rc03\", \"2.7.0\", \"2.7.1\", \"2.7.2\", \"2.8.0-alpha01\", \"2.8.0-beta01\", \"2.8.0-rc01\", \"2.8.0-rc02\", \"2.8.0\", \"2.8.1\", \"2.8.2\", \"2.8.3\", \"2.8.4\", \"2.8.5\"]}",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e61a91887d2bf985d5349194480",
+      "arguments": "{\"lookup\":{\"group_id\":\"androidx.room\",\"artifact_id\":\"room-runtime\",\"status\":\"found\",\"source_url\":\"https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml\",\"checked_at\":\"2026-09-25T13:59:54.257Z\",\"lookup_id\":\"e4fedc19-cc9f-4468-9fb9-9cff285c8d5c\",\"versions\":[\"2.0.0-alpha1\",\"2.0.0-beta01\",\"2.0.0-rc01\",\"2.0.0\",\"2.1.0-alpha01\",\"2.1.0-alpha02\",\"2.1.0-alpha03\",\"2.1.0-alpha04\",\"2.1.0-alpha05\",\"2.1.0-alpha06\",\"2.1.0-alpha07\",\"2.1.0-beta01\",\"2.1.0-rc01\",\"2.1.0\",\"2.2.0-alpha01\",\"2.2.0-alpha02\",\"2.2.0-beta01\",\"2.2.0-rc01\",\"2.2.0\",\"2.2.1\",\"2.2.2\",\"2.2.3\",\"2.2.4\",\"2.2.5\",\"2.2.6\",\"2.3.0-alpha01\",\"2.3.0-alpha02\",\"2.3.0-alpha03\",\"2.3.0-alpha04\",\"2.3.0-beta01\",\"2.3.0-beta02\",\"2.3.0-beta03\",\"2.3.0-rc01\",\"2.3.0\",\"2.4.0-alpha01\",\"2.4.0-alpha02\",\"2.4.0-alpha03\",\"2.4.0-alpha04\",\"2.4.0-alpha05\",\"2.4.0-beta01\",\"2.4.0-beta02\",\"2.4.0-rc01\",\"2.4.0\",\"2.4.1\",\"2.4.2\",\"2.4.3\",\"2.5.0-alpha01\",\"2.5.0-alpha02\",\"2.5.0-alpha03\",\"2.5.0-beta01\",\"2.5.0-beta02\",\"2.5.0-rc01\",\"2.5.0\",\"2.5.1\",\"2.5.2\",\"2.6.0-alpha01\",\"2.6.0-alpha02\",\"2.6.0-alpha03\",\"2.6.0-beta01\",\"2.6.0-rc01\",\"2.6.0\",\"2.6.1\",\"2.7.0-alpha01\",\"2.7.0-alpha02\",\"2.7.0-alpha03\",\"2.7.0-alpha04\",\"2.7.0-alpha05\",\"2.7.0-alpha06\",\"2.7.0-alpha07\",\"2.7.0-alpha08\",\"2.7.0-alpha09\",\"2.7.0-alpha10\",\"2.7.0-alpha11\",\"2.7.0-alpha12\",\"2.7.0-alpha13\",\"2.7.0-beta01\",\"2.7.0-rc01\",\"2.7.0-rc02\",\"2.7.0-rc03\",\"2.7.0\",\"2.7.1\",\"2.7.2\",\"2.8.0-alpha01\",\"2.8.0-beta01\",\"2.8.0-rc01\",\"2.8.0-rc02\",\"2.8.0\",\"2.8.1\",\"2.8.2\",\"2.8.3\",\"2.8.4\",\"2.8.5\"]}}",
+      "name": "summarize_dependency_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.room\", \"artifact_id\": \"room-runtime\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml\", \"checked_at\": \"2026-09-25T13:59:54.257Z\", \"lookup_id\": \"e4fedc19-cc9f-4468-9fb9-9cff285c8d5c\", \"schema_version\": 1, \"version_count\": 92, \"last_three\": [\"2.8.3\", \"2.8.4\", \"2.8.5\"], \"input_sha256\": \"72363311799b1194c3a5363780c026dffce66a756c7d2222520dc54fc1c64d55\"}",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e63520087d293a3fe75d84ab2d9",
+      "arguments": "{\"group_id\":\"androidx.work\",\"artifact_id\":\"work-runtime-ktx\"}",
+      "name": "get_google_maven_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.work\", \"artifact_id\": \"work-runtime-ktx\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml\", \"checked_at\": \"2026-09-25T14:00:04.211Z\", \"lookup_id\": \"50298fcd-ceda-41e5-8b36-c71e5aab92a7\", \"versions\": [\"2.0.0-rc01\", \"2.0.0\", \"2.0.1-rc01\", \"2.0.1\", \"2.1.0-alpha01\", \"2.1.0-alpha02\", \"2.1.0-alpha03\", \"2.1.0-beta01\", \"2.1.0-beta02\", \"2.1.0-rc01\", \"2.1.0\", \"2.2.0-beta01\", \"2.2.0-beta02\", \"2.2.0-rc01\", \"2.2.0\", \"2.3.0-alpha01\", \"2.3.0-alpha02\", \"2.3.0-alpha03\", \"2.3.0-beta01\", \"2.3.0-beta02\", \"2.3.0-rc01\", \"2.3.0\", \"2.3.1\", \"2.3.2\", \"2.3.3\", \"2.3.4\", \"2.4.0-alpha01\", \"2.4.0-alpha02\", \"2.4.0-alpha03\", \"2.4.0-beta01\", \"2.4.0-rc01\", \"2.4.0\", \"2.5.0-alpha01\", \"2.5.0-alpha02\", \"2.5.0-alpha03\", \"2.5.0-beta01\", \"2.5.0-beta02\", \"2.5.0-rc01\", \"2.5.0\", \"2.6.0-alpha01\", \"2.6.0-alpha02\", \"2.6.0-beta01\", \"2.6.0-beta02\", \"2.6.0-rc01\", \"2.6.0\", \"2.7.0-alpha01\", \"2.7.0-alpha02\", \"2.7.0-alpha03\", \"2.7.0-alpha04\", \"2.7.0-alpha05\", \"2.7.0-beta01\", \"2.7.0-rc01\", \"2.7.0\", \"2.7.1\", \"2.8.0-alpha01\", \"2.8.0-alpha02\", \"2.8.0-alpha03\", \"2.8.0-alpha04\", \"2.8.0-beta01\", \"2.8.0-beta02\", \"2.8.0-rc01\", \"2.8.0\", \"2.8.1\", \"2.9.0-alpha01\", \"2.9.0-alpha02\", \"2.9.0-beta01\", \"2.9.0-rc01\", \"2.9.0\", \"2.9.1\", \"2.10.0-alpha01\", \"2.10.0-alpha02\", \"2.10.0-alpha03\", \"2.10.0-alpha04\", \"2.10.0-beta01\", \"2.10.0-rc01\", \"2.10.0\", \"2.10.1\", \"2.10.2\", \"2.10.3\", \"2.10.4\", \"2.10.5\", \"2.11.0-alpha01\", \"2.11.0-beta01\", \"2.11.0-rc01\", \"2.11.0\", \"2.11.1\", \"2.11.2\", \"2.12.0-alpha01\", \"2.12.0-beta01\", \"2.12.0-rc01\", \"2.12.0\"]}",
+      "status": "completed"
+    },
+    {
+      "id": "mcp_0e5536fbc312b329016ab67e6a2d8087d2950679b926ddb242",
+      "arguments": "{\"lookup\":{\"group_id\":\"androidx.work\",\"artifact_id\":\"work-runtime-ktx\",\"status\":\"found\",\"source_url\":\"https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml\",\"checked_at\":\"2026-09-25T14:00:04.211Z\",\"lookup_id\":\"50298fcd-ceda-41e5-8b36-c71e5aab92a7\",\"versions\":[\"2.0.0-rc01\",\"2.0.0\",\"2.0.1-rc01\",\"2.0.1\",\"2.1.0-alpha01\",\"2.1.0-alpha02\",\"2.1.0-alpha03\",\"2.1.0-beta01\",\"2.1.0-beta02\",\"2.1.0-rc01\",\"2.1.0\",\"2.2.0-beta01\",\"2.2.0-beta02\",\"2.2.0-rc01\",\"2.2.0\",\"2.3.0-alpha01\",\"2.3.0-alpha02\",\"2.3.0-alpha03\",\"2.3.0-beta01\",\"2.3.0-beta02\",\"2.3.0-rc01\",\"2.3.0\",\"2.3.1\",\"2.3.2\",\"2.3.3\",\"2.3.4\",\"2.4.0-alpha01\",\"2.4.0-alpha02\",\"2.4.0-alpha03\",\"2.4.0-beta01\",\"2.4.0-rc01\",\"2.4.0\",\"2.5.0-alpha01\",\"2.5.0-alpha02\",\"2.5.0-alpha03\",\"2.5.0-beta01\",\"2.5.0-beta02\",\"2.5.0-rc01\",\"2.5.0\",\"2.6.0-alpha01\",\"2.6.0-alpha02\",\"2.6.0-beta01\",\"2.6.0-beta02\",\"2.6.0-rc01\",\"2.6.0\",\"2.7.0-alpha01\",\"2.7.0-alpha02\",\"2.7.0-alpha03\",\"2.7.0-alpha04\",\"2.7.0-alpha05\",\"2.7.0-beta01\",\"2.7.0-rc01\",\"2.7.0\",\"2.7.1\",\"2.8.0-alpha01\",\"2.8.0-alpha02\",\"2.8.0-alpha03\",\"2.8.0-alpha04\",\"2.8.0-beta01\",\"2.8.0-beta02\",\"2.8.0-rc01\",\"2.8.0\",\"2.8.1\",\"2.9.0-alpha01\",\"2.9.0-alpha02\",\"2.9.0-beta01\",\"2.9.0-rc01\",\"2.9.0\",\"2.9.1\",\"2.10.0-alpha01\",\"2.10.0-alpha02\",\"2.10.0-alpha03\",\"2.10.0-alpha04\",\"2.10.0-beta01\",\"2.10.0-rc01\",\"2.10.0\",\"2.10.1\",\"2.10.2\",\"2.10.3\",\"2.10.4\",\"2.10.5\",\"2.11.0-alpha01\",\"2.11.0-beta01\",\"2.11.0-rc01\",\"2.11.0\",\"2.11.1\",\"2.11.2\",\"2.12.0-alpha01\",\"2.12.0-beta01\",\"2.12.0-rc01\",\"2.12.0\"]}}",
+      "name": "summarize_dependency_versions",
+      "server_label": "dependency_composition",
+      "type": "mcp_call",
+      "approval_request_id": null,
+      "error": null,
+      "output": "{\"group_id\": \"androidx.work\", \"artifact_id\": \"work-runtime-ktx\", \"status\": \"found\", \"source_url\": \"https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml\", \"checked_at\": \"2026-09-25T14:00:04.211Z\", \"lookup_id\": \"50298fcd-ceda-41e5-8b36-c71e5aab92a7\", \"schema_version\": 1, \"version_count\": 91, \"last_three\": [\"2.12.0-beta01\", \"2.12.0-rc01\", \"2.12.0\"], \"input_sha256\": \"20a53a61f5469702f8f79950d11b4cf2dde52e93fcc3ee6155e6820632e648a6\"}",
+      "status": "completed"
+    }
+  ],
+  "lifecycle": {
+    "mcp_0e5536fbc312b329016ab67e43446887d29313c98ead4ef1fc": {
+      "start": 10,
+      "end": 14
+    },
+    "mcp_0e5536fbc312b329016ab67e50575087d2b076c6576e68d484": {
+      "start": 16,
+      "end": 20
+    },
+    "mcp_0e5536fbc312b329016ab67e59c5b087d295239c937ced8209": {
+      "start": 22,
+      "end": 26
+    },
+    "mcp_0e5536fbc312b329016ab67e61a91887d2bf985d5349194480": {
+      "start": 28,
+      "end": 32
+    },
+    "mcp_0e5536fbc312b329016ab67e63520087d293a3fe75d84ab2d9": {
+      "start": 34,
+      "end": 38
+    },
+    "mcp_0e5536fbc312b329016ab67e6a2d8087d2950679b926ddb242": {
+      "start": 40,
+      "end": 44
+    }
+  },
+  "final_facts": {
+    "status": "PASS",
+    "reason": "two roles and publication facts match; repository truth not assessed"
+  },
+  "final_text": "{\"branches\":[{\"role\":\"local_storage\",\"group_id\":\"androidx.room\",\"artifact_id\":\"room-runtime\",\"declared_version\":\"2.8.3\",\"repository_excerpt\":\"room = \\\"2.8.3\\\"\\nroom-runtime = { group = \\\"androidx.room\\\", name = \\\"room-runtime\\\", version.ref = \\\"room\\\" }\\n\\\"implementation\\\"(libs.findLibrary(\\\"room.runtime\\\").get())\",\"source_url\":\"https://deepwiki.com/search/return-verbatim-lines-not-para_842f0ac8-e6dd-453d-94e2-6d5cade94ae3\",\"revision\":null,\"lookup_id\":\"e4fedc19-cc9f-4468-9fb9-9cff285c8d5c\",\"status\":\"found\",\"version_count\":92,\"last_three\":[\"2.8.3\",\"2.8.4\",\"2.8.5\"],\"explanation\":\"Цитаты наблюдались в исследовании DeepWiki: объявление версии и координат — в gradle/libs.versions.toml, использование алиаса — в build-logic/convention/src/main/kotlin/AndroidRoomConventionPlugin.kt. Точная ревизия и GitHub URL индексом не предоставлены. Публикации проверены по https://dl.google.com/dl/android/maven2/androidx/room/group-index.xml; три элемента сохранены в порядке источника.\"},{\"role\":\"background_work\",\"group_id\":\"androidx.work\",\"artifact_id\":\"work-runtime-ktx\",\"declared_version\":\"2.10.0\",\"repository_excerpt\":\"androidxWork = \\\"2.10.0\\\"\\nandroidx-work-ktx = { group = \\\"androidx.work\\\", name = \\\"work-runtime-ktx\\\", version.ref = \\\"androidxWork\\\" }\\nimplementation(libs.androidx.work.ktx)\",\"source_url\":\"https://deepwiki.com/search/return-verbatim-lines-not-para_842f0ac8-e6dd-453d-94e2-6d5cade94ae3\",\"revision\":null,\"lookup_id\":\"50298fcd-ceda-41e5-8b36-c71e5aab92a7\",\"status\":\"found\",\"version_count\":91,\"last_three\":[\"2.12.0-beta01\",\"2.12.0-rc01\",\"2.12.0\"],\"explanation\":\"Цитаты наблюдались в исследовании DeepWiki: объявление версии и координат — в gradle/libs.versions.toml, использование алиаса — в sync/work/build.gradle.kts. Точная ревизия и GitHub URL индексом не предоставлены. Публикации проверены по https://dl.google.com/dl/android/maven2/androidx/work/group-index.xml; три элемента сохранены в порядке источника.\"}],\"conclusion\":\"В исследованном состоянии android/nowinandroid для локального хранения используется androidx.room:room-runtime:2.8.3, а для фоновой работы и синхронизации — androidx.work:work-runtime-ktx:2.10.0. Оба артефакта найдены в Google Maven; точная ревизия исследованного репозитория неизвестна, поэтому принадлежность сведений актуальному main не утверждается.\"}",
+  "source_truth": {
+    "status": "NOT_PROVEN",
+    "reason": "DeepWiki truth/revision and semantic dependency roles not independently established"
+  },
+  "evidence_kind": "provider_attempt",
+  "prompt": "Исследуй в android/nowinandroid зависимости для локального хранения данных и фоновой работы/синхронизации. Для каждой задачи выбери один конкретный используемый Maven-артефакт, укажи роль, координаты, объявленную версию и доступные ссылки на исходники/ревизию. Проверь публикации в Google Maven и получи средствами доступных инструментов отдельную сводку: статус, количество и три последних элемента в порядке источника. Не делай выводов о совместимости или рекомендации обновления; неизвестное обозначь явно.",
+  "servers": {
+    "deepwiki": "https://mcp.deepwiki.com/mcp",
+    "dependency_composition": "https://day19-132-243-120-220.sslip.io/mcp"
+  }
+}

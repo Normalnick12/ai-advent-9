@@ -91,3 +91,55 @@ timeout означает unknown. При недоступном evidence до di
 tests/test_mcp_lab.py tests/test_dependency_watch.py tests/test_dependency_watch_evidence.py
 tests/test_dependency_watch_summary.py tests/test_api.py -q` (одной командой).
 CLI, gates и независимое чтение описаны в [scripts](../scripts/README.md#day-19--композиция-mcp).
+
+## Multi-server orchestration — Day 20
+
+`POST /api/v1/mcp-orchestration/run` принимает `{"prompt":"..."}`.
+Один streaming Responses request регистрирует DeepWiki и существующий Day 19
+Dependency Composition MCP одновременно. Модель выбирает tools и arguments;
+Responses runtime вызывает нужный endpoint по descriptor, MCP передаёт schemas,
+arguments и results, серверы выполняют свои операции. Backend задаёт возможности,
+лимиты и задачу, сохраняет события; он не исполняет свой tool loop и не подставляет
+следующий вызов. Offline verifier проверяет наблюдаемые переходы.
+
+Используются `OPENAI_API_KEY`, `DAY19_MCP_SERVER_URL` и `DAY19_MCP_TOKEN`
+из окружения backend или локального игнорируемого `.env`. Token не менее 32
+символов, URL — существующий публичный HTTPS `/mcp`. Старый Day 19 launcher
+использует SSH: **для Day 20 его не запускать**. Без локального token readiness
+остаётся незавершённой; требуется заранее предоставить его локально, не в чат.
+При подготовке единственной попытки существующий credential восстановили отдельным
+разрешённым чтением env через SSH и передали process environment; VPS не менялся.
+Остальные Days запускаются без Day 20 конфигурации.
+
+По умолчанию `gpt-5.6`, reasoning `none`, `tool_choice="auto"`, `store=false`,
+SDK retries 0, `DAY20_MAX_OUTPUT_TOKENS=32768`, `DAY20_DEADLINE_SECONDS=900`.
+Лимиты конечные; выбранный бюджет основан на offline sizing сохранённого Day 19
+payload с запасом для двух передач, research и финального ответа, а не на
+предварительном исследовании Day 20. Подробности — в
+[configuration summary](../day-20-mcp-orchestration/evidence/offline-configuration.json).
+Инструмент сохранения не импортируется. Фактические DeepWiki tools по discovery
+2026-09-25: `read_wiki_structure`, `read_wiki_contents`, `ask_wiki_question`.
+Dependency tools — lookup и summary.
+
+Новый UUID-каталог `backend/.local/day20/<operation-id>/` содержит
+`attempt.json` (redacted request), `events.jsonl`, при получении terminal response —
+`response.json`, при наличии ответа — `model-answer.txt`, и `operation.json`.
+Всё это evidence одной отправки. На timeout/обрыв возможны неполные файлы;
+не повторяйте запрос. Verifier создаёт новый `review/report.md` и вспомогательный
+`verdict.json`, не меняя исходные файлы. При повторной offline-проверке задайте
+другой output directory. Recovery/replay и серверная инспекция не предусмотрены.
+
+Порядок проверяется по native `response.mcp_call.in_progress` и
+`response.output_item.done`, а не по позиции элемента в итоговом массиве.
+Две ветки связываются по coordinates/lookup_id и полному lookup object.
+Summary count, last_three и canonical hash пересчитываются независимо.
+Явная координата в research подтверждает наблюдавшееся evidence; истинность
+DeepWiki, семантическая роль зависимости и актуальность revision остаются
+`NOT_PROVEN`. Членство объявленной версии проверяется только при наличии
+наблюдаемой цитаты. Можно вручную сверить исходники после live, но это не
+обязательный workflow и не дополнительный model run.
+
+Консоль backend показывает call ids/labels/names по мере получения items.
+CLI после завершения выводит читаемый отчёт: задачу, выбранную research capability,
+зависимости, переход к Maven, summaries и отдельные verdicts для flow и model facts.
+Все дополнительные и ошибочные calls видны. Инструкции — в [scripts](../scripts/README.md).
