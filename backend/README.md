@@ -8,6 +8,45 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 21 — Индексация документов
+
+Изолированный CLI `scripts/day21_index.py` работает без FastAPI/Android.
+Manifest [corpus.json](../day-21-document-indexing/corpus.json) задаёт 22 файла
+и четыре representative locations. Один snapshot UTF-8/LF используется для
+fixed-size и structure-aware deterministic chunking; обе стратегии ограничены
+500 tokens (`cl100k_base`), target overlap 50 применяется к baseline и oversized
+fallback. Текст режется по character offsets с фактическим пересчётом tokens,
+Unicode не декодируется из разрезанных token sequences. Kotlin использует
+formatting boundaries, не parser. Первая загрузка tokenizer assets может требовать сети.
+
+`preview` без OpenAI показывает исходный участок и все пересекающие его chunks
+обеих стратегий с metadata. `build --strategy both` отправляет точные тексты
+в OpenAI Embeddings API (`text-embedding-3-small`, 1536 dimensions), batches до 32,
+timeout 60 секунд на request, SDK retries=0. Используются существующий OpenAI SDK
+и `tiktoken==0.14.0` из requirements. Ключ читается из backend environment или
+локального `backend/.env`, не выводится. Источники не исполняются как код.
+
+SQLite `backend/.local/day21/index.sqlite3` содержит таблицы builds/sources/chunks:
+snapshot, corpus/config provenance, metadata, chunk text и JSON vectors.
+Обе стратегии сохраняются одной транзакцией после получения всех vectors;
+ошибка не создаёт готового неполного run. Старые runs не изменяются.
+Повторный build снова вызывает API; resume и embedding cache отсутствуют.
+`compare`/`inspect` читают SQLite без ключа, исходных файлов и новых API calls.
+
+Metadata: chunk_id, source/source_type, title, section, strategy, ordinal,
+start_line/end_line, token_count, text_hash, split_reason. Дополнительные
+start_char/end_char — half-open offsets нормализованного текста для точного
+inspect. Ordinal начинается с 0, строки — с 1 включительно. IDs стабильны для
+одинаковых snapshot/config, после изменения source могут измениться.
+
+Сравнение: chunk count, min/median/max tokens, total embedded tokens (planned
+в preview), fallback count и заранее выбранные примеры. Provider usage,
+число calls, время и текущий общий размер SQLite — наблюдения конкретного run;
+unknown usage не заменяется нулём. Retrieval quality и производительность
+стратегии из этих наблюдений не следуют. Поиска и generation здесь нет.
+
+Команды и offline checks — в [scripts](../scripts/README.md#day-21--индексация-документов).
+
 ## Agent Playground — Day 15
 
 `/api/v1/agent-playground/catalog` и `/current` читают настройки и текущее состояние без создания задачи и обращения к модели. POST operations: `create-task`, `complete-setup`, `send`, `events`, `select-profile`, `new-conversation`. Контракты доступны в локальном Swagger UI.

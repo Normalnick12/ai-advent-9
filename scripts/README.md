@@ -59,6 +59,57 @@ Backend загружает локальный `backend/.env`, если он ес
 и [проверка состояния](http://127.0.0.1:8000/health).
 Backend запускается одним worker: блокировки диалогов действуют внутри процесса.
 
+## Day 21 — Индексация документов
+
+CLI не требует запущенного backend или эмулятора. Из корня репозитория в PowerShell 7:
+
+```powershell
+& .\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements-dev.txt
+& .\backend\.venv\Scripts\python.exe -c "import tiktoken; tiktoken.get_encoding('cl100k_base')"
+& .\backend\.venv\Scripts\python.exe backend/scripts/day21_index.py corpus
+& .\backend\.venv\Scripts\python.exe backend/scripts/day21_index.py preview
+```
+
+Установка и первая инициализация tokenizer могут использовать сеть. Последующие
+corpus/preview и offline tests работают без OpenAI/API key. Чтобы подробно показать
+один заранее выбранный участок, добавьте к preview `--example atomic-turn`,
+`--example sqlite-commit`, `--example android-restore` или `--example task-send`.
+Вывод показывает исходник с номерами строк, затем полный текст пересекающих его
+fixed-size chunks и structure-aware chunks с metadata. Все четыре примера
+зафиксированы в manifest до результата, включая длинные блоки с fallback.
+
+Явный live build использует `OPENAI_API_KEY` из environment или игнорируемого
+`backend/.env`, отправляет выбранный corpus в OpenAI и расходует API tokens:
+
+```powershell
+& .\backend\.venv\Scripts\python.exe backend/scripts/day21_index.py build --strategy both
+```
+
+После успешного commit команда выводит `Saved run: <UUID>` и путь SQLite.
+Подставьте этот UUID вместо `RUN_ID` в новом процессе:
+
+```powershell
+& .\backend\.venv\Scripts\python.exe backend/scripts/day21_index.py compare --run RUN_ID
+& .\backend\.venv\Scripts\python.exe backend/scripts/day21_index.py inspect --run RUN_ID --example sqlite-commit
+```
+
+Эти команды читают сохранённые тексты/vectors и не вызывают OpenAI. Inspect также
+принимает `--source backend/app/sqlite_conversation_store.py` или `--chunk CHUNK_ID`.
+По умолчанию показаны dimension и первые шесть координат; `--full-vector` раскрывает
+vector целиком. `--db PATH` выбирает локальную базу вместо стандартной
+`backend/.local/day21/index.sqlite3`. Индекс не добавляйте в Git.
+
+Offline checks, из каталога backend:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_document_indexing.py -q
+```
+
+Тесты используют fake provider только внутри temporary test storage. Они проверяют
+chunking, metadata, embedding count/dimension и SQLite round-trip, но не качество
+embeddings. При ошибке build выходит nonzero без готового неполного run. Не
+запускайте второй build автоматически: новая попытка повторяет embedding calls.
+
 ## MCP-сервер Day 17
 
 Сервер из [Day 17](../day-17-android-dependency-mcp/README.md) использует отдельное

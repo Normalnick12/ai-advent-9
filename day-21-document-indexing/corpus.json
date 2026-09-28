@@ -1,0 +1,118 @@
+{
+  "sources": [
+    {
+      "source": "README.md",
+      "source_type": "documentation"
+    },
+    {
+      "source": "backend/README.md",
+      "source_type": "documentation"
+    },
+    {
+      "source": "android-app/README.md",
+      "source_type": "documentation"
+    },
+    {
+      "source": "day-07-context-persistence/README.md",
+      "source_type": "documentation"
+    },
+    {
+      "source": "day-13-task-state-machine/README.md",
+      "source_type": "documentation"
+    },
+    {
+      "source": "openspec/specs/first-agent-conversation/spec.md",
+      "source_type": "spec"
+    },
+    {
+      "source": "openspec/specs/first-agent-android/spec.md",
+      "source_type": "spec"
+    },
+    {
+      "source": "openspec/specs/task-state-machine/spec.md",
+      "source_type": "spec"
+    },
+    {
+      "source": "openspec/specs/task-state-android/spec.md",
+      "source_type": "spec"
+    },
+    {
+      "source": "backend/app/conversation_store.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/sqlite_conversation_store.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/agent_sessions.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/agent_api.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/task_state.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/task_state_store.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/sqlite_task_state_store.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "backend/app/task_state_lab_service.py",
+      "source_type": "backend"
+    },
+    {
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/data/CurrentSessionStore.kt",
+      "source_type": "android"
+    },
+    {
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/data/ChatRepository.kt",
+      "source_type": "android"
+    },
+    {
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/ui/chat/ChatViewModel.kt",
+      "source_type": "android"
+    },
+    {
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/data/TaskStateRepository.kt",
+      "source_type": "android"
+    },
+    {
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/ui/taskstate/TaskStateViewModel.kt",
+      "source_type": "android"
+    }
+  ],
+  "locations": [
+    {
+      "id": "atomic-turn",
+      "source": "openspec/specs/first-agent-conversation/spec.md",
+      "kind": "heading",
+      "anchor": "### Requirement: Only a completed text turn atomically commits history"
+    },
+    {
+      "id": "sqlite-commit",
+      "source": "backend/app/sqlite_conversation_store.py",
+      "kind": "python",
+      "anchor": "SQLiteConversationStore.append_turn"
+    },
+    {
+      "id": "android-restore",
+      "source": "android-app/app/src/main/java/com/example/responsecontrollab/ui/chat/ChatViewModel.kt",
+      "kind": "line",
+      "anchor": "  private fun restore() {"
+    },
+    {
+      "id": "task-send",
+      "source": "backend/app/task_state_lab_service.py",
+      "kind": "python",
+      "anchor": "TaskStateLabService.send"
+    }
+  ]
+}
