@@ -8,6 +8,44 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 22 — Первый RAG-запрос
+
+`scripts/day22_rag.py` работает локально без FastAPI/Android. Переиспользует
+read-only Day 21 SQLite; основной eval закреплён за run
+`3a3c3319-5516-4526-8e56-33ab1251da72`, structure-aware, 226 chunks.
+Query получает `text-embedding-3-small`, 1536 float dimensions; поиск вычисляет
+cosine по всем vectors и возвращает Top-5 без threshold, reranking или соседей.
+
+Direct и RAG используют один stateless generation path, `gpt-5.6`, reasoning none,
+600 output tokens, disabled truncation, store=false и retries=0. Общая инструкция
+просит краткий ответ, citations предоставленных [S#] sources и честное обозначение
+недостатка сведений. RAG добавляет полные chunk texts/source/section/lines;
+scores, vectors и expectations модели не передаются. Defaults старых дней прежние.
+
+`backend/.local/day22/<eval-id>/` содержит `run.json` с frozen question set/hash,
+Q01–Q10 JSON с query vector/usage, retrieval hits, actual generation inputs,
+normalized outcomes и полученным provider output (в том числе partial text).
+Запись выполняется поэтапно с заменой целого JSON. Unknown checkpoint при обрыве
+не является успешным ответом. Ошибка evidence storage останавливает новые calls;
+resume/replay и автоматических retries нет. Нормализованный incomplete не имеет
+completed reply, но полученный partial output остаётся в observed_output.
+
+`review.json` — отдельная ручная таблица, изначально pending/null. По каждому факту:
+`expected_fact_in_retrieved_context`, `direct_answer_covers_fact`,
+`rag_answer_covers_fact` = yes/partial/no. При недоступном ответе report показывает
+unavailable. В claims вручную перечисляются существенные RAG assertions с
+`grounded_in_retrieved_context` = yes/no и notes, включая детали вне expected facts.
+`source_path_hit@5` — только exact path intersection (в JSON source_path_hit_at_5),
+для Q10 N/A. Отсутствие искомого ответа в corpus — coverage/no-answer case.
+
+Один полный live eval после offline readiness: 10 query embedding + 10 direct +
+10 RAG requests при отсутствии технических препятствий. Плохие результаты сохраняются;
+предварительная semantic настройка на контрольных вопросах и повтор ради улучшения
+не входят в эксперимент. `report` читает сохранённые данные без key, DB и provider.
+Вопросник и результаты относятся к pinned snapshot, даже после изменения README.
+
+Новых зависимостей нет. Команды и ручной review — в [scripts](../scripts/README.md#day-22--первый-rag-запрос).
+
 ## Day 21 — Индексация документов
 
 Изолированный CLI `scripts/day21_index.py` работает без FastAPI/Android.

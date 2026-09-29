@@ -5,6 +5,79 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 22 — Первый RAG-запрос
+
+Используйте существующее backend Python environment и сохранённый Day 21 index.
+Сервер, эмулятор и Gradle не нужны. Из корня в PowerShell 7:
+
+```powershell
+$python = '.\backend\.venv\Scripts\python.exe'
+$ragCli = 'backend/scripts/day22_rag.py'
+$indexRun = '3a3c3319-5516-4526-8e56-33ab1251da72'
+Push-Location backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_first_rag.py -q
+} finally {
+    Pop-Location
+}
+& $python $ragCli --help
+```
+
+Backend environment/игнорируемый `backend/.env` содержит `OPENAI_API_KEY`.
+Единственный основной live run уже выполнен 29 сентября 2026 после offline checks
+и фиксации questions/config. Команда ниже документирует отправку, а не просмотр:
+
+```powershell
+& $python $ragCli eval --run $indexRun
+```
+
+При нормальном завершении это 10 query embedding и 20 generation calls.
+Не запускайте сначала search/ask этих контрольных вопросов для настройки и не
+повторяйте eval ради лучших ответов. Technical failure/unknown остаётся evidence;
+при failed query RAG не отправляется. Уже сохранённые calls не повторяются.
+
+CLI печатает `Evidence: ...` до calls и `Saved evidence: ...` после обхода вопросов.
+Для просмотра выполненного run и записи видео без новых provider calls:
+
+```powershell
+$result = 'backend/.local/day22/f7b78426-9672-437f-ab93-717a826934da'
+& $python $ragCli report $result --question Q01 --retrieval-only
+& $python $ragCli report $result --question Q01
+& $python $ragCli report $result --question Q08 --full
+& $python $ragCli report $result --question Q10
+& $python $ragCli report $result
+```
+
+Карточка показывает QUESTION → RETRIEVED TOP-5 → DIRECT ANSWER → RAG ANSWER →
+EXPECTED FACTS / REVIEW; `--full` раскрывает тексты hits, `--retrieval-only` —
+только сохранённый search stage. Все report помечены SAVED RUN. Report не требует
+API key, Day 21 DB или рабочих source files. Не изменяйте run/Qxx JSON вручную.
+В этом run уже сохранены заполненный `review.json` и текстовый `report.txt`
+с общей таблицей и карточками всех десяти вопросов. Ручной разбор выполнил Codex
+по сохранённым текстам; отдельный evaluator/LLM judge не запускался.
+
+В `review.json` укажите reviewer, заполните per-fact labels и notes со ссылками
+на S-label/chunk/цитату; добавьте существенные RAG claims (claim, grounded_in_retrieved_context,
+notes), diagnosis и status=reviewed после разбора. Не заполняйте оценки
+недоступных ответов: оставьте null, report обозначит unavailable. Для Q10 context
+presence искомых RPO/RTO = no, честное признание недостатка информации в answer
+может получить coverage=yes; diagnosis — knowledge coverage/no-answer. Пустой
+Top-5 для этого не требуется. Scores не являются вероятностью релевантности.
+
+Отдельные explicit команды для произвольного вопроса доступны независимо от eval:
+
+```powershell
+$question = 'Ваш новый вопрос о проекте'
+& $python $ragCli search $question --run $indexRun --full
+& $python $ragCli ask $question --mode direct
+& $python $ragCli ask $question --mode rag --run $indexRun
+```
+
+Search расходует 1 embedding/0 generation calls, direct — 0/1, RAG — 1/1.
+Они сохраняют отдельный evidence directory. `--db PATH` меняет расположение базы;
+eval проверяет pinned run/hash. Top-K фиксирован на 5. SQLite/evidence/ключи
+остаются локальными и игнорируются Git. Offline tests используют только fake clients.
+
 ## Первичная настройка
 
 ### Backend

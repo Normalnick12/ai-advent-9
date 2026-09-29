@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "version": "day22-questions-v1",
+  "index_run_id": "3a3c3319-5516-4526-8e56-33ab1251da72",
+  "corpus_hash": "b1b9595ab50e225e077a2b78b48a90119519a1dc36141ef369a7bfb8b302c91d",
+  "strategy": "structure-aware",
+  "top_k": 5,
+  "questions": [
+    {
+      "id": "Q01",
+      "difficulty": "local",
+      "question": "Что именно Day 07 сохраняет локально через CurrentSessionStore и где?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "сохраняется текущий session ID под ключом `session_id`."
+        },
+        {
+          "id": "F2",
+          "text": "используется private SharedPreferences, по умолчанию `day_07_current_session`; conversation transcript туда не записывается."
+        }
+      ],
+      "acceptable_sources": [
+        "android-app/app/src/main/java/com/example/responsecontrollab/data/CurrentSessionStore.kt",
+        "openspec/specs/first-agent-android/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q02",
+      "difficulty": "local",
+      "question": "Какие сведения возвращает GET /api/v1/agent/sessions/{session_id} для существующего свободного диалога? Возвращает ли он transcript?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "возвращаются session_id и history_turn_count."
+        },
+        {
+          "id": "F2",
+          "text": "полная история сообщений в этом metadata response не возвращается."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/agent_api.py",
+        "openspec/specs/first-agent-conversation/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q03",
+      "difficulty": "local",
+      "question": "Что PAUSE меняет в ACTIVE non-terminal Task State и какое событие после этого разрешено?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "status становится PAUSED, state_id остаётся прежним."
+        },
+        {
+          "id": "F2",
+          "text": "revision увеличивается ровно на 1; в paused state разрешён только RESUME."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/task_state.py",
+        "openspec/specs/task-state-machine/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q04",
+      "difficulty": "local",
+      "question": "Что делает SQLiteTaskStateStore.compare_and_set, если expected_revision уже устарела?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "сравнивает expected_revision с текущей сохранённой revision и отклоняет как `stale_task_state`."
+        },
+        {
+          "id": "F2",
+          "text": "stale update не перезаписывает текущую запись и не продвигает revision."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/sqlite_task_state_store.py",
+        "openspec/specs/task-state-machine/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q05",
+      "difficulty": "local",
+      "question": "Какие поля Task State сохраняются в SQLite, а phase и allowed_events сохраняются или вычисляются?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "canonical record содержит task_id, machine_id, state_id, status, revision."
+        },
+        {
+          "id": "F2",
+          "text": "phase и allowed_events вычисляются из definition/state, не сохраняются как отдельные редактируемые поля."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/sqlite_task_state_store.py",
+        "backend/app/task_state.py",
+        "openspec/specs/task-state-machine/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q06",
+      "difficulty": "cross_source",
+      "question": "После restart backend и cold start Android Day 07 как продолжается прежняя session и почему старые bubbles не появляются?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "backend при обращении по прежнему ID загружает сохранённую history через store, не создавая замену существующей session."
+        },
+        {
+          "id": "F2",
+          "text": "Android читает сохранённый ID, получает metadata/count той же session и после успешного restore использует этот ID."
+        },
+        {
+          "id": "F3",
+          "text": "восстановление Android не восстанавливает старый transcript; следующая отправка содержит только новый message, а контекст восстанавливает backend."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/agent_sessions.py",
+        "android-app/app/src/main/java/com/example/responsecontrollab/ui/chat/ChatViewModel.kt",
+        "openspec/specs/first-agent-android/spec.md",
+        "openspec/specs/first-agent-conversation/spec.md",
+        "day-07-context-persistence/README.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q07",
+      "difficulty": "cross_source",
+      "question": "Если в обычном сообщении Day 13 написать IMPLEMENTATION_READY, изменится ли этап задачи? Как применяется настоящий переход?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "обычный send/ответ модели не применяет workflow event и не меняет Task State."
+        },
+        {
+          "id": "F2",
+          "text": "отдельный explicit event проходит deterministic resolve и сохраняется через compare-and-set с актуальной revision."
+        }
+      ],
+      "acceptable_sources": [
+        "backend/app/task_state_lab_service.py",
+        "backend/app/task_state.py",
+        "backend/app/sqlite_task_state_store.py",
+        "openspec/specs/task-state-machine/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q08",
+      "difficulty": "cross_source",
+      "question": "Android Day 13 отправил Send с устаревшим state_revision. Как backend обрабатывает запрос и как UI восстанавливается после отклонения?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "Android отправляет state_revision как часть snapshot запроса."
+        },
+        {
+          "id": "F2",
+          "text": "backend сравнивает её с сохранённым State и отклоняет stale_task_state до generation."
+        },
+        {
+          "id": "F3",
+          "text": "UI перечитывает backend state без автоматического повтора Send; если read не удался, остаётся recovery с явным действием чтения."
+        }
+      ],
+      "acceptable_sources": [
+        "android-app/app/src/main/java/com/example/responsecontrollab/data/TaskStateRepository.kt",
+        "backend/app/task_state_lab_service.py",
+        "android-app/app/src/main/java/com/example/responsecontrollab/ui/taskstate/TaskStateViewModel.kt",
+        "openspec/specs/task-state-android/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q09",
+      "difficulty": "multi_fact",
+      "question": "Day 07 получил DELETE 204 при “Новый диалог”, но очистка локального session ID завершилась ошибкой. Что произошло на backend, что должен показывать Android и как затем начать новый диалог?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "backend durable удалил старую session/history до 204; отсутствующий корректный ID также допускает DELETE 204."
+        },
+        {
+          "id": "F2",
+          "text": "Android не подтверждает полный reset до успешной очистки локального ID; при её ошибке сохраняет прежний UI transcript и блокирует send через recovery."
+        },
+        {
+          "id": "F3",
+          "text": "пользователь явно повторяет reset; повторное удаление отсутствующей session допустимо, затем повторяется локальная очистка."
+        },
+        {
+          "id": "F4",
+          "text": "после полностью успешного reset активного ID нет; новая session создаётся лениво следующей явной отправкой без replay старых сообщений."
+        }
+      ],
+      "acceptable_sources": [
+        "android-app/app/src/main/java/com/example/responsecontrollab/ui/chat/ChatViewModel.kt",
+        "android-app/app/src/main/java/com/example/responsecontrollab/data/CurrentSessionStore.kt",
+        "backend/app/agent_api.py",
+        "backend/app/agent_sessions.py",
+        "backend/app/sqlite_conversation_store.py",
+        "openspec/specs/first-agent-android/spec.md",
+        "openspec/specs/first-agent-conversation/spec.md"
+      ],
+      "negative_control": false
+    },
+    {
+      "id": "Q10",
+      "difficulty": "negative_control",
+      "question": "Какие утверждённые значения RPO и RTO установлены для восстановления Day 07 conversations.sqlite3 из резервной копии?",
+      "expected_facts": [
+        {
+          "id": "F1",
+          "text": "indexed sources не содержат достаточно сведений, чтобы назвать утверждённые RPO/RTO; ответ должен обозначить недостаточность сведений, не придумывая значения."
+        }
+      ],
+      "acceptable_sources": [],
+      "negative_control": true
+    }
+  ]
+}
