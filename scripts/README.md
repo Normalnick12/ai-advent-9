@@ -5,6 +5,84 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 23 — Query rewrite и relevance filtering
+
+Используйте existing backend Python environment; FastAPI, Android и Gradle не нужны.
+Из корня repository в PowerShell 7:
+
+```powershell
+$python = '.\backend\.venv\Scripts\python.exe'
+$ragCli23 = 'backend/scripts/day23_rag.py'
+& $python $ragCli23 --help
+Push-Location backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_first_rag.py tests/test_rewrite_filter_rag.py -q
+} finally {
+    Pop-Location
+}
+```
+
+Frozen config: Top-N=10, cosine threshold=0.50, final Top-K<=5, один LLM rewrite
+только по question. Единственный live выполнен 2 октября 2026 после 37 focused
+offline tests и сохранения config/questions. Semantic pre-runs отсутствовали.
+Команды двух stages ниже документируют уже выполненную отправку: требуют backend
+`OPENAI_API_KEY` и означают новые calls, а не просмотр. Не повторяйте их:
+
+```powershell
+$baseline22 = 'backend/.local/day22/f7b78426-9672-437f-ab93-717a826934da'
+& $python $ragCli23 retrieve --baseline $baseline22
+# compare уже выполнен; использовал этот saved retrieval без повторного поиска.
+$result23 = 'backend/.local/day23/facf8d92-bd1d-482f-bf6e-2585565f6904'
+& $python $ragCli23 compare $result23
+```
+
+При полном успехе stages дают 20 и 10 calls соответственно; baseline=0.
+В сохранённом run все 30 calls completed; retained counts Q01–Q10:
+2/4/5/3/2/5/5/5/5/2. Manual review заполнен; рядом есть `report.txt` со всеми
+полными карточками. Raw run/Qxx не редактировались вручную; frozen config и
+hashes исходного Day 22 baseline остались прежними.
+Не повторяйте retrieve/compare ради улучшения. Technical failures/unknown остаются
+evidence. Не изменяйте run/baseline/Qxx JSON вручную; заполняйте только review.json.
+В manual review: rewrite_preserves_intent=yes/partial/no,
+rewrite_added_project_assumption=yes/no и короткая note при необходимости;
+per-fact context/answer=yes/partial/no, существенные claims grounded=yes/no.
+Null/pending и unavailable не означают semantic no. Q10 context=no относится
+к искомым RPO/RTO; честный no-answer может получить answer coverage=yes.
+
+Offline просмотр и видео без API calls:
+
+Для скринкаста используйте компактный `--video`: summary, затем Q05 regression,
+Q07 Top-K limit и Q10 без RPO/RTO evidence. Числа и coverage берутся из saved
+run/review. Candidates: kept и явные ссылки `candidate N` / `rank=N` в fact notes;
+форматтер не определяет релевантность заново. TAKEAWAY сравнивает per-fact labels
+и показывает saved review, без evaluator. Для записи из корня repository:
+
+```powershell
+$python = '.\backend\.venv\Scripts\python.exe'
+$ragCli23 = 'backend/scripts/day23_rag.py'
+$result23 = 'backend/.local/day23/facf8d92-bd1d-482f-bf6e-2585565f6904'
+& $python $ragCli23 report $result23 --video
+& $python $ragCli23 report $result23 --question Q05 --video
+& $python $ragCli23 report $result23 --question Q07 --video
+& $python $ragCli23 report $result23 --question Q10 --video
+```
+
+Подробный evidence report без `--video` сохраняет прежний формат:
+
+```powershell
+$result23 = 'backend/.local/day23/facf8d92-bd1d-482f-bf6e-2585565f6904'
+& $python $ragCli23 report $result23
+& $python $ragCli23 report $result23 --question Q07 --full
+& $python $ragCli23 report $result23 --question Q08 --full
+& $python $ragCli23 report $result23 --question Q10
+```
+
+Карточка показывает original → rewrite → Top-10 → threshold/kept/dropped →
+final context → saved baseline answer → enhanced answer → per-fact/manual review.
+Report требует только Day 23 result folder. Threshold откалиброван на original
+Day 22 queries с участием Q10; rewritten scores изменятся, поэтому comparison
+не независимый benchmark. Dropped count не является semantic relevance оценкой.
+
 ## Day 22 — Первый RAG-запрос
 
 Используйте существующее backend Python environment и сохранённый Day 21 index.

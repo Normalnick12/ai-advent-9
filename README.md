@@ -26,5 +26,6 @@
 - [День 20 — оркестрация нескольких MCP-серверов](day-20-mcp-orchestration/README.md)
 - [День 21 — индексация документов](day-21-document-indexing/README.md)
 - [День 22 — первый RAG-запрос](day-22-first-rag/README.md)
+- [День 23 — query rewrite и relevance filtering](day-23-rewrite-filter-rag/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.

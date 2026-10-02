@@ -8,6 +8,42 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 23 — Query rewrite и relevance filtering
+
+`scripts/day23_rag.py` переиспользует pinned Day 21 structure-aware index и saved
+Day 22 eval без новых baseline/indexing calls. Pipeline: original question →
+Responses rewrite (`gpt-5.6`, reasoning none, 250 output tokens) → exact query
+embedding → cosine Top-10 → threshold 0.50 → максимум Top-5 → generation по
+ORIGINAL question с прежними Day 22 instruction/settings (600 output tokens).
+Rewrite получает только question. Final generation не получает rewrite,
+baseline answers, evaluation metadata, scores/vectors или dropped candidates.
+
+`retrieve` сохраняет baseline snapshot/config и rewrite/embedding/candidates;
+`compare` дополняет тот же run только enhanced generation. Пустой успешный
+context допускается без fallback. Failed prerequisite блокирует generation;
+unknown/incomplete сохраняются, retries/resume и повтор compare отсутствуют.
+При полном успехе: 10 rewrite + 10 embedding + 10 enhanced calls, baseline=0.
+
+В ignored `backend/.local/day23/<run-id>/` находятся run/baseline/Qxx JSON и
+отдельный manual review. Retrieval hash позволяет заметить изменение saved
+query/selection между stages. `report` читает только этот folder без provider,
+key, index и original baseline; preview не меняет full model input. Review
+содержит два rewrite diagnostic labels, per-fact context/answer coverage и
+enhanced claims groundedness; semantic evaluator и общий score отсутствуют.
+
+0.50 выбран по Day 22 questions/evidence, включая Q10, на original queries;
+rewrite изменяет score distribution, comparison не независимый benchmark.
+Filter не меняет ranking и не гарантирует полезность high-score chunk.
+Результаты, регрессии и Q10 выше порога сохраняются без перенастройки.
+Строгий abstention contract оставлен Day 24. Новых dependencies нет.
+Единственный live run `facf8d92-bd1d-482f-bf6e-2585565f6904` от 2 октября 2026
+сохранил 30 completed calls и manual review всех Q01–Q10. Из 100 candidates:
+38 kept, 40 dropped_below_threshold, 22 dropped_top_k_limit; empty selection
+в этом run не возникла (проверена offline). Resolved rewrite/generation model:
+`gpt-5.6-sol`, requested alias прежний `gpt-5.6`. Фактические результаты —
+в [Day 23](../day-23-rewrite-filter-rag/README.md).
+Команды — в [scripts](../scripts/README.md#day-23--query-rewrite-и-relevance-filtering).
+
 ## Day 22 — Первый RAG-запрос
 
 `scripts/day22_rag.py` работает локально без FastAPI/Android. Переиспользует

@@ -81,14 +81,16 @@ def read_index(path: Path = DATABASE, run_id=RUN_ID, *, baseline=False):
                  chunks, norms, set(sources))
 
 
-def search(index, query_vector):
+def search(index, query_vector, *, top_k=TOP_K):
+    if type(top_k) is not int or not 1 <= top_k <= len(index.chunks):
+        raise ValueError("Invalid search result count")
     norm = vector_norm(query_vector)
     ranked = []
     for c, dnorm in zip(index.chunks, index.norms, strict=True):
         score = math.fsum(a * b for a, b in zip(query_vector, c["embedding"], strict=True)) / (norm * dnorm)
         ranked.append({**{k: v for k, v in c.items() if k != "embedding"}, "score": score})
     ranked.sort(key=lambda c: (-c["score"], c["source"], c["ordinal"], c["chunk_id"]))
-    return [{**c, "rank": rank} for rank, c in enumerate(ranked[:TOP_K], 1)]
+    return [{**c, "rank": rank} for rank, c in enumerate(ranked[:top_k], 1)]
 
 
 def messages(question, hits=()):
