@@ -1,0 +1,279 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "A",
+      "title": "Day 07 same-session restore",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "Хочу понять continuation существующей session Day 07 после cold start. Backend уже перезапущен. Новую session создавать нельзя. На чём держится продолжение?",
+          "expected_facts": [
+            "Same session ID continues persisted backend conversation after backend restart."
+          ]
+        },
+        {
+          "turn": 2,
+          "user": "Уточняю: старые Android bubbles восстанавливать не требуется. Под restore понимаю продолжение той же session. Что Android должен сделать при открытии?",
+          "expected_facts": [
+            "Cold start GET restores existing session metadata before sending.",
+            "Old Android bubbles need not be restored."
+          ]
+        },
+        {
+          "turn": 3,
+          "user": "Что означает history_turn_count и как он меняется после одного успешного обмена?",
+          "expected_facts": [
+            "history_turn_count counts confirmed user/assistant pairs.",
+            "One successful exchange increments the count by one."
+          ]
+        },
+        {
+          "turn": 4,
+          "user": "Если generation завершилась incomplete, что останется в сохранённой истории?",
+          "expected_facts": [
+            "Incomplete generation does not append a partial or successful pair."
+          ]
+        },
+        {
+          "turn": 5,
+          "user": "А после рестарта?",
+          "expected_facts": [
+            "Backend restart preserves durable history for the same session ID.",
+            "Continuation does not require creating a new session."
+          ]
+        },
+        {
+          "turn": 6,
+          "user": "А что тогда делает Android? Опиши открытие экрана и следующую отправку для нашего случая.",
+          "expected_facts": [
+            "Android reads metadata for the saved session ID before send.",
+            "Next send contains only the new user text and uses the same session.",
+            "Old bubbles are not required and a replacement session must not be created."
+          ]
+        }
+      ],
+      "early_memory": [
+        {
+          "id": "goal",
+          "source_user_turn": 1,
+          "fields": [
+            "goal"
+          ],
+          "fragments": [
+            "continuation существующей session Day 07"
+          ]
+        },
+        {
+          "id": "restarted",
+          "source_user_turn": 1,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "Backend уже перезапущен"
+          ]
+        },
+        {
+          "id": "same_session",
+          "source_user_turn": 1,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "Новую session создавать нельзя"
+          ]
+        },
+        {
+          "id": "no_bubbles",
+          "source_user_turn": 2,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "старые Android bubbles восстанавливать не требуется"
+          ]
+        },
+        {
+          "id": "restore_term",
+          "source_user_turn": 2,
+          "fields": [
+            "terms",
+            "clarifications"
+          ],
+          "fragments": [
+            "restore",
+            "продолжение той же session"
+          ]
+        }
+      ],
+      "anchors": [
+        {
+          "chunk_id": "bd81c40f140c6f409568218a876252ad1123dc4d4e82b6fe1b132b45e4e998dd",
+          "source": "openspec/specs/first-agent-android/spec.md",
+          "section": "spec.md / first-agent-android Specification / Requirements / Requirement: Day 07 restores only the current conversation identity"
+        },
+        {
+          "chunk_id": "bfaf2036455e5799eab824752a0daddd3532c4c1775b40289ef23f12dd232038",
+          "source": "openspec/specs/first-agent-android/spec.md",
+          "section": "spec.md / first-agent-android Specification / Requirements / Requirement: Day 07 restores only the current conversation identity / Scenario: Cold start restores metadata before sending"
+        },
+        {
+          "chunk_id": "2652cec5758651115eefb346fb42b6da9635821e6570fb31db10b8b6ed2f8cbb",
+          "source": "openspec/specs/first-agent-conversation/spec.md",
+          "section": "spec.md / first-agent-conversation Specification / Requirements / Requirement: Sessions isolate state while sharing fixed agent behavior / Scenario: Backend restarts"
+        }
+      ],
+      "acceptable_sources": [
+        "openspec/specs/first-agent-conversation/spec.md",
+        "openspec/specs/first-agent-android/spec.md",
+        "backend/app/sqlite_conversation_store.py",
+        "backend/app/agent_sessions.py",
+        "backend/app/conversation_store.py",
+        "android-app/app/src/main/java/com/example/responsecontrollab/data/ChatRepository.kt",
+        "android-app/app/src/main/java/com/example/responsecontrollab/data/CurrentSessionStore.kt",
+        "android-app/app/src/main/java/com/example/responsecontrollab/ui/chat/ChatViewModel.kt"
+      ]
+    },
+    {
+      "id": "B",
+      "title": "Day 13 task-state recovery",
+      "turns": [
+        {
+          "turn": 1,
+          "user": "Цель — разобраться с recovery Day 13 после stale revision или uncertain result. Backend authoritative. Automatic retry запрещён. Что делать при stale revision?",
+          "expected_facts": [
+            "Stale revision is rejected without effects.",
+            "Recovery rereads backend authoritative state without automatic retry."
+          ]
+        },
+        {
+          "turn": 2,
+          "user": "Фиксируем: обычный Send не является workflow event. После rejected или uncertain operation нужно перечитать authoritative state. Чем Send отличается от перехода?",
+          "expected_facts": [
+            "Ordinary Send is not a workflow event.",
+            "Rejected or uncertain operations require authoritative reread."
+          ]
+        },
+        {
+          "turn": 3,
+          "user": "Какие поля восстановленного task state позволяют понять текущее положение задачи?",
+          "expected_facts": [
+            "Canonical state, status and revision describe durable task state.",
+            "Derived allowed events are distinct from authoritative stored state."
+          ]
+        },
+        {
+          "turn": 4,
+          "user": "Что меняет отдельное событие PAUSE и сохраняется ли положение задачи?",
+          "expected_facts": [
+            "PAUSE changes task status and preserves its state node."
+          ]
+        },
+        {
+          "turn": 5,
+          "user": "А если ответ потерялся?",
+          "expected_facts": [
+            "Lost PAUSE response requires authoritative reread.",
+            "PAUSE must not be automatically repeated."
+          ]
+        },
+        {
+          "turn": 6,
+          "user": "А что тогда делает Android после cold start и можно ли продолжить обычным Send?",
+          "expected_facts": [
+            "Cold start restores authoritative state read-only without replay.",
+            "Ordinary Send does not perform Resume or a workflow transition.",
+            "Recovery respects backend authority and the no-automatic-retry constraint."
+          ]
+        }
+      ],
+      "early_memory": [
+        {
+          "id": "goal",
+          "source_user_turn": 1,
+          "fields": [
+            "goal"
+          ],
+          "fragments": [
+            "recovery Day 13",
+            "stale revision",
+            "uncertain result"
+          ]
+        },
+        {
+          "id": "authority",
+          "source_user_turn": 1,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "Backend authoritative"
+          ]
+        },
+        {
+          "id": "no_retry",
+          "source_user_turn": 1,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "Automatic retry запрещён"
+          ]
+        },
+        {
+          "id": "send_term",
+          "source_user_turn": 2,
+          "fields": [
+            "terms",
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "обычный Send не является workflow event"
+          ]
+        },
+        {
+          "id": "reread",
+          "source_user_turn": 2,
+          "fields": [
+            "constraints",
+            "clarifications"
+          ],
+          "fragments": [
+            "После rejected или uncertain operation",
+            "перечитать authoritative state"
+          ]
+        }
+      ],
+      "anchors": [
+        {
+          "chunk_id": "cd94896c0e31b2479b2b95df3345816ca95e41f90b9e802ddcd80f2d5da0bab9",
+          "source": "openspec/specs/task-state-android/spec.md",
+          "section": "spec.md / task-state-android Specification / Requirements / Requirement: Backend determines allowed events and confirmed state"
+        },
+        {
+          "chunk_id": "94ed2d633ae5f34b31104ce0140b81f1cd7b82e9e35f89442ba0f672c0894266",
+          "source": "openspec/specs/task-state-android/spec.md",
+          "section": "spec.md / task-state-android Specification / Requirements / Requirement: Recovery reads authoritative state without repeating actions"
+        },
+        {
+          "chunk_id": "ef1e32087bb696b399e9b1530a496ed914d97731fdf580e2724c08f72ea18d6d",
+          "source": "openspec/specs/task-state-machine/spec.md",
+          "section": "spec.md / task-state-machine Specification / Requirements / Requirement: Durable writes are revision checked and atomic"
+        }
+      ],
+      "acceptable_sources": [
+        "openspec/specs/task-state-machine/spec.md",
+        "openspec/specs/task-state-android/spec.md",
+        "day-13-task-state-machine/README.md",
+        "backend/app/task_state_lab_service.py"
+      ]
+    }
+  ]
+}

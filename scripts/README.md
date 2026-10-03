@@ -5,6 +5,68 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 25 — Stateful RAG mini-chat
+
+Использует существующий backend venv, pinned Day 21 index и Day 22 baseline.
+`OPENAI_API_KEY` находится только в backend environment/локальном `.env`.
+CLI acceptance не требует FastAPI, Android или эмулятора.
+
+```powershell
+Push-Location backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_stateful_rag.py tests/test_stateful_rag_experiment.py tests/test_agent_api.py tests/test_conversation_store.py tests/test_grounded_rag.py tests/test_first_rag.py -q
+} finally { Pop-Location }
+```
+
+Команда ниже документирует **уже выполненный** единственный live A/B run,
+а не offline-просмотр. Не повторять ради улучшения результата:
+
+```powershell
+backend/.venv/Scripts/python.exe backend/scripts/day25_chat.py run
+```
+
+До dispatch сохраняются frozen scripts/hash/config/corpus и checkpoints.
+На turn — один embedding и до одного combined generation; нет retry, repair,
+extractor или judge. После T3 store/service переоткрываются с той же session.
+Technical/validation failure останавливает сценарий, abstention не обновляет memory.
+Evidence I/O failure останавливает все новые calls; unknown checkpoint не означает rollback.
+
+Единственный run: `67931487-f59f-4214-9c65-d72046462643`, 24/24 calls.
+A: 5 confirmed turns, отсутствуют U1 memory items, A6 invalid chunk ID; B: 6 turns,
+mechanical PASS, но source inspection обнаружил перенос Day 07 reset rule в B5/B6.
+Пользователь подтвердил human review этих выводов. Просмотр без ключа, index,
+backend и новых calls:
+
+```powershell
+$result25 = 'backend/.local/day25/experiments/67931487-f59f-4214-9c65-d72046462643'
+backend/.venv/Scripts/python.exe backend/scripts/day25_chat.py report $result25
+backend/.venv/Scripts/python.exe backend/scripts/day25_chat.py report $result25 --video
+```
+
+Команды сохраняют `report.md`/`video.md` рядом с JSON evidence. `--video` показывает
+U1/U2, U6, actual window positions, pre-U6 memory, query, retrieved sources,
+accepted answer/citations либо unavailable, mechanical checks и review notes.
+Raw candidate отклонённого A6 доступен в `A6.json`, он не является assistant turn.
+
+Для review читайте `manifest.json` (frozen expectations), A1/A2/B1/B2 patches,
+A5/A6/B5/B6 answers и полные `retrieval.hits[].text`; редактируйте только `review.json`.
+Укажите действительного reviewer, human_review_status, per-turn facts/notes и
+relevance/citation support/constraint adherence. Codex source-inspection notes
+не заменяют human verdict; pending не является passed. Отмечайте повтор условий
+через recent assistant. Не меняйте scripts, manifest, raw records или mechanical results.
+
+Android demo отдельно от acceptance: запустить backend в управляемом терминале
+`pwsh -File scripts/dev.ps1 backend`, проверить `status` и доступ к `10.0.2.2:8000`
+с эмулятора. Открыть Day 25, отправить один вопрос с явной целью/условиями,
+показать sources и раскрыть Task Memory. Demo calls учитывать отдельно.
+Проверки клиента: `unit -Test '*Day25*'`, `ui -Test 'com.example.responsecontrollab.Day25UiTest'`
+и `ui -Test 'com.example.responsecontrollab.RootNavigationUiTest'` через `scripts/dev.ps1`.
+Для видео сначала показать saved CLI report, затем короткий Android экран;
+запись видео пользователем ещё не подтверждена.
+Отдельная demo уже выполнена: 1 embedding + 1 generation, один confirmed turn,
+sources и goal/constraints видны. `android-demo.json` и два PNG сохранены рядом
+с experiment report; эти calls не входят в бюджет 24 frozen A/B calls.
+
 ## Day 24 — Проверяемые RAG-ответы
 
 Нужны существующее backend Python environment, `OPENAI_API_KEY` в backend

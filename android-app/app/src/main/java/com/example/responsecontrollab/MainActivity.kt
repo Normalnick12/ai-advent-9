@@ -26,6 +26,9 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     setContent {
       val container = (application as ResponseControlApplication).container
+      val day25ViewModel: com.example.responsecontrollab.ui.day25.Day25ViewModel = viewModel(
+        key = com.example.responsecontrollab.ui.day25.Day25ViewModel.KEY,
+        factory = com.example.responsecontrollab.ui.day25.Day25ViewModel.factory(container.day25Repository, container.day25SessionStore))
       val viewModel: ResponseControlViewModel =
         viewModel(factory = ResponseControlViewModel.factory(container.responseRepository))
       val reasoningLabViewModel: ReasoningLabViewModel =
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
         val memoryViewModel: com.example.responsecontrollab.ui.memory.MemoryLayersViewModel = viewModel(key="day11", factory=com.example.responsecontrollab.ui.memory.MemoryLayersViewModel.factory(container.memoryLayersRepository))
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           AppRoot(
+            day25ViewModel = day25ViewModel,
             dependencyWatchViewModel = dependencyWatchViewModel,
             mcpLabViewModel = mcpLabViewModel,
             playgroundViewModel = playgroundViewModel,

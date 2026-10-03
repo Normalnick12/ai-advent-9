@@ -8,6 +8,43 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 25 — Stateful RAG mini-chat
+
+`/api/v1/day25/sessions` — отдельный namespace: POST `{}` создаёт session (201),
+GET `/{id}` читает authoritative snapshot, POST `/{id}/messages` принимает
+`{message, expected_revision}`, DELETE `/{id}` возвращает 204, в том числе повторно.
+GET/send неизвестного ID — 404; busy/stale revision — 409; invalid request — 422.
+Snapshot содержит session_id, revision/history_turn_count, memory, history и turns
+с сохранёнными grounded results. Android хранит только current ID; create/read/delete
+не вызывают OpenAI. Store — ignored `backend/.local/day25/chat.sqlite3`.
+
+Полная durable history отличается от model input: последние три подтверждённые
+пары + отдельно Task Memory + исходный question + текущие Top-5 chunks. Memory
+содержит только extractive user goal/constraints/terms/clarifications с literal
+quote provenance (turn и Unicode offsets). Она не является summary или базой знаний.
+Технический retrieval query сериализует current message, pre-turn memory и previous
+recent user; patch влияет на search со следующего turn. Индекс Day 21/22 pinned,
+text-embedding-3-small/1536, cosine Top-5, gate best>=0.50, без Day 23 rewrite/filter.
+
+Один query embedding и максимум один Responses generation `gpt-5.6` на turn.
+Strict combined response содержит `grounded` Day 24 и proposed `memory_update`.
+Оба payload валидируются независимо; invalid любого исключает commit всей пары.
+Atomic commit сохраняет pair, grounded metadata, memory и revision. Runtime gate
+abstention и valid model insufficient_context сохраняются с пустыми sources/citations,
+но memory не обновляют; skipped reason виден клиенту. Refused/incomplete/technical
+failure не является successful turn. Unknown storage/transport outcome требует
+reread; automatic retry/repair/extraction/counting/judge отсутствуют.
+
+Sources/citations проверяются относительно actual sent chunks; quote <=400 символов
+должна быть literal substring. Это проверяет provenance/exactness, не semantic support.
+Day25ChatService общий для FastAPI и CLI. Runner сохраняет отдельные scenario DB,
+pre-dispatch/raw-output checkpoints и manual review в ignored `.local/day25`.
+Два frozen scripts по 6 user turns проверяют U6 после исключения U1/U2; после T3
+store/service переоткрываются. Это reopen check, не доказательство OS crash recovery.
+Наличие памяти в input не доказывает её единственную причинную роль без ablation.
+
+Команды run и keyless saved report — в [scripts](../scripts/README.md).
+
 ## Day 24 — Проверяемые RAG-ответы
 
 `scripts/day24_rag.py` — isolated CLI без FastAPI/Android. Он проверяет frozen

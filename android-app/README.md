@@ -8,6 +8,24 @@ Android-клиент AI Advent на Kotlin, Jetpack Compose и Material 3.
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Stateful RAG mini-chat — Day 25
+
+Откройте Day 25 в каталоге. Отправка показывает подтверждённые bubbles и sources;
+раскрываемая Task Memory card показывает goal, constraints, terms и clarifications
+с номером пользовательского turn. При insufficient context ход сохраняется,
+источников нет и память не обновляется. Ошибка не добавляет успешную пару.
+
+Приложение сохраняет только текущий Day 25 session ID. После cold start читает
+backend count/revision/memory; прежние bubbles восстанавливать не требуется.
+При неизвестном исходе нажмите «Прочитать состояние»: сохранённый ответ появится
+с sources без повторного Send. Явный сброс удаляет session; локальный ID очищается
+только после подтверждения DELETE. Backend должен работать, API-ключ остаётся на нём.
+
+Два длинных acceptance-сценария и saved `--video` report запускаются через
+backend CLI, независимо от Android. Focused offline проверки:
+`./scripts/dev.ps1 unit -Test '*Day25*'` и
+`./scripts/dev.ps1 ui -Test 'com.example.responsecontrollab.Day25UiTest'`.
+
 ## Agent Playground — Day 15
 
 В каталоге откройте «День 15 — Контролируемый жизненный цикл задачи». «Новая задача» открывает выбор Profile и четырёх ограничений, затем review и подтверждение создания. Эти ограничения сохраняются для всей задачи; Profile можно переключать для следующих ответов.

@@ -64,6 +64,11 @@ from app.mcp_composition_api import router as mcp_composition_router
 from app.mcp_composition_service import CompositionService
 from app.mcp_orchestration_service import OrchestrationService
 from app.mcp_orchestration_api import router as mcp_orchestration_router
+from app.stateful_rag.api import router as day25_router
+from app.stateful_rag.store import Day25Store
+from app.stateful_rag.service import Day25ChatService
+from app.first_rag.client import ObservedClient
+from app.document_indexing.embedding import OpenAIEmbedder
 
 
 @asynccontextmanager
@@ -82,8 +87,9 @@ async def lifespan(app: FastAPI):
     invariant_paths = [invariants_path / name for name in ('memory.sqlite3', 'profiles.sqlite3', 'state.sqlite3', 'policies.sqlite3')]
     playground_dir = Path(app.state.playground_database_dir).resolve()
     playground_paths = [playground_dir / name for name in ('memory.sqlite3', 'profiles.sqlite3', 'state.sqlite3', 'policies.sqlite3', 'setup.sqlite3')]
+    day25_path = Path(app.state.day25_database_path).resolve()
     if len({old_path, token_path, compression_path, strategies_path, memory_path, personalization_memory_path,
-            profile_path, state_memory_path, state_profile_path, state_path, *invariant_paths, *playground_paths}) != 19:
+            profile_path, state_memory_path, state_profile_path, state_path, *invariant_paths, *playground_paths, day25_path}) != 20:
         raise ValueError("Agent namespaces must use different database files")
     async with AsyncExitStack() as resources:
         client = OpenAIResponsesLlmClient()
@@ -177,11 +183,33 @@ async def lifespan(app: FastAPI):
         resources.push_async_callback(app.state.dependency_watch.close)
         app.state.mcp_tool_lab = McpLabService()
         resources.push_async_callback(app.state.mcp_tool_lab.close)
+        day25_store = Day25Store(day25_path)
+        resources.callback(day25_store.close)
+        day25_client = ObservedClient()
+        resources.push_async_callback(day25_client.close)
+        # Embeddings client stays lazy: create/read/restore work without an API key.
+        class LazyEmbedder:
+            delegate = None
+
+            def embed(self, texts):
+                if self.delegate is None:
+                    self.delegate = OpenAIEmbedder()
+                return self.delegate.embed(texts)
+
+            def close(self):
+                if self.delegate is not None:
+                    self.delegate.close()
+
+        day25_embedder = LazyEmbedder()
+        resources.callback(day25_embedder.close)
+        app.state.day25_chat = Day25ChatService(day25_store, day25_client, day25_embedder)
         yield
 
 
 app = FastAPI(title="Response Control Lab API", version="1.0.0", lifespan=lifespan)
 app.state.agent_database_path = DEFAULT_DATABASE_PATH
+app.state.day25_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'day25' / 'chat.sqlite3'
+app.include_router(day25_router)
 app.state.memory_database_path = DEFAULT_DATABASE_PATH.parents[1] / 'memory-layers' / 'day11-v1' / 'memory.sqlite3'
 app.include_router(memory_router)
 app.state.personalization_memory_path = DEFAULT_DATABASE_PATH.parents[1] / 'personalization' / 'day12-v1' / 'memory.sqlite3'

@@ -69,6 +69,7 @@ class DefaultTemperatureLabRepository(private val api: TemperatureLabApi) :
 }
 
 class AppContainer(context: android.content.Context) {
+  val day25SessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context, "day_25_current_session")
   val compressionSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context,
     com.example.responsecontrollab.ui.compression.CompressionLabViewModel.PREFERENCES)
   val tokenSessionStore: CurrentSessionStore = SharedPreferencesCurrentSessionStore(context, "day_08_current_session")
@@ -82,6 +83,7 @@ class AppContainer(context: android.content.Context) {
       .build()
 
   val strategyPreferences: StrategyPreferences = SharedStrategyPreferences(context)
+  val day25Repository: Day25Repository = DefaultDay25Repository(retrofit.create(Day25Api::class.java))
   val watchReceiptStore: WatchReceiptStore = SharedWatchReceiptStore(context)
   val dependencyWatchRepository: DependencyWatchRepository = DefaultDependencyWatchRepository(retrofit.create(DependencyWatchApi::class.java))
   val mcpLabRepository: McpLabRepository = DefaultMcpLabRepository(retrofit.create(McpLabApi::class.java))

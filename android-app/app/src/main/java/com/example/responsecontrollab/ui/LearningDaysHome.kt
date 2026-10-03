@@ -59,6 +59,7 @@ enum class LearningDay(
   AGENT_PLAYGROUND("15", AppDestination.AGENT_PLAYGROUND, R.string.day_15_title, R.string.day_15_description),
   FIRST_MCP_TOOL("17", AppDestination.FIRST_MCP_TOOL, R.string.day_17_title, R.string.day_17_description),
   DEPENDENCY_WATCH("18", AppDestination.DEPENDENCY_WATCH, R.string.day_18_title, R.string.day_18_description),
+  STATEFUL_RAG("25", AppDestination.STATEFUL_RAG, R.string.day_25_title, R.string.day_25_description),
 
 }
 

@@ -28,5 +28,6 @@
 - [День 22 — первый RAG-запрос](day-22-first-rag/README.md)
 - [День 23 — query rewrite и relevance filtering](day-23-rewrite-filter-rag/README.md)
 - [День 24 — проверяемые RAG-ответы](day-24-grounded-rag/README.md)
+- [День 25 — stateful RAG mini-chat](day-25-stateful-rag-chat/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.
