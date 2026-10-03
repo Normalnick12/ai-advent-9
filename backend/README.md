@@ -8,6 +8,46 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 24 — Проверяемые RAG-ответы
+
+`scripts/day24_rag.py` — isolated CLI без FastAPI/Android. Он проверяет frozen
+Day 22 baseline `f7b78426-9672-437f-ab93-717a826934da`, original-query vectors и
+pinned Day 21 index, локально повторяет все десять cosine Top-5 и требует точного
+совпадения hits/scores до generation. Новых embeddings/rewrite нет; старые
+результаты не меняются. Ошибка index/replay — technical failure, не abstention.
+
+Gate использует неокруглённый best_score >= 0.50. При PASS отправляется полный
+Top-5 с source/section/full chunk_id/text, без scores и eval labels. Responses
+`gpt-5.6`, reasoning none, strict JSON Schema, output budget 3000, truncation disabled,
+store=false; prompt требует краткий русский ответ и дословные цитаты <=400 символов.
+Model output содержит только status, answer, sources [{source, section, chunk_id}]
+и citations [{chunk_id, quote}]. У answered все три содержательные части непусты;
+у insufficient_context оба массива пусты и используется фиксированный ответ:
+«Не знаю ответа на основании текущей базы знаний. Уточните вопрос или укажите нужный документ.»
+
+Runtime сверяет membership в actual model context, точные metadata, равенство
+source/citation chunk sets, отсутствие duplicate source IDs/citation pairs и
+literal substring quote без изменения whitespace/case/Unicode. Schema/status/
+provenance/citation failure сохраняется как validation_failed и normalized_result=null;
+raw output не ремонтируется. Refused/incomplete/error/unknown остаются отдельными
+исходами, retries отсутствуют. Exactness не доказывает semantic support/correctness.
+
+Ignored `backend/.local/day24/<run-id>/` содержит run.json с frozen questions,
+hashes/config/index provenance, Qxx.json с vectors/retrieval/gate/actual request,
+raw provider output/usage/validation/normalized result и review.json. Checkpoint
+записывается до dispatch, raw output — до validation; ошибка записи останавливает
+новые calls. Runtime abstention: origin=runtime_gate, attempted=false, request/raw=null,
+actual context=[]; model abstention: origin=model_semantic, attempted=true.
+
+Manual review отдельно хранит presence, exactness, answer_supported_by_citations
+yes/partial/no, unsupported_claims с notes и при необходимости per-fact correctness/
+coverage. Pending, unavailable и N/A не являются успехом; корректный abstention
+имеет presence=no и exactness/support=N/A. Общего score и LLM judge нет.
+Report self-contained: не требует API key, original baseline или index; --video
+показывает компактную последовательность ответа и проверок, --full — forensic
+inputs/raw output/errors. Результаты одного frozen run — в [Day 24](../day-24-grounded-rag/README.md),
+команды — в [scripts](../scripts/README.md#day-24--проверяемые-rag-ответы).
+
 ## Day 23 — Query rewrite и relevance filtering
 
 `scripts/day23_rag.py` переиспользует pinned Day 21 structure-aware index и saved

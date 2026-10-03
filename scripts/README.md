@@ -5,6 +5,65 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 24 — Проверяемые RAG-ответы
+
+Нужны существующее backend Python environment, `OPENAI_API_KEY` в backend
+environment/локальном .env, saved Day 22 baseline и Day 21 SQLite. FastAPI,
+Android и Gradle не нужны. Из корня repository в PowerShell 7:
+
+```powershell
+$python = '.\backend\.venv\Scripts\python.exe'
+$ragCli24 = 'backend/scripts/day24_rag.py'
+& $python $ragCli24 --help
+Push-Location backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_grounded_rag.py tests/test_first_rag.py tests/test_rewrite_filter_rag.py -q
+} finally { Pop-Location }
+```
+
+Один frozen live eval: replay original vectors локальный, новых embedding calls
+нет. Q01–Q09 проходят gate; Q10 best=0.494346 ниже 0.50, generation отсутствует.
+Config/prompt/schema/threshold фиксированы; не повторяйте run ради улучшения
+citations или semantic support. Technical failures и model abstention — результаты.
+
+```powershell
+& $python $ragCli24 eval --baseline backend/.local/day22/f7b78426-9672-437f-ab93-717a826934da
+```
+
+`--db PATH` меняет расположение SQLite, но не pinned identity; `--output-root PATH`
+меняет каталог нового run. Нет resume/repair/retry. При неожиданном обрыве
+прочитайте checkpoints: attempted=true/status=unknown не означает, что call
+не состоялся. Ошибка storage останавливает последующие запросы.
+
+Просмотр сохранённого run (без ключа, index и любых API calls):
+
+```powershell
+$result24 = 'backend/.local/day24/25cd12b1-7423-4f3a-bc68-1c017f599504'
+& $python $ragCli24 report $result24 --video
+& $python $ragCli24 report $result24 --question Q05 --video
+& $python $ragCli24 report $result24 --question Q07 --video
+& $python $ragCli24 report $result24 --question Q08 --video
+& $python $ragCli24 report $result24 --question Q10 --video
+& $python $ragCli24 report $result24 --question Q08 --full
+```
+
+`--video` и `--full` взаимоисключающие. Для answered видео показывает question,
+gate, answer, sources, полные literal quotes, validation и semantic support;
+сокращённые chunk IDs явно обозначены как display prefixes. Для gate fail видны
+best/threshold, FAIL, GENERATION CALL: NO и deterministic ответ. Invalid output
+не показывается как принятый ответ; raw candidate доступен отдельно без --video.
+
+Меняйте только review.json: укажите reviewer, прочитайте каждый answer/quotes
+в контексте полных chunks и поставьте status=reviewed с support=yes/partial/no.
+Механические sources_present/citations_present/citations_exact уже вычислены;
+изменять их вопреки evidence нельзя. При partial/no заполните unsupported_claims
+[{claim, notes}]. Optional facts с неизменными F IDs содержат correctness, coverage
+(yes/partial/no/N/A/unavailable) и notes. Уместность abstention фиксируйте в notes,
+support/exactness оставляйте N/A. Pending не выдаётся за выполненный review.
+Не редактируйте run/Qxx JSON и frozen questions. Смысловая поддержка и correctness
+оцениваются отдельно: настоящая цитата про другой Day может не подтверждать ответ.
+Frozen run не является новым независимым retrieval benchmark; общего score нет.
+
 ## Day 23 — Query rewrite и relevance filtering
 
 Используйте existing backend Python environment; FastAPI, Android и Gradle не нужны.
