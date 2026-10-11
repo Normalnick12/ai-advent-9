@@ -29,5 +29,6 @@
 - [День 23 — query rewrite и relevance filtering](day-23-rewrite-filter-rag/README.md)
 - [День 24 — проверяемые RAG-ответы](day-24-grounded-rag/README.md)
 - [День 25 — stateful RAG mini-chat](day-25-stateful-rag-chat/README.md)
+- [День 26 — Локальная LLM](day-26-local-llm/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.
