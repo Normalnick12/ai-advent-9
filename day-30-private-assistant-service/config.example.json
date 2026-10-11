@@ -1,0 +1,9 @@
+{
+  "workspace": ".local/day30/workspace",
+  "knowledge": ".local/day30/knowledge",
+  "files": {"demo": "Fixture.kt"},
+  "token_env": {"device_a": "LAA_TOKEN_A", "device_b": "LAA_TOKEN_B"},
+  "digest": "REPLACE_WITH_INSTALLED_MODEL_DIGEST",
+  "base_url": "http://127.0.0.1:11434",
+  "local_only_confirmed": false
+}

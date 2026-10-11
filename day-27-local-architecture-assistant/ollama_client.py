@@ -5,6 +5,7 @@ import re
 from urllib.parse import urlsplit
 
 import httpx
+from runtime_errors import RuntimeFailure
 
 MAX_RESPONSE_BYTES = 256 * 1024
 MAX_METADATA_BYTES = 2 * 1024 * 1024
@@ -37,10 +38,10 @@ def check_model(model):
         raise ValueError("Укажите имя установленной локальной модели (--model или LAA_MODEL).")
 
 
-def make_client(transport=None):
+def make_client(transport=None, *, timeout=None):
     return httpx.Client(
         trust_env=False, follow_redirects=False,
-        timeout=httpx.Timeout(180, connect=5),
+        timeout=timeout if timeout is not None else httpx.Timeout(180, connect=5),
         transport=transport if transport is not None else httpx.HTTPTransport(retries=0, trust_env=False),
         headers={"Accept-Encoding": "identity"},
     )
@@ -53,29 +54,31 @@ def post_json(client, base_url, endpoint, body, limit):
         with client.stream("POST", target, content=body, headers={"Content-Type": "application/json"}) as r:
             if not 200 <= r.status_code < 300:
                 if r.status_code == 404:
-                    raise RuntimeError("Ollama: модель или endpoint не найдены (HTTP 404).")
-                raise RuntimeError(f"Ollama вернула HTTP {r.status_code}; повтор не выполняется.")
+                    raise RuntimeFailure("upstream_unavailable", "Ollama: модель или endpoint не найдены (HTTP 404).", rejected=True)
+                raise RuntimeFailure("upstream_overloaded" if r.status_code == 503 else "upstream_unavailable",
+                                     f"Ollama вернула HTTP {r.status_code}; повтор не выполняется.",
+                                     rejected=r.status_code == 503)
             if r.headers.get("content-encoding", "identity") != "identity":
-                raise RuntimeError("Неподдерживаемое кодирование ответа Ollama.")
+                raise RuntimeFailure("invalid_model_response", "Неподдерживаемое кодирование ответа Ollama.")
             data = bytearray()
             for chunk in r.iter_bytes(chunk_size=8192):
                 if len(data) + len(chunk) > limit:
-                    raise RuntimeError("Ответ Ollama превышает допустимый размер.")
+                    raise RuntimeFailure("invalid_model_response", "Ответ Ollama превышает допустимый размер.")
                 data.extend(chunk)
     except httpx.ConnectTimeout:
-        raise RuntimeError("Ollama: истекло время ожидания; повтор не выполняется.") from None
+        raise RuntimeFailure("upstream_unavailable", "Ollama: истекло время ожидания; повтор не выполняется.", rejected=True) from None
     except httpx.TimeoutException:
-        raise RuntimeError("Ollama: истекло время ожидания; повтор не выполняется.") from None
+        raise RuntimeFailure("request_timeout", "Ollama: истекло время ожидания; повтор не выполняется.") from None
     except httpx.ConnectError:
-        raise RuntimeError("Не удалось получить ответ локальной Ollama.") from None
+        raise RuntimeFailure("upstream_unavailable", "Не удалось получить ответ локальной Ollama.", rejected=True) from None
     except httpx.HTTPError:
-        raise RuntimeError("Не удалось получить ответ локальной Ollama.") from None
+        raise RuntimeFailure("upstream_unavailable", "Не удалось получить ответ локальной Ollama.") from None
     try:
         result = json.loads(data)
     except (ValueError, RecursionError):
-        raise RuntimeError("Ollama вернула некорректный JSON.") from None
+        raise RuntimeFailure("invalid_model_response", "Ollama вернула некорректный JSON.") from None
     if not isinstance(result, dict) or "error" in result:
-        raise RuntimeError("Ollama сообщила ошибку или вернула непригодный ответ.")
+        raise RuntimeFailure("invalid_model_response", "Ollama сообщила ошибку или вернула непригодный ответ.")
     return result
 
 

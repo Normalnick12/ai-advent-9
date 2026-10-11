@@ -10,10 +10,14 @@ from knowledge_index import connect
 from local_embeddings import vector_norm
 
 
-def query_text(question, filename=None):
+def query_text(question, filename=None, previous_question=None):
     if not isinstance(question, str) or not question.strip() or len(question) > 2000:
         raise ValueError("Нужен непустой query до 2000 символов.")
     result = question
+    if previous_question is not None:
+        if not isinstance(previous_question, str) or not previous_question.strip() or len(previous_question) > 2000:
+            raise ValueError("Нужен предыдущий вопрос до 2000 символов.")
+        result += "\n" + previous_question
     if filename:
         stem = PurePosixPath(filename.replace("\\", "/")).stem
         words = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1 \2", stem)

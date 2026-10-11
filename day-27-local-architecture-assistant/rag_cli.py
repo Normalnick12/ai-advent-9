@@ -15,6 +15,7 @@ from ollama_client import check_model, generate, local_url, make_client, usage_m
 from retrieval import query_text, search
 from workspace import read_source
 from generation_settings import settings
+from assistant_runtime import explain_operation, retrieve as runtime_retrieve
 
 
 class Parser(argparse.ArgumentParser):
@@ -135,11 +136,7 @@ def knowledge_command(args, transport, metrics):
 
 
 def retrieve(args, root, index, query, mode, transport):
-    vector = None
-    if mode == "vector":
-        with make_client(transport) as client:
-            vector = embed_query(client, local_url(args.base_url), index.metadata["embedding"], query)
-    return search(root, index, query, mode, args.top_k, vector)
+    return runtime_retrieve(root, index, query, mode, args.top_k, local_url(args.base_url), transport)
 
 
 def main(argv, *, transport=None):
@@ -167,41 +164,13 @@ def main(argv, *, transport=None):
             check_model(args.model)
             base = local_url(args.base_url)
             question = prompt(args.question, "Вопрос")
-            check_inputs(question, args.num_ctx, args.num_predict)
-            overrides = settings(args.temperature, 0 if args.keep_alive == "0" else args.keep_alive)
-            root = index = None
-            if args.retrieval == "none":
-                if args.knowledge is not None:
-                    raise ValueError("retrieval none не принимает --knowledge.")
-            else:
-                root = knowledge_root(args)
-                kn.separate(root, args.workspace)
-                index = ix.read(root)
-                ix.fresh(root, index)
-            source = read_source(args.workspace, args.file)
-            query = query_text(question, source.name) if index is not None else None
-            def pack(hits, thinking=True):
-                return grounded.pack(source, question, args.model, args.retrieval, hits,
-                                     args.num_ctx, args.num_predict, thinking=thinking, overrides=overrides)
-            pack([])
-            phase = time.perf_counter()
-            hits = [] if index is None else retrieve(args, root, index, query, args.retrieval, transport)
-            metrics["retrieval_seconds"] = round(time.perf_counter() - phase, 6)
-            body, selected = pack(hits)
-            metrics.update(retrieval=args.retrieval, selected=len(selected), omitted=len(hits) - len(selected),
-                           num_ctx=args.num_ctx, num_predict=args.num_predict, **overrides,
-                           seed=28, ttft_seconds="unavailable")
-            with make_client(transport) as client:
-                identity, shown = model_metadata(client, base, args.model, "completion")
-                thinking = "thinking" in shown["capabilities"]
-                metrics.update(identity, think=False if thinking else "not_supported")
-                if not thinking:
-                    body, selected = pack(hits, False)
-                phase = time.perf_counter()
-                response = generate(client, base, body)
-                metrics["generation_seconds"] = round(time.perf_counter() - phase, 6)
-            metrics.update(usage_metadata(response))
-            result = grounded.parse(response, len(source.lines), grounded.status(args.retrieval, selected), selected)
+            knowledge = args.knowledge if args.retrieval == "none" else (
+                args.knowledge if args.knowledge is not None else os.getenv("LAA_KNOWLEDGE"))
+            result, selected, _ = explain_operation(
+                workspace=args.workspace, filename=args.file, question=question, model=args.model,
+                mode=args.retrieval, knowledge=knowledge, base_url=base, top_k=args.top_k,
+                num_ctx=args.num_ctx, num_predict=args.num_predict, temperature=args.temperature,
+                keep_alive=0 if args.keep_alive == "0" else args.keep_alive, transport=transport, metrics=metrics)
             print(grounded.render(result, selected))
         metrics["status"] = "completed"
         return 0
