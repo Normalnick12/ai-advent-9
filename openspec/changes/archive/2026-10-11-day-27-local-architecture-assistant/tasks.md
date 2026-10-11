@@ -1,0 +1,22 @@
+## 1. Standalone CLI and workspace
+
+- [x] 1.1 Создать минимальные модули Day 27, requirements (Python 3.12+, httpx; pytest для разработки), argparse/config и одноразовый TTY-ввод. Проверить `--help`, приоритет флагов над окружением, обязательную модель, EOF/пустой вопрос/non-TTY/Ctrl+C и exit codes без сетевых вызовов; runtime не импортирует backend.
+- [x] 1.2 Реализовать ограниченное чтение одного Kotlin-файла и границу Workspace по design. Проверить tmp fixtures: nested path/пробелы/кириллица/BOM/CRLF, traversal, absolute/drive/ADS/device paths, sibling-prefix, symlink/junction, не-файл, пустой текст, кодировка и 16 KiB + 1; отклонённый ввод не читает внешнее содержимое и не вызывает HTTP. Platform skips явно отметить.
+
+## 2. Request and response
+
+- [x] 2.1 Собрать инструкции, относительный путь, numbered source, question и маленькую JSON Schema facts/assumptions/limitations; задать num_ctx/num_predict (8192/2048) и byte caps. Проверить реальные сериализованные bytes <=24 KiB, вопрос <=2000 code points, корректные line numbers, invalid budgets и отсутствие соседних файлов/absolute path в payload.
+- [x] 2.2 Реализовать синхронный Ollama transport: loopback URL/cloud tag, localhost normalization, trust_env=False, redirects=False, timeouts, metadata POST /api/show (<=2 MiB) и максимум один inference POST /api/chat (<=256 KiB) без retry. По capabilities передавать think:false при поддержке, иначе опускать think; ошибка/remote show блокирует chat. MockTransport подтверждает payload, обе ветви thinking, отсутствие исходника/вопроса в show, proxy/redirect follow-up и безопасные ошибки connection/timeout/HTTP/API/oversize.
+- [x] 2.3 Проверить completion до parsing explanation; валидировать три поля, facts text/lines и range 1..N; отрендерить русские разделы без terminal control sequences. Тестами подтвердить отказ при length/done=false/unknown reason/thinking-only/malformed JSON/плохих строках и отсутствие repair; корректный результат даёт exit 0.
+- [x] 2.4 Добавить safe diagnostics и metadata-only метрики elapsed/model/settings/status/tokens/durations. Проверить отсутствие content writes, отражённого prompt/raw error/traceback в диагностике, unavailable для отсутствующих counters и отсутствие пересчёта bytes в tokens.
+
+## 3. Focused verification and one local experiment
+
+- [x] 3.1 Добавить синтетический CheckoutCoordinator.kt и выполнить интегрированный offline CLI-тест с подставным transport, включая explicit question и interactive path; запустить `python -m pytest tests -q` из каталога дня и syntax/import checks. Проверить no-network/no-content-persistence, actual one-call payload и суммарные результаты/платформенные skips. Backend/Android проверки не запускать.
+- [x] 3.2 До generation проверить на Windows доступность Ollama 0.40.2, установленную qwen3.5:9b-q4_K_M, поддержку thinking через /api/show, server local-only mode (по конфигурации работающего сервера/актуальному startup log, не только loopback) и отсутствие request-body logging без автоматического управления сервером. Затем выполнить ровно один synthetic explain с 8192/2048 и think:false; зафиксировать только безопасные метрики и технический исход. Failure/обрыв тоже зафиксировать; не повторять и не менять настройки ради успешного результата.
+- [x] 3.3 Провести ручную оценку результата по fixture: роль, видимые зависимости/вызовы, соответствие facts строкам, assumptions и missing-context limitations. Отдельно записать human verdict (или pending, если ещё не получен), фактические ограничения и статус acceptance без transcript; задача не считается завершённой при pending review, а неуспешный результат не превращается в PASS.
+
+## 4. Documentation and scope review
+
+- [x] 4.1 Создать краткий Day README с разделами «Суть эксперимента», «Что проверяет», «Результаты» и минимальными зависимостями/настройкой/командой standalone CLI. Указать раздельные byte/token limits, интерактивный ввод, local-only prerequisite, внешнее расположение Workspace, фактические метрики/вывод единственного run и непроверенную macOS performance. Добавить упорядоченную относительную ссылку в корневой README; проверить существование цели, отсутствие дубликата и отсутствие выдуманных результатов.
+- [x] 4.2 Проверить `git diff --check`, состав diff/status и отсутствие секретов, пользовательского кода, prompt/response dumps и изменений backend/Android. Обновить статусы задач по фактам, отдельно показать implemented/offline/live/manual-review outcomes; commit/push и видео не выполнять.
