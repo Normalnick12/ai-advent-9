@@ -1,0 +1,8 @@
+{
+  "variant": "compact-evidence-v1",
+  "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+  "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+  "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+  "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+  "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8"
+}

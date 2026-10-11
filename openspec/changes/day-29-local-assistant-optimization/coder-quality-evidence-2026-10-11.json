@@ -1,0 +1,809 @@
+{
+  "experiment": "Coder S2-S6 after user-reviewed S1; external GPU load removed",
+  "date": "2026-10-11",
+  "timezone": "Europe/Moscow",
+  "preflight": {
+    "samples": [
+      {
+        "timestamp": "2026-10-11T09:51:20.8882331+03:00",
+        "used_mib": 554,
+        "free_mib": 11444,
+        "utilization_percent": 4
+      },
+      {
+        "timestamp": "2026-10-11T09:51:25.9436494+03:00",
+        "used_mib": 521,
+        "free_mib": 11477,
+        "utilization_percent": 3
+      },
+      {
+        "timestamp": "2026-10-11T09:51:30.9925511+03:00",
+        "used_mib": 503,
+        "free_mib": 11495,
+        "utilization_percent": 2
+      }
+    ],
+    "pass": true
+  },
+  "local_only_server_log_confirmed": true,
+  "active_requests_or_runners_before": false,
+  "S1_user_review": "PARTIAL",
+  "attempt_records": [
+    {
+      "attempt": "f4f63784f8d542849ab3dd00f9fe53c9",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S2",
+      "timestamp": 1791701517.4646447
+    },
+    {
+      "attempt": "f4f63784f8d542849ab3dd00f9fe53c9",
+      "client_wall_seconds": 18.458181000001787,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "not_resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 1204,
+        "eval_duration_seconds": 13.624969,
+        "generation_seconds": 18.061204599995108,
+        "input_sha256": "5525e8ef761e60d6a41ec666f6f3fe69749327e1c39e59655abb9915d9a698a0",
+        "load_duration_seconds": 4.1136947,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5620
+          ],
+          "system_ram_available_bytes": 21139537920,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701535.8985627
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            513
+          ],
+          "system_ram_available_bytes": 21938393088,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701517.7899332
+        },
+        "operation_seconds": 18.224072400000296,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1294,
+        "prompt_eval_duration_seconds": 0.308031,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "resident": false
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "75fae67eafeedf18a58947896c96a46a7c2efcd2875d1c6dcae1202a603bf59e",
+          "b0bb20296059355b10f7abd06586ff3f9f7d3a6b1dddf120ea2d8debfa76a2ad",
+          "aab11966297f308ecd65f63f48d6e27760936d4f1aeda7d98f117dddcaa54aa7",
+          "d976469719ed61e702ad877789bba84a3e6110c9c16cdf1935fbf82efc7b3f2c"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 18.0600243,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 18.062633699999424
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S2",
+      "timestamp": 1791701535.9218624
+    },
+    {
+      "attempt": "6e79cb270c2d4b068e6d7b48bd105f51",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S3",
+      "timestamp": 1791701535.9306161
+    },
+    {
+      "attempt": "6e79cb270c2d4b068e6d7b48bd105f51",
+      "client_wall_seconds": 9.779572500003269,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 778,
+        "eval_duration_seconds": 8.927513,
+        "generation_seconds": 9.409026100001938,
+        "input_sha256": "98b714d2f360314ec2681db1310772d5ab67a7b0514e2ce20a09f34ab60828b9",
+        "load_duration_seconds": 0.0056501,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5612
+          ],
+          "system_ram_available_bytes": 20975394816,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701545.6854575
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5620
+          ],
+          "system_ram_available_bytes": 21140959232,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701536.2422857
+        },
+        "operation_seconds": 9.56019990000641,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1547,
+        "prompt_eval_duration_seconds": 0.422288,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "75fae67eafeedf18a58947896c96a46a7c2efcd2875d1c6dcae1202a603bf59e",
+          "b0bb20296059355b10f7abd06586ff3f9f7d3a6b1dddf120ea2d8debfa76a2ad",
+          "aab11966297f308ecd65f63f48d6e27760936d4f1aeda7d98f117dddcaa54aa7",
+          "d976469719ed61e702ad877789bba84a3e6110c9c16cdf1935fbf82efc7b3f2c",
+          "75658f5d8c9b1575e710e315646bc0a234eabb301dac4ceaea2ff5876a150727",
+          "322a9d8d8d5ad22eac4a081f05044778258f39d388faa915c2e8ca8843ad52e9"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 9.4079521,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 9.410653700004332
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S3",
+      "timestamp": 1791701545.7096775
+    },
+    {
+      "attempt": "d07e76fdde8e489c94eb4f95c756465f",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S4",
+      "timestamp": 1791701545.717406
+    },
+    {
+      "attempt": "d07e76fdde8e489c94eb4f95c756465f",
+      "client_wall_seconds": 8.426070900000923,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 661,
+        "eval_duration_seconds": 7.708121,
+        "generation_seconds": 8.064836100005778,
+        "input_sha256": "a62264f5adc38e30a3aa501b37d19021358df04102c87e87a9d57b8631e3ed73",
+        "load_duration_seconds": 0.0051319,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5607
+          ],
+          "system_ram_available_bytes": 20864233472,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701554.1199543
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5608
+          ],
+          "system_ram_available_bytes": 20971384832,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701546.0137718
+        },
+        "operation_seconds": 8.213146599999163,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1133,
+        "prompt_eval_duration_seconds": 0.30224,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "326ddddd404a0e142f3cdde4697a5193177dc38cf88f5f0cfe67e7b5cd20aa3b",
+          "fef6ba418f2ca7cf6f62ee1a06c795a0083051644812aca179a6a65f5f7e3523",
+          "ac62a4d98c09ca3db2dd79a881b8811ca2d86db66498a48b53cef189c0d3f271"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 8.063718,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 8.065962000000582
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S4",
+      "timestamp": 1791701554.1430361
+    },
+    {
+      "attempt": "595d9e60699845d982df134b8ea23c57",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S5",
+      "timestamp": 1791701554.151972
+    },
+    {
+      "attempt": "595d9e60699845d982df134b8ea23c57",
+      "client_wall_seconds": 7.085805300004722,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 547,
+        "eval_duration_seconds": 6.344707,
+        "generation_seconds": 6.7065157999968505,
+        "input_sha256": "5a6c47ac7a15face1caa852ad40c01aa760116142ab16647a006ce2bff5f726b",
+        "load_duration_seconds": 0.0051894,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5611
+          ],
+          "system_ram_available_bytes": 20766138368,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701561.2144635
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5607
+          ],
+          "system_ram_available_bytes": 20868599808,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701554.4650505
+        },
+        "operation_seconds": 6.861415100000158,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1166,
+        "prompt_eval_duration_seconds": 0.31295,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "326ddddd404a0e142f3cdde4697a5193177dc38cf88f5f0cfe67e7b5cd20aa3b",
+          "fef6ba418f2ca7cf6f62ee1a06c795a0083051644812aca179a6a65f5f7e3523",
+          "ac62a4d98c09ca3db2dd79a881b8811ca2d86db66498a48b53cef189c0d3f271"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 6.7052544,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 6.707984300002863
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S5",
+      "timestamp": 1791701561.2374067
+    },
+    {
+      "attempt": "7f4545d5fed94ff3a0a97a21b80412f7",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S6",
+      "timestamp": 1791701561.2471764
+    },
+    {
+      "attempt": "7f4545d5fed94ff3a0a97a21b80412f7",
+      "client_wall_seconds": 9.386064700003772,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 730,
+        "eval_duration_seconds": 8.560413,
+        "generation_seconds": 9.028315700001258,
+        "input_sha256": "4c45c73048aa93b8a55227d143c41f1fabfe9aab54f42c9f97e0c0bc2c8819da",
+        "load_duration_seconds": 0.0046212,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5617
+          ],
+          "system_ram_available_bytes": 20669546496,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701570.6106024
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5611
+          ],
+          "system_ram_available_bytes": 20768776192,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791701561.5433865
+        },
+        "operation_seconds": 9.164898399998492,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1462,
+        "prompt_eval_duration_seconds": 0.420691,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "9d263fcdf3bf313bf09a79cb09ee0ee9193042f77dc569bd91c888288fc12766",
+          "857a89b5611012cd1613e6444e97927e6dc05aee8fb3f46debe8cd9f042fec4a",
+          "6a15c97c3133cb7a169d4cc538490c9b249221d7dd4c9e9304774bfccd66076d"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 9.0271911,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 9.029672500000743
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S6",
+      "timestamp": 1791701570.6327507
+    }
+  ],
+  "assistant_provisional_semantics": {
+    "S2": "PARTIAL",
+    "S3": "PASS",
+    "S4": "FAIL",
+    "S5": "PARTIAL",
+    "S6": "PARTIAL"
+  },
+  "S2_S6_user_review": "pending",
+  "model_selected": false,
+  "aggregate_calls_including_historical_failures": 11,
+  "aggregate_recorded_bounded_client_seconds": 178.4296596001077,
+  "quality_bounded_client_seconds": 53.13569440001447,
+  "preflight_wall_seconds": "unavailable",
+  "runtime_changed": false,
+  "full_rag": "NOT RUN",
+  "mac": "NOT TESTED"
+}

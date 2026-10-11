@@ -14,6 +14,7 @@ from markdown_chunks import chunk_snapshot
 from ollama_client import check_model, generate, local_url, make_client, usage_metadata
 from retrieval import query_text, search
 from workspace import read_source
+from generation_settings import settings
 
 
 class Parser(argparse.ArgumentParser):
@@ -54,6 +55,8 @@ def parser():
     sub.add_argument("--base-url", default=os.getenv("LAA_BASE_URL", "http://127.0.0.1:11434"))
     sub.add_argument("--num-ctx", type=int, default=8192)
     sub.add_argument("--num-predict", type=int, default=2048)
+    sub.add_argument("--temperature", type=float, default=0)
+    sub.add_argument("--keep-alive", choices=("0", "5m"), default="0")
     return p
 
 
@@ -165,6 +168,7 @@ def main(argv, *, transport=None):
             base = local_url(args.base_url)
             question = prompt(args.question, "Вопрос")
             check_inputs(question, args.num_ctx, args.num_predict)
+            overrides = settings(args.temperature, 0 if args.keep_alive == "0" else args.keep_alive)
             root = index = None
             if args.retrieval == "none":
                 if args.knowledge is not None:
@@ -178,14 +182,14 @@ def main(argv, *, transport=None):
             query = query_text(question, source.name) if index is not None else None
             def pack(hits, thinking=True):
                 return grounded.pack(source, question, args.model, args.retrieval, hits,
-                                     args.num_ctx, args.num_predict, thinking=thinking)
+                                     args.num_ctx, args.num_predict, thinking=thinking, overrides=overrides)
             pack([])
             phase = time.perf_counter()
             hits = [] if index is None else retrieve(args, root, index, query, args.retrieval, transport)
             metrics["retrieval_seconds"] = round(time.perf_counter() - phase, 6)
             body, selected = pack(hits)
             metrics.update(retrieval=args.retrieval, selected=len(selected), omitted=len(hits) - len(selected),
-                           num_ctx=args.num_ctx, num_predict=args.num_predict, temperature=0, keep_alive=0,
+                           num_ctx=args.num_ctx, num_predict=args.num_predict, **overrides,
                            seed=28, ttft_seconds="unavailable")
             with make_client(transport) as client:
                 identity, shown = model_metadata(client, base, args.model, "completion")

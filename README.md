@@ -32,5 +32,6 @@
 - [День 26 — Локальная LLM](day-26-local-llm/README.md)
 - [День 27 — Local Android Architecture Assistant](day-27-local-architecture-assistant/README.md)
 - [День 28 — Local Android Architecture Assistant + RAG](day-28-local-architecture-rag/README.md)
+- [День 29 — Оптимизация Local Android Architecture Assistant](day-29-local-assistant-optimization/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.

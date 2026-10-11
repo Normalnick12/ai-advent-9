@@ -198,3 +198,79 @@ Exit codes: 0 — результат (включая признание нехв
 1 — ошибка выполнения/index/output, 130 — отмена.
 
 Подробные контракты и тестовый план: [Day 28 design](../openspec/changes/day-28-local-architecture-rag/design.md).
+
+## Day 29: контролируемые эксперименты
+
+В extended `explain --retrieval ...` добавлены `--temperature 0..2` и
+`--keep-alive 0|5m`. Без этих опций прежние defaults сохраняются: temperature=0,
+keep_alive=0. Legacy explain не изменён. `--num-ctx` и `--num-predict` остаются
+прежними. RAG/SQLite/Workspace и проверка источников общие.
+
+stderr содержит retrieval_seconds (включая query embedding), generation_seconds
+(HTTP generation, включая возможную загрузку), elapsed_seconds всего CLI и
+provider durations в наносекундах. Эти интервалы пересекаются: их нельзя
+складывать. TTFT для stream=false unavailable. HTTP read timeout 180 s — не
+wall-clock deadline повседневного CLI.
+
+Маленький driver работает только с S1–S6 и двумя точными Q4 tags. Из корня repo:
+
+```powershell
+py -3 -B day-29-local-assistant-optimization/driver.py
+```
+
+Первый вызов — offline preview с проверкой frozen manifest, без HTTP. Для тестов
+используйте рабочий каталог `day-27-local-architecture-assistant`:
+
+```powershell
+py -3 -B -m pytest tests ../day-29-local-assistant-optimization/tests -q -p no:cacheprovider
+```
+
+Python 3.12+, httpx, pytest уже достаточны.
+
+Live выполняется **после отдельного разрешения на установку и эксперимент**:
+проверить exact tags/digests, local-only конфигурацию работающего Ollama, затем
+`--stage quality --approved-live-local-only --record`. Driver не выполняет pull.
+Основной baseline: ctx8192/predict2048/temperature0/seed28/keep_alive5m. Полные
+доступные sampling defaults и provenance фиксируются для Ollama 0.40.2; неизвестный
+runtime/параметр блокирует серию. `backend=unavailable` честно означает отсутствие
+подтверждённой backend metadata; API profile не доказывает activation каждого sampler.
+
+Сначала bounded load-only/readiness и S1; после успеха S2–S6 без новых embeddings.
+Admission обозначается cold только при `not_resident_before`; cache warmth и
+OS page cache не выводятся из keep_alive. `resident_before` означает наблюдение
+до запроса, не гарантию отсутствия eviction позже. Provider load_duration позволяет
+увидеть повторную загрузку. Результаты разных config hashes анализируются раздельно.
+
+`--record` разрешает только content-free `.local/day29-attempts.jsonl`, который
+исключён из Git. Ответы, включая ответы с technical failure, выводятся только в
+терминал для смыслового review; reasoning не сохраняется. Не перенаправляйте stdout
+в отчёт. Записи start/end сохраняют все попытки; отсутствие end означает incomplete.
+Budget: максимум 32 load/chat attempts и 90 минут суммарного ограниченного client
+execution (включая metadata/инструментирование; паузы review не входят). Failed
+configuration закрывается и между запусками. Повтор одинаковой попытки запрещён.
+После deadline/cancel/неизвестной cleanup вся серия остановлена для review оператора;
+не удаляйте журнал ради повторов. Отмена собственного subprocess не доказывает
+завершение server runner. Driver не перезапускает Ollama и не завершает чужие процессы.
+
+После review всех S1–S6 `--stage rag --candidate EXACT_TAG --semantic-reviewed`
+(с теми же live/record флагами) использует существующие query embedding/retrieval/
+generation. Нужен отдельный `.local/day29-knowledge` только с копиями
+`day-28-local-architecture-rag/fixtures/knowledge/checkout.md` и
+`day-29-local-assistant-optimization/fixtures/knowledge/compose.md`; индекс создаётся
+обычной командой `knowledge index --knowledge .local/day29-knowledge --yes` из корня
+repo **после разрешения на live embeddings**. Старые indexes не используются.
+Driver проверяет состав и freshness, не строит index автоматически.
+
+`--stage variation --candidate EXACT_TAG --semantic-reviewed --factor keep_alive`
+(либо num_predict, temperature) сравнивает один фактор с принятой baseline, на S2/S6.
+Результаты baseline переиспользуются. Комбинации факторов, token-fit для 4096,
+prompt correction, Q8 и дополнительные повторы здесь не автоматизированы: только
+при конкретной причине, отдельном review и оставшемся бюджете. Это не полный перебор.
+Окончательный выбор требует [смысловой рубрики](../day-29-local-assistant-optimization/rubric.md)
+и реальных RAG S2/S6; `--semantic-reviewed` фиксирует решение человека, не оценивает модель.
+
+RAM: GlobalMemoryStatusEx total/available; VRAM: nvidia-smi system-wide used MiB;
+Ollama ps: model size/size_vram/context. Только before/after snapshots, не peak и не
+процессный RSS. Mac pressure/swap и отзывчивость Android Studio проверяются вручную
+на M1; Windows не подтверждает Mac. План и текущий статус —
+[Day 29 validation](../openspec/changes/day-29-local-assistant-optimization/validation.md).

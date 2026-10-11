@@ -2,6 +2,7 @@
 import json
 
 from explain import MAX_REQUEST_BYTES, check_inputs, safe_text
+from generation_settings import settings
 
 
 def obj(properties):
@@ -49,7 +50,7 @@ def status(mode, hits):
     return "not_requested" if mode == "none" else "candidates_provided" if hits else "no_candidates"
 
 
-def body(source, question, model, mode, hits, num_ctx, num_predict, thinking):
+def body(source, question, model, mode, hits, num_ctx, num_predict, thinking, overrides=None):
     context = {
         "question": question, "knowledge_status": status(mode, hits),
         "kotlin": {"file": source.name, "line_count": len(source.lines),
@@ -63,26 +64,30 @@ def body(source, question, model, mode, hits, num_ctx, num_predict, thinking):
                             {"role": "user", "content": json.dumps(context, ensure_ascii=False)}]}
     if thinking:
         payload["think"] = False
+    if overrides is not None:
+        values = settings(**overrides)
+        payload["keep_alive"] = values["keep_alive"]
+        payload["options"]["temperature"] = values["temperature"]
     try:
         return json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     except UnicodeError:
         raise ValueError("Некорректный Unicode в context.") from None
 
 
-def pack(source, question, model, mode, hits, num_ctx=8192, num_predict=2048, *, thinking=True):
+def pack(source, question, model, mode, hits, num_ctx=8192, num_predict=2048, *, thinking=True, overrides=None):
     check_inputs(question, num_ctx, num_predict)
     if len(source.text.encode("utf-8")) > 16 * 1024:
         raise ValueError("Kotlin превышает 16 KiB.")
-    if len(body(source, question, model, mode, [], num_ctx, num_predict, thinking)) > MAX_REQUEST_BYTES:
+    if len(body(source, question, model, mode, [], num_ctx, num_predict, thinking, overrides)) > MAX_REQUEST_BYTES:
         raise ValueError("Минимальный chat body превышает 24 KiB; обрезка не выполняется.")
     selected = []
     for hit in hits:
-        if len(body(source, question, model, mode, selected + [hit], num_ctx, num_predict, thinking)) > MAX_REQUEST_BYTES:
+        if len(body(source, question, model, mode, selected + [hit], num_ctx, num_predict, thinking, overrides)) > MAX_REQUEST_BYTES:
             break  # Retain a prefix of the ranked whole chunks.
         selected.append(hit)
     if hits and not selected:
         raise ValueError("context_budget_exceeded: ни один найденный chunk не помещается.")
-    return body(source, question, model, mode, selected, num_ctx, num_predict, thinking), selected
+    return body(source, question, model, mode, selected, num_ctx, num_predict, thinking, overrides), selected
 
 
 def parse(response, line_count, expected_status, selected):

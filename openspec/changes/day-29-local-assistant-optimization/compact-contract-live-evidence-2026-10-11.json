@@ -1,0 +1,551 @@
+{
+  "date": "2026-10-11",
+  "preflight": {
+    "timestamp": "2026-10-11T10:45:55.869941+03:00",
+    "criterion": "gpu-v2-six-samples",
+    "interval_seconds": 5,
+    "pass": true,
+    "experimental_contract": {
+      "variant": "compact-evidence-v1",
+      "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+      "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+      "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+      "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8"
+    },
+    "protected_file_count": 74,
+    "historical_calls": 12,
+    "historical_client_wall_seconds": 205.17400200010889,
+    "cloud_disabled_log": true,
+    "unexpected_runner_or_python_count": 0,
+    "ollama_processes": [
+      {
+        "pid": 18116,
+        "name": "ollama app.exe",
+        "created": "2026-10-11T09:30:04.624043+03:00"
+      },
+      {
+        "pid": 9572,
+        "name": "ollama.exe",
+        "created": "2026-10-11T09:30:06.156737+03:00"
+      }
+    ],
+    "connections": [
+      {
+        "LocalAddress": "127.0.0.1",
+        "State": 2,
+        "OwningProcess": 9572
+      }
+    ],
+    "profile": {
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+      "runtime": "0.40.2",
+      "quantization": "Q4_K_M",
+      "backend": "unavailable",
+      "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+      "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "options": {
+        "num_keep": 4,
+        "typical_p": 1.0,
+        "stop": {
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "count": 0
+        },
+        "num_batch": 512,
+        "num_gpu": -1,
+        "num_thread": 0,
+        "draft_num_predict": 4,
+        "use_mmap": null,
+        "main_gpu": null,
+        "seed": 28,
+        "top_k": 20,
+        "top_p": 0.95,
+        "min_p": 0,
+        "repeat_last_n": 64,
+        "repeat_penalty": 1,
+        "presence_penalty": 0,
+        "frequency_penalty": 0,
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "provenance": {
+        "num_keep": "runtime_default_0.40.2",
+        "typical_p": "runtime_default_0.40.2",
+        "stop": "runtime_default_0.40.2",
+        "num_batch": "runtime_default_0.40.2",
+        "num_gpu": "runtime_default_0.40.2",
+        "num_thread": "runtime_default_0.40.2",
+        "draft_num_predict": "runtime_default_0.40.2",
+        "use_mmap": "runtime_default_0.40.2",
+        "main_gpu": "runtime_default_0.40.2",
+        "seed": "explicit",
+        "top_k": "explicit",
+        "top_p": "explicit",
+        "min_p": "explicit",
+        "repeat_last_n": "explicit",
+        "repeat_penalty": "explicit",
+        "presence_penalty": "explicit",
+        "frequency_penalty": "explicit",
+        "num_ctx": "explicit",
+        "num_predict": "explicit",
+        "temperature": "explicit"
+      },
+      "keep_alive": "5m",
+      "think": "not_supported",
+      "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+      "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007"
+    },
+    "api_ps": {
+      "models": []
+    },
+    "frozen_inputs_verified": true,
+    "samples": [
+      {
+        "timestamp": "2026-10-11T10:45:57.245708+03:00",
+        "used_mib": 606,
+        "free_mib": 11392,
+        "utilization_percent": 6
+      },
+      {
+        "timestamp": "2026-10-11T10:46:02.292772+03:00",
+        "used_mib": 607,
+        "free_mib": 11391,
+        "utilization_percent": 6
+      },
+      {
+        "timestamp": "2026-10-11T10:46:07.344731+03:00",
+        "used_mib": 606,
+        "free_mib": 11392,
+        "utilization_percent": 7
+      },
+      {
+        "timestamp": "2026-10-11T10:46:12.391655+03:00",
+        "used_mib": 606,
+        "free_mib": 11392,
+        "utilization_percent": 7
+      },
+      {
+        "timestamp": "2026-10-11T10:46:17.427896+03:00",
+        "used_mib": 596,
+        "free_mib": 11402,
+        "utilization_percent": 6
+      },
+      {
+        "timestamp": "2026-10-11T10:46:22.468889+03:00",
+        "used_mib": 607,
+        "free_mib": 11391,
+        "utilization_percent": 5
+      }
+    ],
+    "median_utilization_percent": 6.0,
+    "two_consecutive_at_least_30": false,
+    "free_at_least_9000_each": true
+  },
+  "attempt_records": [
+    {
+      "allowed_scenarios": [
+        "S4",
+        "S6"
+      ],
+      "event": "compact_contract_context",
+      "experimental_contract": {
+        "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+        "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+        "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+        "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+        "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+        "variant": "compact-evidence-v1"
+      },
+      "gpu_criterion": "gpu-v2-six-samples",
+      "historical_calls": 12,
+      "historical_client_wall_seconds": 205.17400200010889,
+      "preflight_pass": true,
+      "timestamp": 1791704806.4113824
+    },
+    {
+      "attempt": "d869846a53de4400900e2ee66e582da4",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "experimental_contract": {
+        "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+        "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+        "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+        "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+        "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+        "variant": "compact-evidence-v1"
+      },
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S4",
+      "timestamp": 1791704806.4229653
+    },
+    {
+      "attempt": "d869846a53de4400900e2ee66e582da4",
+      "client_wall_seconds": 5.277738900003897,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "experimental_contract": {
+        "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+        "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+        "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+        "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+        "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+        "variant": "compact-evidence-v1"
+      },
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "not_resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 202,
+        "eval_duration_seconds": 2.292719,
+        "experimental_contract": {
+          "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+          "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+          "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+          "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+          "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+          "variant": "compact-evidence-v1"
+        },
+        "generation_seconds": 4.897766199996113,
+        "input_sha256": "e768541c9b4ea8342286881de743b673e4d63e8bfe0c9f61f2540d7844c924b2",
+        "load_duration_seconds": 2.324269,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5700
+          ],
+          "system_ram_available_bytes": 20805894144,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791704811.6774964
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            587
+          ],
+          "system_ram_available_bytes": 21592002560,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791704806.7314885
+        },
+        "operation_seconds": 5.044140300000436,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1182,
+        "prompt_eval_duration_seconds": 0.267940999,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "resident": false
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "326ddddd404a0e142f3cdde4697a5193177dc38cf88f5f0cfe67e7b5cd20aa3b",
+          "fef6ba418f2ca7cf6f62ee1a06c795a0083051644812aca179a6a65f5f7e3523",
+          "ac62a4d98c09ca3db2dd79a881b8811ca2d86db66498a48b53cef189c0d3f271"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 4.8966077,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 4.901306599997042
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S4",
+      "timestamp": 1791704811.7006016
+    },
+    {
+      "attempt": "5c5e8320165e4a06a197bec408d5041c",
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "deadline_seconds": 180,
+      "event": "start",
+      "experimental_contract": {
+        "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+        "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+        "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+        "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+        "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+        "variant": "compact-evidence-v1"
+      },
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S6",
+      "timestamp": 1791704811.7596502
+    },
+    {
+      "attempt": "5c5e8320165e4a06a197bec408d5041c",
+      "client_wall_seconds": 10.348583799997868,
+      "config": {
+        "keep_alive": "5m",
+        "num_ctx": 8192,
+        "num_predict": 2048,
+        "temperature": 0
+      },
+      "event": "end",
+      "experimental_contract": {
+        "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+        "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+        "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+        "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+        "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+        "variant": "compact-evidence-v1"
+      },
+      "manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+      "metrics": {
+        "cache_state": "resident_before",
+        "done_reason": "stop",
+        "embedding_calls": 0,
+        "eval_count": 860,
+        "eval_duration_seconds": 9.7217,
+        "experimental_contract": {
+          "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+          "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+          "parent_schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+          "prompt_sha256": "7cf8f554d62d6372392bf56617ea40f1c7dfd3acc17b834106b86c3b00410177",
+          "schema_sha256": "f9a7bf9822f9e2ee1319e03fbd927f99cba412420c150b0f5b13fdb46f0a8ad8",
+          "variant": "compact-evidence-v1"
+        },
+        "generation_seconds": 9.969554000002972,
+        "input_sha256": "a76a9f83ba3902e87b860ea3270cfd1524f7c305224128482202709007b261e2",
+        "load_duration_seconds": 0.0051392,
+        "memory_after": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5699
+          ],
+          "system_ram_available_bytes": 20732682240,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791704822.0843117
+        },
+        "memory_before": {
+          "method": "before_after_snapshot_not_peak",
+          "process_commit_bytes": "unavailable",
+          "runner_rss_bytes": "unavailable",
+          "system_gpu_used_mib": [
+            5700
+          ],
+          "system_ram_available_bytes": 20802273280,
+          "system_ram_total_bytes": 34191245312,
+          "timestamp": 1791704812.0696542
+        },
+        "operation_seconds": 10.123212200000125,
+        "profile": {
+          "backend": "unavailable",
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "effective_scope": "API resolved; backend activation not observable; typical_p deprecated",
+          "keep_alive": "5m",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "options": {
+            "draft_num_predict": 4,
+            "frequency_penalty": 0,
+            "main_gpu": null,
+            "min_p": 0,
+            "num_batch": 512,
+            "num_ctx": 8192,
+            "num_gpu": -1,
+            "num_keep": 4,
+            "num_predict": 2048,
+            "num_thread": 0,
+            "presence_penalty": 0,
+            "repeat_last_n": 64,
+            "repeat_penalty": 1,
+            "seed": 28,
+            "stop": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "temperature": 0,
+            "top_k": 20,
+            "top_p": 0.95,
+            "typical_p": 1.0,
+            "use_mmap": null
+          },
+          "parameters_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "profile_sha256": "336fdb5fa73c6c7ba4ed39f1a454e1ff54295e774baad00b8d5ba0018ad2c007",
+          "provenance": {
+            "draft_num_predict": "runtime_default_0.40.2",
+            "frequency_penalty": "explicit",
+            "main_gpu": "runtime_default_0.40.2",
+            "min_p": "explicit",
+            "num_batch": "runtime_default_0.40.2",
+            "num_ctx": "explicit",
+            "num_gpu": "runtime_default_0.40.2",
+            "num_keep": "runtime_default_0.40.2",
+            "num_predict": "explicit",
+            "num_thread": "runtime_default_0.40.2",
+            "presence_penalty": "explicit",
+            "repeat_last_n": "explicit",
+            "repeat_penalty": "explicit",
+            "seed": "explicit",
+            "stop": "runtime_default_0.40.2",
+            "temperature": "explicit",
+            "top_k": "explicit",
+            "top_p": "explicit",
+            "typical_p": "runtime_default_0.40.2",
+            "use_mmap": "runtime_default_0.40.2"
+          },
+          "quantization": "Q4_K_M",
+          "runtime": "0.40.2",
+          "template_sha256": "1e65450c30670713aa47fe23e8b9662bdf4065e81cc8e3cbfaa98924fcc0d320",
+          "think": "not_supported"
+        },
+        "prompt_eval_count": 1511,
+        "prompt_eval_duration_seconds": 0.205571,
+        "residence_after": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "residence_before": {
+          "context_length": 8192,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "resident": true,
+          "size": 5133943438,
+          "size_vram": 5133943438
+        },
+        "retrieval_seconds": 0,
+        "selected_chunk_ids": [
+          "9d263fcdf3bf313bf09a79cb09ee0ee9193042f77dc569bd91c888288fc12766",
+          "857a89b5611012cd1613e6444e97927e6dc05aee8fb3f46debe8cd9f042fec4a",
+          "6a15c97c3133cb7a169d4cc538490c9b249221d7dd4c9e9304774bfccd66076d"
+        ],
+        "server_cleanup": "response_completed",
+        "status": "completed",
+        "total_duration_seconds": 9.9683321,
+        "ttft_seconds": "unavailable",
+        "user_request_seconds": 9.973321600002237
+      },
+      "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+      "operation": "chat",
+      "scenario": "S6",
+      "timestamp": 1791704822.1080344
+    }
+  ],
+  "postflight": {
+    "profile_unchanged": true,
+    "api_ps": {
+      "models": [
+        {
+          "name": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+          "size": 5133943438,
+          "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen2",
+            "families": [
+              "qwen2"
+            ],
+            "parameter_size": "7.6B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-10-11T10:52:02.0427017+03:00",
+          "size_vram": 5133943438,
+          "context_length": 8192,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    "runner_idle_in_log": true,
+    "frozen_inputs_unchanged": true,
+    "protected_files_unchanged": 74
+  },
+  "new_calls": 2,
+  "aggregate_calls": 14,
+  "new_client_wall_seconds": 15.626322700001765,
+  "aggregate_client_wall_seconds": 220.80032470011065,
+  "semantic_review": "assistant provisional; user pending"
+}

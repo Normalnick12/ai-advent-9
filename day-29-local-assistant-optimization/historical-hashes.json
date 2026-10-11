@@ -1,0 +1,170 @@
+[
+  {
+    "path": "day-28-local-architecture-rag\\README.md",
+    "hash": "EF91BB540EBC850CFCA0EAA1482BBCE35EA3A061D308806ACB5AB4A8B31260BB"
+  },
+  {
+    "path": "day-28-local-architecture-rag\\prepare_week5.py",
+    "hash": "211628A6C21962D9B5E9F68A5EBAFF9AB77FB4214FAB704863E58319AE31AAC1"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\validation.md",
+    "hash": "1EB26D08910EFC0AA2FBA44C051A1EB014E6667E68802ABBAD723350E0B2771F"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\tasks.md",
+    "hash": "910CF789F630C1EAC650597A0701C66EFD3C2D2344C61AF917B3B492D421392B"
+  },
+  {
+    "path": "openspec/changes/day-27-local-architecture-assistant\\verification.md",
+    "hash": "75AC02B991A6BD0D0864FDD1A2D6A1EA1BDA493C16F703710B28E76F7FCF83AE"
+  },
+  {
+    "path": "openspec/changes/day-27-local-architecture-assistant\\tasks.md",
+    "hash": "AF8622DB117FC977300D4CFE110ECE4867179C0F87E83FDF6ACB3EA59B40BA39"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\workspace.py",
+    "hash": "AA3AF8773E90E4E0813CB2EDB93952941C104E4C82DE048D99CB9C75F676457B"
+  },
+  {
+    "path": "day-28-local-architecture-rag\\fixtures\\rubric.md",
+    "hash": "A2FD597BBA06D43D76A75AFB896B0E9A2B79D189AD2064859E1DAA2D9E01A04B"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\specs\\local-architecture-rag\\spec.md",
+    "hash": "544A9DD1F21B5AC06F30DF5251095A0FEC6DE296177EEAD3B561AF9CD3DF68FA"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\proposal.md",
+    "hash": "9BF4BD39EDAC228F44FADA9D45C663E53854DBE4DE42240F67027BFBB27C07DF"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\lifecycle-experiment-2026-10-10.md",
+    "hash": "614A854F20F1701B088D584CD5E0205304FE49E47414CCE90F8074601F5BE69B"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\diagnostic-followup-2026-10-10.md",
+    "hash": "3383FF904F6E11E0DA15975AFD2D4B6404AD0F7085E726F47336AAE6339A7DC9"
+  },
+  {
+    "path": "openspec/changes/day-28-local-architecture-rag\\design.md",
+    "hash": "82674591EA5CDFC4E8780E75A57CDD5F4AA9AC4CBBD78FFAD8CD28668DA3B978"
+  },
+  {
+    "path": "openspec/changes/day-27-local-architecture-assistant\\design.md",
+    "hash": "D059A6EAD5F4D58DA51EB9C865B906E303246E581AC96C0431C1F49BE37D78F2"
+  },
+  {
+    "path": "openspec/changes/day-27-local-architecture-assistant\\proposal.md",
+    "hash": "FE1B86D09CACF589154B5F7EA5340E6CCB1A238BA1A07A24581736E42EC89089"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_workspace.py",
+    "hash": "134461F7ADE79606C2090DE5BB2118689740A9FDE0F9EF8339086A2A32428F77"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_week5_export.py",
+    "hash": "161E3A2C7281391F307A6E8535E0A87CE77EA25FADDB2856891E1A0471F182BF"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_retrieval.py",
+    "hash": "BB984CF55BD3314F59D8F61D6F9188CA29BF0E1A87FF9F1E2DDD3BA04CB63717"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_rag_cli.py",
+    "hash": "2432D3115337C356FD84C4CDE7033A310BC157DDB82A29C9EA893E7846479C9E"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_ollama_client.py",
+    "hash": "9424554CF715D18991FEA7C1282BC3FACA93BD5222D0CCAFAA1184AFB7CD1D3D"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_knowledge.py",
+    "hash": "F61774B149DD8ADF14F5F2D745616E76F4A6EFBF5727E3B179C2E299E0F31430"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_grounded.py",
+    "hash": "82CC8A2133052E8BA16EB49FD1084F8D6E435DD509A316AA605EE5BA19E8D877"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_explain.py",
+    "hash": "EBACBE213EAE1F96AD8BD34480FA7BDD0D88F49A7DB6C428BB95B8C1E7DFD63B"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\test_assistant.py",
+    "hash": "30D7579F6BDA6EA01853664A706AF0A8AC01779A22E8C377D814DC71AC3D17CE"
+  },
+  {
+    "path": "day-28-local-architecture-rag\\fixtures\\negative\\unrelated.md",
+    "hash": "FDF0F8B9D64634959FDD2CEE8E107DA9FC937A2E3D79D783924EFF79B2841A93"
+  },
+  {
+    "path": "openspec/changes/day-27-local-architecture-assistant\\specs\\local-architecture-assistant\\spec.md",
+    "hash": "80E0662D6718ADC276B68B96753AB54252C59A53E214E1F651D14AD41536EBF6"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\ollama_client.py",
+    "hash": "E4734462C3B7589553867BADDEE85E51975D64BF1A7231132A7450C93593C15D"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\explain.py",
+    "hash": "07A1FA6FEB94707AC4FE3C27ED0D2B4DF5C4153EF27CCF4BE0DB9AFFD8D2600E"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\assistant.py",
+    "hash": "E9625645F40B68F981FC29750E97D6BF97700EE1E7DC6142D8EF269F552CB4DB"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\markdown_chunks.py",
+    "hash": "B178482C3313E9A8EA8E19143CE264E05A9E12612797D9D36F5074146F405E65"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\local_embeddings.py",
+    "hash": "97F56746CFADB0A8725B1B8405DEBAAB0ACA58D061AAC54DB1390967AB56254A"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\knowledge_index.py",
+    "hash": "A0EF54F3B295C2C562F8CEAB3D5D17F30554A4E68C0E77F59EFD09A713529ECB"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\knowledge.py",
+    "hash": "F45E1A794A918991AE29E6D63AA9F4C01F9BAF27057EFF7B53A9311AC1DDC59C"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\grounded_explain.py",
+    "hash": "86EA77C7B086C2E1172C2F443C86C077743DD70DA3C6753EBAC6E955C6D6C822"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\rag_cli.py",
+    "hash": "FF628A8435B4BDD2A3871B065C16361B7542DDB61AA6B65BC30D875BED72FD24"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\README.md",
+    "hash": "DEF24AA1F9FDC17E00F5281BD6DF87317EA47EC66B217F0122D0A8F64CBF32B1"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\requirements.txt",
+    "hash": "14A69DE4BF14C8A5070E26EB1D1639136268DB28769D3FC40138390C0CA1AE1B"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\retrieval.py",
+    "hash": "D90831E9A53388646002A2CA411DBB1C273D656DAD4135458E860B1B2D62995D"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\tests\\fixtures\\CheckoutCoordinator.kt",
+    "hash": "9FCCBFD0CE9CD2846E9BF4A6D3527FA9D99B2E059E56942FDDCC329DB2641E98"
+  },
+  {
+    "path": "day-28-local-architecture-rag\\fixtures\\knowledge\\checkout.md",
+    "hash": "41A0DDD3225400D5F1422D10358F3964EB39315DA8B294A307C006B197F61D50"
+  },
+  {
+    "path": "day-28-local-architecture-rag\\fixtures\\knowledge\\batch.md",
+    "hash": "037426C63B78894EEEFE246DC2EE11B33AF2EF27E8EDCF82D21C26EB177EC4D1"
+  },
+  {
+    "path": "day-27-local-architecture-assistant\\requirements-dev.txt",
+    "hash": "5E80794BCC6D2549958645E311FE2E150307CA42D1A05B154959C044697327AD"
+  }
+]

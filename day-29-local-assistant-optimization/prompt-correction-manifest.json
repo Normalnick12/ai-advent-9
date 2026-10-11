@@ -1,0 +1,7 @@
+{
+  "variant": "explain-evidence-v1",
+  "parent_manifest_sha256": "afb74eed9bfacf85576c53aeeee2b56be274446d21a5ff5c62dde789f08aa4d4",
+  "parent_prompt_sha256": "eb36c4a194ec44b548aaf0a6156ddf41d431f037c1990cd180d6e1c39386c3f6",
+  "schema_sha256": "478fcb753a8957c49815b62951f64b445a7a18301f8cb86425d05a540efac87c",
+  "prompt_sha256": "5e5a71031346ca8ccb862af70e7431eee18cee74c0ded8c808d6da68256d6d08"
+}
