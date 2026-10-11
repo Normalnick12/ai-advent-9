@@ -62,5 +62,4 @@ API semantic_status остаётся `not_evaluated`; Coder 7B — технич�
 [HTTP-компоненте](laa_service/README.md). Фактические проверки и команды — в
 [offline validation](../openspec/changes/day-30-private-assistant-service/offline-validation.md).
 
-Финализация Week 6: [технический итог](week-6-technical.md),
-[объяснение результатов](week-6-explained.md), [сценарий видео](week-6-video-script.md).
+Финализация Week 6: [технический итог](week-6-technical.md).
