@@ -33,6 +33,10 @@ def parser():
 
 
 def main(argv=None, *, transport=None):
+    actual = sys.argv[1:] if argv is None else argv
+    if actual and actual[0] in {"knowledge", "search", "explain"}:
+        from rag_cli import main as rag_main
+        return rag_main(actual, transport=transport)
     started = time.perf_counter()
     metrics = None
     try:
