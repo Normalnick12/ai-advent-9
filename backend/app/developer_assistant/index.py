@@ -68,6 +68,8 @@ def read(path=DATABASE):
 def fresh(root=ROOT, manifest=MANIFEST, path=DATABASE):
     snap = snapshot(root, manifest)
     index = read(path)
+    if any(index.provenance.get(k) != v for k, v in metadata(snap).items()):
+        raise ValueError('index_stale; run index')
     return index
 
 

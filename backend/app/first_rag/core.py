@@ -89,7 +89,8 @@ def search(index, query_vector, *, top_k=TOP_K):
     for c, dnorm in zip(index.chunks, index.norms, strict=True):
         score = math.fsum(a * b for a, b in zip(query_vector, c["embedding"], strict=True)) / (norm * dnorm)
         ranked.append({**{k: v for k, v in c.items() if k != "embedding"}, "score": score})
-    ranked.sort(key=lambda c: (c["score"], c["source"], c["ordinal"], c["chunk_id"]))
+    # Higher cosine similarity comes first; remaining keys break ties.
+    ranked.sort(key=lambda c: (-c["score"], c["source"], c["ordinal"], c["chunk_id"]))
     return [{**c, "rank": rank} for rank, c in enumerate(ranked[:top_k], 1)]
 
 
