@@ -34,14 +34,15 @@ try {
 }
 ```
 
-Workflows `.github/workflows/day32-pr-signal.yml` и `day32-pr-review.yml` сначала
-должны попасть в доверенный `main` после отдельного разрешения bootstrap.
+Workflows `.github/workflows/day32-pr-signal.yml` и `day32-pr-review.yml`
+опубликованы в доверенном `main` bootstrap-коммитом `4e5d98c`.
 `workflow_run` использует код `github.sha` из `main`, а не SHA проверяемого PR.
 Server API подтверждает workflow ID/path, repository, единственный связанный PR
 и его head SHA; неоднозначная связь останавливает запуск. Artifacts/кэш PR не
-читаются. Проверка поведения Environment и реального события остаётся частью live.
+читаются. Environment policy и реальная цепочка событий проверены через API
+и два автоматических запуска.
 
-Ручная настройка GitHub UI **после локальной готовности**:
+Ручная настройка GitHub UI (в этом репозитории уже выполнена):
 
 1. Settings → Environments → New environment → `day32-review`.
 2. Deployment branches and tags → Selected branches and tags → только **Branch: main**.
@@ -60,11 +61,25 @@ Environment ограничивает PR refs. Каждый PR имеет одн�
 комментарии не меняются. Summary содержит статус, SHA, источники, usage и ссылку
 на полный отчёт. При limit/error ревью не выдаётся за успешное отсутствие findings.
 
-Этап B выполняется после отдельного разрешения: bootstrap в `main`, настройка
-Environment, demo PR, автоматическое ревью, исправляющий commit и второй run.
-Два дефекта и критерии ручной приёмки описаны в [design](../openspec/changes/day-32-automated-code-review/design.md).
-Demo defects никогда не сливаются в `main`. После видео PR закрывается без merge;
-финальное завершение дня, archive, commit/push требуют отдельного запроса.
+Воспроизводимый сценарий демонстрации (новый PR потребует новых платных вызовов):
+
+1. При опубликованном reviewer и настроенном Environment создать отдельную ветку
+   от main. Внести два контролируемых дефекта: сортировку score по возрастанию
+   в `backend/app/first_rag/core.py` и удаление сравнения актуального metadata
+   в `backend/app/developer_assistant/index.py:fresh()`.
+2. Открыть собственный PR в main; показать diff, signal и trusted Actions runs.
+3. Прочитать findings, изменённые строки и источники; вручную проверить объяснения.
+4. Восстановить оба поведения, оставить нейтральный комментарий для непустого diff
+   и отправить исправляющий commit в тот же PR.
+5. Показать новый SHA, второй автоматический run и обновление прежнего comment ID.
+6. Закрыть demo PR без merge. Никогда не переносить дефекты в main.
+
+Этот сценарий уже выполнен в [PR #1](https://github.com/Normalnick12/ai-advent-9/pull/1).
+Видео подтверждено пользователем и хранится вне Git; сохранённый вывод при показе
+обозначается как replay. Дефекты и критерии приёмки — в
+[design](../openspec/changes/archive/2026-10-16-day-32-automated-code-review/design.md),
+оба signal/review run URL, usage и ограничение PARTIAL объяснения B — в
+[validation](../openspec/changes/archive/2026-10-16-day-32-automated-code-review/validation.md).
 
 ## Day 31 — Ассистент разработчика
 
