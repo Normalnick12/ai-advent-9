@@ -8,6 +8,46 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 31 — Ассистент разработчика
+
+Самостоятельный `scripts/day31_help.py` использует backend Python-окружение и
+работает без запуска FastAPI или Android. Команды — в
+[scripts](../scripts/README.md#day-31--ассистент-разработчика).
+
+`index` строит собственный `backend/.local/day31/index.sqlite3` по явному
+[allowlist](../day-31-developer-assistant/corpus.json): корневой README,
+`docs/project-structure.md`, README backend, Android и scripts. Ссылки из Markdown
+не обходятся. Проверяются границы путей, UTF-8, размеры и происхождение chunks.
+Одна structure-aware стратегия Week 5: до 500 tokens, overlap 50 при oversized
+fallback; OpenAI `text-embedding-3-small`, 1536 dimensions, batches до 32.
+Неизменившийся корректный индекс даёт `unchanged` без API. Изменения документов,
+allowlist или конфигурации требуют явного `index`; rebuild сохраняет старый
+файл при ошибке. Исторические индексы и baseline-параметры других дней не используются.
+
+`/help "вопрос"` проверяет индекс, запускает дочерний MCP-сервер через stdio,
+делает discovery и `get_current_branch({})`, затем один query embedding,
+cosine-поиск до восьми chunks и максимум одну Responses generation `gpt-5.6`.
+Если введения основного найденного документа нет среди результатов, оно
+заменяет самый слабый hit: общие условия документа остаются в контексте.
+Только сервер выполняет фиксированные read-only Git-команды; при MCP-ошибке
+CLI останавливается до OpenAI и не получает ветку другим способом.
+Обычная/unborn ветка и detached HEAD показываются отдельным Git-блоком.
+
+Модель возвращает status, answer и citation_ids — короткие ID готовых фрагментов
+текущего контекста, ограниченные strict schema. CLI восстанавливает точный текст
+citations и sources по этим ID; текст ответа модели не исправляется.
+Итог проходит существующую проверку источников и дословных цитат
+относительно отправленных chunks. Номера строк относятся к диапазону chunk.
+`insufficient_context` — содержательный отказ; provider/incomplete/validation
+failure — техническая ошибка. Валидные цитаты не доказывают смысловую корректность.
+Нет автоматических retries, rewrite, judge, repair или памяти диалога.
+
+`--trace` выводит в stderr безопасные метаданные поиска, provider usage и MCP.
+Совпадение `call_id`/PID с серверным событием диагностическое: `server_event=unavailable`
+не мешает ответу, если MCP вернул валидный результат. Вопросы, полные документы,
+prompt, окружение и API-ключ в trace не включаются; transcript по умолчанию не пишется.
+Размер документа ограничен 256 KiB, корпуса — 2 MiB, вопроса — 4000 символов.
+
 ## Day 25 — Stateful RAG mini-chat
 
 `/api/v1/day25/sessions` — отдельный namespace: POST `{}` создаёт session (201),

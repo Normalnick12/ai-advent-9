@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {"source": "README.md", "source_type": "documentation"},
+    {"source": "docs/project-structure.md", "source_type": "documentation"},
+    {"source": "backend/README.md", "source_type": "documentation"},
+    {"source": "android-app/README.md", "source_type": "documentation"},
+    {"source": "scripts/README.md", "source_type": "documentation"}
+  ]
+}

@@ -5,6 +5,56 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 31 — Ассистент разработчика
+
+Нужны существующее backend Python-окружение, Git в PATH и `OPENAI_API_KEY`
+в backend environment или `backend/.env`. Команды выполняются в PowerShell 7
+из корня проекта. FastAPI, эмулятор, Ollama и удалённый MCP для этого CLI не нужны.
+
+```powershell
+& .\backend\.venv\Scripts\python.exe -m pip install -r .\backend\requirements-dev.txt
+& .\backend\.venv\Scripts\python.exe -m pip check
+& .\backend\.venv\Scripts\python.exe .\backend\scripts\day31_help.py --help
+& .\backend\.venv\Scripts\python.exe .\backend\scripts\day31_help.py index
+& .\backend\.venv\Scripts\python.exe .\backend\scripts\day31_help.py /help "Как связаны backend, Android-приложение и scripts?" --trace
+```
+
+Первый `index` отправляет только пять разрешённых документов в Embeddings API.
+Повторный вызов без изменений возвращает `status=unchanged`, `embedding_calls=0`.
+После правки разрешённых документов нужно явно повторить `index`. Команда
+`/help` сама не перестраивает отсутствующий, старый или повреждённый индекс.
+Другие документы добавляются только явной правкой allowlist.
+
+`/help` без вопроса — справка без MCP/API. Для вопроса выполняется реальный
+локальный MCP discovery/tool call, затем RAG и одна генерация. stdout содержит
+ответ, отдельный Git-блок и источники с цитатами; `--trace` отправляет JSON events
+в stderr. `server_event=matched` подтверждает совпадение call_id/PID с диагностикой
+сервера; `unavailable` не отменяет валидный MCP-результат. В retrieval events
+`selection=source_intro` отмечает введение основного найденного документа;
+`cosine_rank` сохраняет исходное место в поиске, `rank` — место в контексте.
+
+Exit codes: 0 — операция завершена, включая честный `insufficient_context`;
+2 — неверный ввод; 1 — index/MCP/provider/validation error; 130 — отмена.
+При ошибке не повторяется ни Git вне MCP, ни запрос к OpenAI. Проверьте
+диагностическую категорию, исправьте причину и только затем явно повторите команду.
+
+Offline/integration и целевая регрессия, без ключа и OpenAI:
+
+```powershell
+Push-Location .\backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_day31_index.py tests/test_day31_mcp.py tests/test_day31_help.py tests/test_document_indexing.py tests/test_first_rag.py tests/test_grounded_rag.py tests/test_agent_adapter.py tests/test_stateful_rag.py -q
+} finally {
+    Pop-Location
+}
+```
+
+MCP integration test создаёт временный Git-репозиторий и настоящий stdio-процесс;
+проверяет discovery/call, смену ветки, unborn/detached, ошибки и cleanup.
+Он не меняет ветку текущего проекта. Индекс и необязательные сохранённые
+материалы демонстрации находятся в ignored `backend/.local/day31/`.
+Подробный контракт — в [backend](../backend/README.md#day-31--ассистент-разработчика).
+
 ## Day 25 — Stateful RAG mini-chat
 
 Использует существующий backend venv, pinned Day 21 index и Day 22 baseline.
