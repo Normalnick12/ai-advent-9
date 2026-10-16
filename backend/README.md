@@ -8,6 +8,53 @@
 - [Настройка, запуск и проверки](../scripts/README.md)
 - [Описание и результаты экспериментов по дням](../README.md#задания)
 
+## Day 32 — Автоматизация ревью кода
+
+`scripts/day32_review.py` работает самостоятельно, без FastAPI/Android. Пакет
+`app/pr_review/` получает PR через GitHub REST API и читает только обычные UTF-8
+Git blobs по неизменяемым SHA. PR-код, workflows, зависимости и тесты не исполняются.
+Локальный режим выводит Markdown; публикация доступна только Actions-режиму,
+проверяющему `workflow_run`, server-side PR association и фактический checkout.
+
+RAG использует manifest Day 31: пять документов из base snapshot, изменённые
+`.py`/`.kt` из head (удалённые — из merge base) и до двух очевидных тестов на файл.
+Индексы документации и кода создаются в памяти. Общие chunking, embeddings и cosine
+search используются без изменений. До шести chunks каждой группы передаются
+отдельно от полного разрешённого diff; источники сохраняют path/revision/lines.
+Обхода импортов, Markdown-ссылок, постоянного индекса и памяти нет.
+
+Один запрос Responses API: `gpt-5.6`, reasoning `none`, strict schema,
+`max_output_tokens=4000`, `store=false`, timeout 75 s, SDK retries 0.
+Python проверяет change/context IDs и сам строит цитаты/ссылки. Пустые категории
+разрешены. Проверка структуры и происхождения не подтверждает правильность смысла.
+
+Лимиты: 10 изменённых файлов, raw diff 128 KiB, 1000 изменённых строк и 12000
+tokens; один source 256 KiB, corpus 2 MiB/25 файлов/160 chunks по 500 tokens;
+до 10 query embeddings по 512 tokens, до 5 corpus embedding batches по 32.
+До generation выполняется один точный input count с бюджетом 24000 tokens.
+Превышение даёт `too_large`, неполный diff — `incomplete_diff`, неподдерживаемые
+файлы — `unsupported_scope`. Скрытого частичного ревью или обрезания diff нет.
+Документальный PR без пригодного кода получает `insufficient_context`.
+
+Два workflow: signal `pull_request` без секретов и trusted `workflow_run` из
+зафиксированного `main`. В MVP поддержаны собственные PR в `main`; форки и
+Dependabot пропускаются. Один bot comment обновляется под per-PR concurrency;
+перед записью проверяются SHA и предыдущий source run. SHA указан в отчёте:
+GitHub не даёт атомарного «сверить head и изменить comment», поэтому смена PR
+после проверки отдельно отмечается в Summary. Автоматических approve/merge нет.
+
+Технические ошибки `configuration_error`, `github_error`, `incomplete_diff`,
+`provider_error`, `validation_error`, `publication_error` дают exit 1.
+Содержательный результат/skip/limit/stale дают exit 0 с явным статусом;
+это не означает, что PR прошёл анализ без ошибок. Ключи, prompt и полные
+HTTP-ответы ошибок не выводятся. `.env*`, ключи, локальные/генерируемые пути,
+symlinks/submodules и бинарные файлы не отправляются модели; обнаружение всех
+возможных секретов внутри произвольного исходника не гарантируется.
+
+Команды, локальные проверки и GitHub UI — в [scripts](../scripts/README.md#day-32--автоматизация-ревью-кода).
+Live-проверка ожидает отдельного bootstrap-разрешения; настроек GitHub реализация
+сама не меняет. Старые API/CLI, модели и индексы Days 1–31 прежние.
+
 ## Day 31 — Ассистент разработчика
 
 Самостоятельный `scripts/day31_help.py` использует backend Python-окружение и

@@ -5,6 +5,67 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 32 — Автоматизация ревью кода
+
+Используйте существующее backend environment. Команды — из корня проекта,
+PowerShell 7; FastAPI, Android, Gradle и MCP запускать не требуется:
+
+```powershell
+& .\backend\.venv\Scripts\python.exe -m pip install -r .\backend\requirements-dev.txt
+& .\backend\.venv\Scripts\python.exe -m pip check
+& .\backend\.venv\Scripts\python.exe .\backend\scripts\day32_review.py --help
+& .\backend\.venv\Scripts\python.exe .\backend\scripts\day32_review.py local --repo Normalnick12/ai-advent-9 --pr 123
+```
+
+Последняя команда — настоящий GitHub/OpenAI запуск для существующего номера PR,
+не offline-тест. Она требует `GITHUB_TOKEN` (или `GH_TOKEN`) и `OPENAI_API_KEY`
+в окружении процесса. CLI не загружает `.env` автоматически; не вводите значения
+ключей в команды, попадающие в историю/видео. Локальный режим не публикует отчёт.
+Лимиты и статусы — в [backend](../backend/README.md#day-32--автоматизация-ревью-кода).
+
+Offline без ключей/сети:
+
+```powershell
+Push-Location .\backend
+try {
+    & .\.venv\Scripts\python.exe -m pytest tests/test_day32_snapshot.py tests/test_day32_review.py tests/test_document_indexing.py tests/test_first_rag.py tests/test_agent_adapter.py tests/test_day31_index.py tests/test_day31_help.py -q
+} finally {
+    Pop-Location
+}
+```
+
+Workflows `.github/workflows/day32-pr-signal.yml` и `day32-pr-review.yml` сначала
+должны попасть в доверенный `main` после отдельного разрешения bootstrap.
+`workflow_run` использует код `github.sha` из `main`, а не SHA проверяемого PR.
+Server API подтверждает workflow ID/path, repository, единственный связанный PR
+и его head SHA; неоднозначная связь останавливает запуск. Artifacts/кэш PR не
+читаются. Проверка поведения Environment и реального события остаётся частью live.
+
+Ручная настройка GitHub UI **после локальной готовности**:
+
+1. Settings → Environments → New environment → `day32-review`.
+2. Deployment branches and tags → Selected branches and tags → только **Branch: main**.
+   Не добавляйте tags или `refs/pull/*/merge`; Protected branches only без branch
+   protections может разрешать все ветки. Required reviewers и wait timer не нужны.
+3. Environment secrets → Add secret → `OPENAI_API_KEY`. Значение вводится прямо в
+   GitHub; не создавайте дубликат repository secret. При доступности отключите bypass.
+4. Если Actions сообщает policy/permission error, проверьте Settings → Actions →
+   General. Workflow задаёт `contents: read`, `actions: read`, `pull-requests: write`;
+   глобальное write-all и разрешение approve PR не нужны.
+
+Ключ передаётся только последнему trusted шагу. Signal job ключа не получает;
+Environment ограничивает PR refs. Каждый PR имеет одну concurrency group,
+`cancel-in-progress: false`; поздний старый source run не заменяет новый отчёт.
+В PR остаётся один комментарий `github-actions[bot]` с marker Day 32; чужие
+комментарии не меняются. Summary содержит статус, SHA, источники, usage и ссылку
+на полный отчёт. При limit/error ревью не выдаётся за успешное отсутствие findings.
+
+Этап B выполняется после отдельного разрешения: bootstrap в `main`, настройка
+Environment, demo PR, автоматическое ревью, исправляющий commit и второй run.
+Два дефекта и критерии ручной приёмки описаны в [design](../openspec/changes/day-32-automated-code-review/design.md).
+Demo defects никогда не сливаются в `main`. После видео PR закрывается без merge;
+финальное завершение дня, archive, commit/push требуют отдельного запроса.
+
 ## Day 31 — Ассистент разработчика
 
 Нужны существующее backend Python-окружение, Git в PATH и `OPENAI_API_KEY`

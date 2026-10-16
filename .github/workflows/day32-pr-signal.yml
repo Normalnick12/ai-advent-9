@@ -1,0 +1,16 @@
+name: Day 32 PR signal
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Signal PR event
+        run: echo 'PR event received; trusted review runs separately.'

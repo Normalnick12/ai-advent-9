@@ -35,5 +35,6 @@
 - [День 29 — Оптимизация Local Android Architecture Assistant](day-29-local-assistant-optimization/README.md)
 - [День 30 — Private Local Architecture Assistant Service](day-30-private-assistant-service/README.md)
 - [День 31 — Ассистент разработчика](day-31-developer-assistant/README.md)
+- [День 32 — Автоматизация ревью кода](day-32-code-review/README.md)
 
 Каждое решение находится в отдельной папке и содержит собственные инструкции запуска.
