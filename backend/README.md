@@ -469,3 +469,50 @@ DeepWiki, семантическая роль зависимости и акту
 CLI после завершения выводит читаемый отчёт: задачу, выбранную research capability,
 зависимости, переход к Maven, summaries и отдельные verdicts для flow и model facts.
 Все дополнительные и ошибочные calls видны. Инструкции — в [scripts](../scripts/README.md).
+
+## Day 34: Project Files Assistant
+
+Модуль app.project_files_assistant и CLI backend/scripts/day34_files.py используют
+уже установленные зависимости backend. HTTP backend, MCP, embeddings и Android
+для этих команд не требуются. Модель — gpt-5.6, Responses API, tool_choice=auto,
+четыре strict function tools, store=false, SDK retries=0.
+
+Manifest фиксирует три Python-исходника и SHA-256. prepare требует чистого
+состояния этих исходников относительно HEAD и совпадения manifest; создаёт
+новую копию в backend/.local/day34/runs/<run-id>/workspace/. Для обновления туда
+добавляется исходный docs/search.md. Модель не получает эталон verifier.
+Обновление manifest при изменении исходников — отдельное осознанное изменение.
+
+Разрешены чтение/поиск по трём исходникам и документу, а также подготовка
+единственного docs/search.md. stage_file сохраняет candidate/diff рядом
+с workspace, не изменяя цель. Модель использует evidence markers; renderer
+строит ссылки на фактически полученные строки. Локальные line anchors проверяет
+verifier; обычный Markdown viewer может не прокручивать Python-файл к anchor.
+Корректность ссылки сама по себе не доказывает корректность объяснения.
+
+apply показывает полный diff и запрашивает точный candidate ID интерактивно.
+reject, отмена или неинтерактивный вызов оставляют цель прежней. Перед записью
+проверяются snapshot/base/candidate hashes и безопасный путь; после — readback,
+SHA-256, inventory и неизменность исходников. При неизвестном исходе сначала
+проверяется диск, повторная замена вслепую запрещена. Это локальный инструмент
+одного пользователя, без гарантии защиты от конкурирующего злоумышленника.
+
+Лимиты: 16 запросов модели, 15 попыток инструментов, 300 s на цикл, до 75 s на
+запрос, 4096 output tokens; 64 KiB на исходник, 256 KiB на корпус, 12 KiB на
+read/search result, 16 KiB на документ. Контекст — до 32k оценочных tokens
+(cl100k_base, не точный provider count) и 192 KiB JSON. Превышение даёт явный
+статус без разрешения apply. Refusal, incomplete, provider/trace errors
+также не дают применить кандидат.
+
+meta.json, events.jsonl, evidence.json, state.json, candidates/<id>/,
+decision и receipt — локальные технические evidence. Native response items
+и tool results связаны через call_id. Trace не является подписанным provider
+аттестатом. Не публикуйте runtime-каталог без проверки содержимого.
+Verifier консервативно возвращает partial_review при отсутствии search_text.
+Наблюдение NOT_OBSERVED сохраняется и при допустимом прямом чтении в B;
+приёмка по уточнённым критериям A/B описана отдельно в техническом validation.
+Ключ поступает из OPENAI_API_KEY; необязательный --env-file читает только
+это значение, не копирует файл и не меняет исходники. .env в новый worktree
+автоматически не переносится.
+
+Команды — в [scripts](../scripts/README.md#day-34-project-files-assistant).

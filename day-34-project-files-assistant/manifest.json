@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "path": "backend/app/first_rag/core.py",
+      "sha256": "0276796382f8fbadd02e2b175129d0c85fb3cac7baeff43a1cea6956fa88c192"
+    },
+    {
+      "path": "backend/app/developer_assistant/service.py",
+      "sha256": "236dab8675cb08d14326a7704f8ef8957f69a4be306c97d6d8c092cc895b6504"
+    },
+    {
+      "path": "backend/app/support_assistant/rag.py",
+      "sha256": "5ec417119db77b113f5bf5b880046a05881a458aabeff7ee45967cfc981f331f"
+    }
+  ]
+}

@@ -943,3 +943,53 @@ backend/.venv/Scripts/python.exe day-20-mcp-orchestration/verify.py day-20-mcp-o
 
 Output directory должен быть новым. Исходные файлы не перезаписываются.
 Проверка воспроизводит также сохранённые provenance FAIL / NOT_PROVEN.
+
+## Day 34: Project Files Assistant
+
+Запускайте CLI из нужного checkout с установленным Python-окружением backend.
+Скрипт фиксирует import root своего checkout; общий virtualenv можно использовать
+через полный путь к его Python. В примерах backend/.venv/Scripts/python.exe
+замените этим путём, если окружение находится в другом worktree.
+
+Подготовка и живой запуск (A — новый отчёт, B — обновление документа):
+
+```powershell
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py prepare A
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py run <run-dir>
+```
+
+prepare печатает новый полный run-dir. Нужен OPENAI_API_KEY процесса либо
+backend/.env; можно явно передать run <run-dir> --env-file <путь-к-env>.
+Для B повторите команды с prepare B. run выполняет платные API-запросы
+и останавливается на awaiting_review, выдавая конкретный candidate ID.
+
+Review, решение и проверка работают без API:
+
+```powershell
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py review <run-dir> <candidate-id>
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py verify <run-dir>
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py apply <run-dir> <candidate-id>
+backend/.venv/Scripts/python.exe -B backend/scripts/day34_files.py reject <run-dir> <candidate-id>
+```
+
+Выполняйте только выбранное решение: apply требует интерактивного ввода
+показанного полного candidate ID; автоматического --yes нет. Старый ID,
+изменённые исходники/цель или изменённый кандидат блокируют запись.
+Файлы review: candidates/<id>/candidate.md, diff.patch, candidate.json.
+Verifier различает NOT_APPLIED, подтверждённую запись, partial_review и NOT_PROVEN;
+существенные факты остаются отдельным ручным review.
+Текущий verifier отмечает отсутствие search_text как partial_review даже в B,
+где уточнённая приёмка допускает прямое чтение. Это диагностическое наблюдение,
+а не автоматический итог пересмотренной приёмки; исходные evidence сохраняются.
+
+Для повторного эксперимента используйте новый prepare, сохранив те же
+исходники/manifest/fixture. Не сбрасывайте рабочее дерево и не перезапускайте
+run существующего запуска. Ошибки тоже сохраняются; новый прогон нужен
+только для конкретной диагностической причины.
+
+Целевые offline-проверки, без OpenAI:
+
+```powershell
+$env:PYTHONPATH = (Join-Path (Get-Location).Path 'backend')
+backend/.venv/Scripts/python.exe -B -m pytest backend/tests/test_day34_files.py backend/tests/test_day34_runner.py -q -p no:cacheprovider
+```
