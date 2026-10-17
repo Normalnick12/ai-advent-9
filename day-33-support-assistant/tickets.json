@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "snapshot_at": "2026-10-16T09:00:00Z",
+  "tickets": [
+    {
+      "ticket_id": "T-101",
+      "message": "Не могу войти в аккаунт.",
+      "observations": {
+        "account_status": "temporarily_locked",
+        "error_code": "AUTH_TEMP_LOCK",
+        "failed_attempts": 5,
+        "blocked_until": "2026-10-16T09:15:00Z"
+      }
+    },
+    {
+      "ticket_id": "T-102",
+      "message": "Не могу войти в аккаунт.",
+      "observations": {
+        "account_status": "active",
+        "error_code": "VERIFICATION_CODE_EXPIRED",
+        "verification_status": "expired"
+      }
+    },
+    {
+      "ticket_id": "T-103",
+      "message": "Не могу войти в аккаунт.",
+      "observations": {"account_status": null, "error_code": null}
+    }
+  ]
+}

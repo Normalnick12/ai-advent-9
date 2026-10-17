@@ -5,6 +5,44 @@
 из любого каталога; инструменты и зависимости автоматически не устанавливает.
 Команды ниже выполняются из корня репозитория, если не указано иное.
 
+## Day 33 — Ассистент поддержки пользователей
+
+Прямой запуск отдельного app из корня проекта в PowerShell 7, в управляемой
+терминальной сессии с доступными логами (существующее backend environment):
+
+```powershell
+& .\backend\.venv\Scripts\python.exe -X utf8 -m uvicorn app.support_assistant.api:app --app-dir backend --host 127.0.0.1 --port 8033 --env-file backend/.env
+```
+
+`backend/.env` содержит только локальные настройки; `OPENAI_API_KEY` не передаётся
+в команде и не добавляется в Git. Если ключ уже задан в окружении, опустите
+`--env-file backend/.env`. Для Day 33 не используйте `dev.ps1 backend/status`:
+они относятся к прежнему app на 8000. `dev.ps1` не изменялся. Один worker,
+без reload; повторный запуск заново вычисляет embeddings пяти FAQ.
+Остановка этой сессии — Ctrl+C. Не запускайте вторую копию на том же порту.
+
+Из другой сессии:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8033/health
+Push-Location backend
+try {
+    & .\.venv\Scripts\python.exe -X utf8 -m pytest tests/test_day33_mcp.py tests/test_day33_support.py -q
+} finally { Pop-Location }
+```
+
+Health проверяет app/индекс; OpenAI generation и MCP подтверждаются отдельно
+в [Swagger UI](http://127.0.0.1:8033/docs). В `POST /support/answer` нажмите
+Try it out и выберите примеры T-101, T-102, T-103, T-999 по порядку. Во всех случаях
+оставьте вопрос «Не могу войти в аккаунт. Почему и что делать?».
+Проверьте answer/cause, snapshot_at, sources и trace.mcp; у T-999 видны HTTP 404
+и нулевые retrieval.embedding_calls/generation.calls. Источник можно открыть
+через GET `/support/sources/{doc_id}` в том же Swagger UI.
+
+Данные вымышленные, аутентификации нет, используется прошедший UTC-снимок
+16 октября 2026. Подробные ограничения — в [backend](../backend/README.md),
+фактическая приёмка — в [архиве OpenSpec Day 33](../openspec/changes/archive/2026-10-17-day-33-support-assistant/validation.md).
+
 ## Day 32 — Автоматизация ревью кода
 
 Используйте существующее backend environment. Команды — из корня проекта,
