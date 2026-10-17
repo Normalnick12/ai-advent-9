@@ -32,7 +32,7 @@ Offline: 113 backend checks и 6 runner checks; Android — 12 JVM, 4 Day 25 UI
 и 9 navigation checks. Android используется как thin client, а long-scenario
 acceptance выполняется backend/CLI. Saved evidence и команды просмотра — в scripts.
 Отдельная Android-демонстрация подтвердила отображение ответа, sources и Task Memory
-за 1 embedding + 1 generation; скриншоты сохранены. Запись видео ещё не подтверждена.
+за 1 embedding + 1 generation; скриншоты сохранены.
 
 Настройка и contracts описаны в [backend](../backend/README.md),
 [Android](../android-app/README.md) и [scripts](../scripts/README.md).

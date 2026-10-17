@@ -20,7 +20,7 @@ PowerShell 7; FastAPI, Android, Gradle и MCP запускать не требу
 Последняя команда — настоящий GitHub/OpenAI запуск для существующего номера PR,
 не offline-тест. Она требует `GITHUB_TOKEN` (или `GH_TOKEN`) и `OPENAI_API_KEY`
 в окружении процесса. CLI не загружает `.env` автоматически; не вводите значения
-ключей в команды, попадающие в историю/видео. Локальный режим не публикует отчёт.
+ключей в команды, попадающие в историю терминала. Локальный режим не публикует отчёт.
 Лимиты и статусы — в [backend](../backend/README.md#day-32--автоматизация-ревью-кода).
 
 Offline без ключей/сети:
@@ -75,8 +75,7 @@ Environment ограничивает PR refs. Каждый PR имеет одн�
 6. Закрыть demo PR без merge. Никогда не переносить дефекты в main.
 
 Этот сценарий уже выполнен в [PR #1](https://github.com/Normalnick12/ai-advent-9/pull/1).
-Видео подтверждено пользователем и хранится вне Git; сохранённый вывод при показе
-обозначается как replay. Дефекты и критерии приёмки — в
+Сохранённый вывод обозначается как replay. Дефекты и критерии приёмки — в
 [design](../openspec/changes/archive/2026-10-16-day-32-automated-code-review/design.md),
 оба signal/review run URL, usage и ограничение PARTIAL объяснения B — в
 [validation](../openspec/changes/archive/2026-10-16-day-32-automated-code-review/validation.md).
@@ -187,8 +186,6 @@ Android demo отдельно от acceptance: запустить backend в у�
 показать sources и раскрыть Task Memory. Demo calls учитывать отдельно.
 Проверки клиента: `unit -Test '*Day25*'`, `ui -Test 'com.example.responsecontrollab.Day25UiTest'`
 и `ui -Test 'com.example.responsecontrollab.RootNavigationUiTest'` через `scripts/dev.ps1`.
-Для видео сначала показать saved CLI report, затем короткий Android экран;
-запись видео пользователем ещё не подтверждена.
 Отдельная demo уже выполнена: 1 embedding + 1 generation, один confirmed turn,
 sources и goal/constraints видны. `android-demo.json` и два PNG сохранены рядом
 с experiment report; эти calls не входят в бюджет 24 frozen A/B calls.
@@ -235,7 +232,7 @@ $result24 = 'backend/.local/day24/25cd12b1-7423-4f3a-bc68-1c017f599504'
 & $python $ragCli24 report $result24 --question Q08 --full
 ```
 
-`--video` и `--full` взаимоисключающие. Для answered видео показывает question,
+`--video` и `--full` взаимоисключающие. Для answered компактный отчёт показывает question,
 gate, answer, sources, полные literal quotes, validation и semantic support;
 сокращённые chunk IDs явно обозначены как display prefixes. Для gate fail видны
 best/threshold, FAIL, GENERATION CALL: NO и deterministic ответ. Invalid output
@@ -296,13 +293,13 @@ per-fact context/answer=yes/partial/no, существенные claims grounded
 Null/pending и unavailable не означают semantic no. Q10 context=no относится
 к искомым RPO/RTO; честный no-answer может получить answer coverage=yes.
 
-Offline просмотр и видео без API calls:
+Offline просмотр без API calls:
 
-Для скринкаста используйте компактный `--video`: summary, затем Q05 regression,
+Компактный `--video` показывает summary, затем Q05 regression,
 Q07 Top-K limit и Q10 без RPO/RTO evidence. Числа и coverage берутся из saved
 run/review. Candidates: kept и явные ссылки `candidate N` / `rank=N` в fact notes;
 форматтер не определяет релевантность заново. TAKEAWAY сравнивает per-fact labels
-и показывает saved review, без evaluator. Для записи из корня repository:
+и показывает saved review, без evaluator. Команды из корня repository:
 
 ```powershell
 $python = '.\backend\.venv\Scripts\python.exe'
@@ -362,7 +359,7 @@ Backend environment/игнорируемый `backend/.env` содержит `OP
 при failed query RAG не отправляется. Уже сохранённые calls не повторяются.
 
 CLI печатает `Evidence: ...` до calls и `Saved evidence: ...` после обхода вопросов.
-Для просмотра выполненного run и записи видео без новых provider calls:
+Для просмотра выполненного run без новых provider calls:
 
 ```powershell
 $result = 'backend/.local/day22/f7b78426-9672-437f-ab93-717a826934da'
@@ -895,10 +892,10 @@ backend/.venv/Scripts/python.exe day-20-mcp-orchestration/verify.py backend/.loc
 ```
 
 Если `review` уже существует, используйте `--output <новый-каталог>`.
-На видео можно показать задачу и два descriptors, затем фактическую DeepWiki
-capability, две найденные зависимости и их Maven summaries в отчёте.
-Отдельно покажите flow verdict, final facts и ограничения. Это демонстрация
-сохранённой первой попытки, не повтор сценария. Пользователь подтвердил запись видео.
+Отчёт сохранённой первой попытки содержит задачу, два descriptors, фактическую
+DeepWiki capability, две найденные зависимости и их Maven summaries.
+Flow verdict, final facts и ограничения рассматриваются отдельно; просмотр
+сохранённого результата не повторяет live-сценарий.
 
 Сохранённую в Git попытку можно проверить без backend, credentials и сети:
 

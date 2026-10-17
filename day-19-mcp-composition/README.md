@@ -38,4 +38,4 @@ Offline-контроль с этим списком прошёл три отде
 
 Настройка backend описана в [backend](../backend/README.md), команды CLI/verifier —
 в [scripts](../scripts/README.md), история операторских проверок — в
-[handoff](DEPLOYMENT-HANDOFF.md). [Сценарий видео](VIDEO.md) использует сохранённую попытку.
+[handoff](DEPLOYMENT-HANDOFF.md). [Техническая проверка](TECHNICAL-REVIEW.md) использует сохранённую попытку.

@@ -78,17 +78,17 @@ Day 17 SHALL возвращать final text и MCP evidence единым рез
 - **THEN** фиксируется фактический выбор модели, включая `not_called`, с deployed commit SHA этой попытки и без повторов ради получения желаемого ответа
 
 ### Requirement: Deployment revision is traceable without premature day completion
-Day 17 SHALL публиковать проверенную deployable revision отдельным pre-live commit/push после реализации, всех offline checks, scoped diff review и strict OpenSpec validation, до Git-backed Render deployment. Pre-live publication MUST NOT означать завершение дня, архивирование change или выполнение live/video tasks. Live evidence SHALL сохранять полный commit SHA фактически deployed MCP server, подтверждённый deployment, и связь с конкретной попыткой. Финальное завершение SHALL происходить через отдельный `$finish-day Day 17` после live и подтверждённого видео; оно актуализирует evidence/docs, архивирует завершённый change и создаёт final commit/push при наличии последующих изменений.
+Day 17 SHALL публиковать проверенную deployable revision отдельным pre-live commit/push после реализации, всех offline checks, scoped diff review и strict OpenSpec validation, до Git-backed Render deployment. Pre-live publication MUST NOT означать завершение дня, архивирование change или выполнение live tasks. Live evidence SHALL сохранять полный commit SHA фактически deployed MCP server, подтверждённый deployment, и связь с конкретной попыткой. Финальное завершение SHALL происходить через отдельный `$finish-day Day 17` после live; оно актуализирует evidence/docs, архивирует завершённый change и создаёт final commit/push при наличии последующих изменений.
 
 #### Scenario: Published revision is ready for deployment only
 - **WHEN** pre-live commit/push выполнен после успешных offline checks и review/validation
-- **THEN** Render может получить deployable code, но live/video tasks остаются невыполненными и OpenSpec change активен
+- **THEN** Render может получить deployable code, но live tasks остаются невыполненными и OpenSpec change активен
 
 #### Scenario: Live evidence identifies the running server revision
 - **WHEN** выполняется forced live или optional auto experiment
 - **THEN** evidence содержит SHA подтверждённого Render deployment, а не неподтверждённый локальный HEAD
 - **AND** последующие docs/archive commits не заменяют SHA уже выполненной попытки
 
-#### Scenario: Finalization follows live and video
-- **WHEN** пользователь вызывает `$finish-day Day 17` после обязательной проверки live, фиксации фактического verdict при подтверждённой MCP evidence-цепочке и подтверждённого видео
+#### Scenario: Finalization follows live verification
+- **WHEN** пользователь вызывает `$finish-day Day 17` после обязательной проверки live, фиксации фактического verdict при подтверждённой MCP evidence-цепочке
 - **THEN** evidence/docs и task statuses сверяются с фактами, завершённый change проходит strict validation и архивируется, а последующие scoped changes входят в final commit/push без пустого commit

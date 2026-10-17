@@ -46,5 +46,5 @@ Frozen vectors изолируют answer contract. Порог уже связа�
 универсальность threshold или semantic support по одному факту exact quote.
 
 Контракт и evidence — в [backend](../backend/README.md#day-24--проверяемые-rag-ответы),
-настройка, запуск и просмотр видео — в [scripts](../scripts/README.md#day-24--проверяемые-rag-ответы).
+настройка, запуск и просмотр отчётов — в [scripts](../scripts/README.md#day-24--проверяемые-rag-ответы).
 `OPENAI_API_KEY` задаётся только в окружении backend.

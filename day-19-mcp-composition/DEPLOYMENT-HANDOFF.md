@@ -22,7 +22,7 @@ tools/order/обе границы/report/file/final_text — PASS, chain/full_ac
 **Новых команд deployment, collector, tools или launcher сейчас не требуется.**
 Задачи 26/26 выполнены. По отдельному поручению `$finish-day` change
 [архивирован](../openspec/changes/archive/2026-09-24-day-19-mcp-composition/proposal.md),
-две основные спецификации синхронизированы. Сценарий записи сохранён в VIDEO.md.
+две основные спецификации синхронизированы. Сохранённые результаты разобраны в TECHNICAL-REVIEW.md.
 
 Дальше хранится история подготовки. Все команды staging/installer уже выполнены,
 повторять их не следует.
@@ -161,4 +161,4 @@ if ($LASTEXITCODE -ne 0 -or ($installerHash -split '\s+')[0] -ne '27311c2d370dc6
    Не считать это rollback, не повторять installer автоматически; отдельно определить,
    требуется ли восстановление точного backup и reload. Старый backup не перезаписывать.
 
-Видео: [VIDEO.md](VIDEO.md). Finish/archive/commit/push не выполняются.
+Техническая проверка: [TECHNICAL-REVIEW.md](TECHNICAL-REVIEW.md). Finish/archive/commit/push не выполняются.

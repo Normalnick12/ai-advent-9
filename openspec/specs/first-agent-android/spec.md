@@ -96,7 +96,7 @@ Android SHALL хранить UI transcript, draft, sending/resetting, ошибк
 
 UI SHALL показывать «Завершённых ходов: N» по backend `history_turn_count`, где ход равен сохранённой паре user/assistant. Новая лаборатория без ID и подтверждённо сброшенное состояние SHALL показывать 0. В Day 07 при cold start baseline count SHALL браться из metadata GET до разрешения send; во время восстановления или его ошибки неподтверждённый 0 SHALL NOT изображаться достоверным числом ходов существующей session. Счётчик SHALL NOT вычисляться по локальным bubbles или увеличиваться при неуспехе. UI SHALL NOT показывать внутренние instructions или backend history как diagnostic snapshot.
 
-#### Scenario: Video demonstrates short-term recall and reset
+#### Scenario: UI demonstrates short-term recall and reset
 - **WHEN** пользователь сообщает отличительный факт и затем спрашивает его в той же session
 - **THEN** второй turn получает предыдущий контекст, UI показывает фактический ответ и счётчик 2 после двух успехов
 - **AND** после «Новый диалог» первое сообщение отправляется без прежнего контекста; счётчик начинается с 0 и становится 1 после успеха

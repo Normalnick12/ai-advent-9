@@ -35,7 +35,6 @@ Flow и финальные publication facts — **PASS**. Порядок, по�
 [Отчёт](evidence/live-20260925/review/report.md),
 [пояснения FAIL / NOT_PROVEN](evidence/live-20260925/review/review-notes.md)
 и [исходное evidence](evidence/live-20260925/) сохранены без повторного live.
-Видео записано — подтверждено пользователем.
 
 Настройка описана в [backend](../backend/README.md), команды подготовки и
 offline-проверки — в [scripts](../scripts/README.md).

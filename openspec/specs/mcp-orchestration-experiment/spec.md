@@ -95,13 +95,13 @@ Day 20 SHALL запускаться через существующий лока
 - **WHEN** готовый Dependency MCP не отвечает или отклоняет credentials
 - **THEN** недоступность фиксируется без автоматической попытки деплоя или администрирования VPS
 
-#### Scenario: Video uses the retained first attempt
+#### Scenario: Offline review uses the retained first attempt
 - **WHEN** пользователь демонстрирует результат эксперимента
 - **THEN** читаемый отчёт и trace позволяют объяснить переключение между системами без повторного запроса и без чтения verifier JSON
 
 ### Requirement: Offline checks and live evidence are explicitly separate
 
-Offline tests SHALL использовать fixtures/fakes и SHALL NOT выполнять реальный DeepWiki/Google Maven flow. До отдельного live SHALL проверяться сохранение evidence, оба допустимых порядка веток, ошибки переходов, честное обозначение неподтверждённых источников, неполное evidence и отсутствие retry. Эти проверки SHALL оставаться узкими, без исчерпывающей матрицы storage failures или generic validator tests. Live SHALL запускаться отдельно один раз; предварительные protocol/discovery checks SHALL явно отличаться от вызовов модели и не подменять её trace. Day README SHALL описывать только фактический результат или отсутствие проверки; корневой README SHALL содержать ссылку на новый день. Код, документация и первая попытка SHALL обеспечивать формат сдачи «видео + код» без утверждения, что видео записано, пока это не подтверждено пользователем.
+Offline tests SHALL использовать fixtures/fakes и SHALL NOT выполнять реальный DeepWiki/Google Maven flow. До отдельного live SHALL проверяться сохранение evidence, оба допустимых порядка веток, ошибки переходов, честное обозначение неподтверждённых источников, неполное evidence и отсутствие retry. Эти проверки SHALL оставаться узкими, без исчерпывающей матрицы storage failures или generic validator tests. Live SHALL запускаться отдельно один раз; предварительные protocol/discovery checks SHALL явно отличаться от вызовов модели и не подменять её trace. Day README SHALL описывать только фактический результат или отсутствие проверки; корневой README SHALL содержать ссылку на новый день.
 
 #### Scenario: Tests pass before live
 - **WHEN** offline проверки прошли, но модель ещё не запускалась

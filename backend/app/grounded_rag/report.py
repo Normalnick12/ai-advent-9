@@ -136,7 +136,7 @@ def render(folder, *, question_id=None, full=False, video=False):
             if not result['sources']: lines.append('[] (correct for insufficient_context)')
             lines += ['', 'CITATIONS']
             for i,c in enumerate(result['citations'],1):
-                # Preserve literal quote, including line breaks/spacing, even in video.
+                # Preserve literal quote, including line breaks/spacing, in compact output.
                 lines += [f"C{i} -> {ids[c['chunk_id']]}",c['quote']]
             if not result['citations']: lines.append('[] (correct for insufficient_context)')
         else:

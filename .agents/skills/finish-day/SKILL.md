@@ -1,6 +1,6 @@
 ---
 name: finish-day
-description: Finish one implemented and user-verified AI Advent Day by checking its scoped changes, validating and conditionally archiving its OpenSpec change, running only necessary checks, committing, and pushing. Use for requests such as "$finish-day Day 03" after the user has tested the implementation and recorded the video; do not use to implement an unfinished Day.
+description: Finish one implemented and user-verified AI Advent Day by checking its scoped changes, validating and conditionally archiving its OpenSpec change, running only necessary checks, committing, and pushing. Use for requests such as "$finish-day Day 03" after the user has tested the implementation; do not use to implement an unfinished Day.
 ---
 
 # Finish an AI Advent Day
@@ -15,7 +15,7 @@ Finalize exactly one completed Day. Invocation authorizes the normal scoped comm
 4. Require exactly one matching Day directory. If none or more than one matches, stop and report the ambiguity.
 5. Scope the finalization to that Day directory plus shared implementation, tests, documentation, and OpenSpec artifacts that clearly belong to it. Preserve all unrelated and user-owned changes. If a shared file mixes relevant and unrelated edits that cannot be staged safely, stop and ask rather than taking the whole file.
 
-The implementation is expected to be complete, user-verified, and already recorded. Do not broaden this workflow into feature development. Small fixes found by the required checks are allowed when they are clearly within the selected Day.
+The implementation is expected to be complete and user-verified. Do not broaden this workflow into feature development. Small fixes found by the required checks are allowed when they are clearly within the selected Day.
 
 ## Inspect Git and protect sensitive/local data
 

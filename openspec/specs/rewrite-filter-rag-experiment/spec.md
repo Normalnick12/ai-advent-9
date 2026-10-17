@@ -90,7 +90,7 @@ Manual review SHALL храниться отдельно от raw observations и
 
 Day 23 evidence SHALL включать frozen questions/expectations, baseline snapshot, experiment config/limitations, exact queries, candidates/decisions/final context, actual provider inputs/settings/statuses/output/usage и отдельный manual review. `report` SHALL читать только saved Day 23 result без key, provider clients/calls, index или исходных baseline/source files и без изменения raw evidence. Карточка SHALL показывать ORIGINAL QUESTION → RETRIEVAL QUERY → TOP-10 BEFORE → threshold 0.50 → KEPT/DROPPED → FINAL CONTEXT → DAY 22 BASELINE ANSWER → DAY 23 ENHANCED ANSWER → EXPECTED FACTS / REVIEW; summary SHALL охватывать Q01–Q10 с per-fact coverage, groundedness, decision counts и technical/review status. Dropped count SHALL NOT объявляться числом доказанно нерелевантных chunks. Day README SHALL содержать краткий эксперимент/проверяемый эффект/фактический результат или отсутствие live; корневой README SHALL иметь упорядоченную ссылку, setup/commands SHALL размещаться в backend/scripts README. Secrets/local index/evidence SHALL оставаться вне Git.
 
-#### Scenario: Video uses saved comparison
+#### Scenario: Offline report uses saved comparison
 - **WHEN** report открыт без API key, index и original baseline folder
 - **THEN** полная карточка, summary и manual rewrite/fact/claim labels доступны offline, full preview раскрывает saved texts и не меняет actual input
 

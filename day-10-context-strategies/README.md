@@ -16,7 +16,7 @@
 ## Результаты
 
 Проведён один controlled experiment на новых runs configuration
-`day10-gpt4o-mini-n6-v3`: по 8 Sends и 2 отдельные проверки ТЗ. Видео записано.
+`day10-gpt4o-mini-n6-v3`: по 8 Sends и 2 отдельные проверки ТЗ.
 
 | Стратегия | ТЗ A / B | Сохранность A / B | Known tokens | Coverage |
 | --- | --- | --- | --- | --- |

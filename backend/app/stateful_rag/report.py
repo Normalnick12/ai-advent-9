@@ -118,5 +118,5 @@ def render(folder, *, video=False):
             'Verified on emulator: answer, sources and expanded Task Memory with user provenance.',
             'Screenshots: [answer/memory](android-demo.png), [sources/memory](android-demo-sources.png).',
             'This is a UI demonstration, not a replay or replacement of frozen A/B acceptance.',
-            'User video recording is not confirmed.', '']
+            '']
     return '\n'.join(lines)

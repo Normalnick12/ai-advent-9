@@ -102,9 +102,9 @@ Raw provider output SHALL сохраняться до validation вместе с
 
 ### Requirement: CLI reports expose the frozen experiment without new calls
 
-CLI SHALL предоставлять один frozen eval и read-only report с выбором Qxx, подробным --full и компактным --video. Report SHALL работать по собственному evidence без API key, provider calls, исходного index или baseline folder. Answered video SHALL показывать QUESTION -> GATE -> ANSWER -> SOURCES -> CITATIONS -> VALIDATION -> SEMANTIC SUPPORT; Q10 video SHALL показывать QUESTION -> best score -> threshold -> GATE FAIL -> GENERATION CALL: NO -> deterministic abstention. Model abstention SHALL показывать PASS, выполненный call и origin. Invalid candidate SHALL явно обозначаться как непроверенный, без успешного grounded answer. Summary SHALL раздельно считать исходы и review status без общего score.
+CLI SHALL предоставлять один frozen eval и read-only report с выбором Qxx, подробным --full и компактным --video. Report SHALL работать по собственному evidence без API key, provider calls, исходного index или baseline folder. Answered compact report SHALL показывать QUESTION -> GATE -> ANSWER -> SOURCES -> CITATIONS -> VALIDATION -> SEMANTIC SUPPORT; Q10 compact report SHALL показывать QUESTION -> best score -> threshold -> GATE FAIL -> GENERATION CALL: NO -> deterministic abstention. Model abstention SHALL показывать PASS, выполненный call и origin. Invalid candidate SHALL явно обозначаться как непроверенный, без успешного grounded answer. Summary SHALL раздельно считать исходы и review status без общего score.
 
-#### Scenario: Offline video of gate abstention
+#### Scenario: Offline compact report of gate abstention
 - **WHEN** report --question Q10 --video читает завершённое evidence runtime abstention
 - **THEN** показывает best score, 0.50, FAIL, GENERATION CALL: NO и фиксированный ответ без вызова provider
 

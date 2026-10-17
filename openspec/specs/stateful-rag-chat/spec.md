@@ -114,12 +114,12 @@ CLI acceptance SHALL включать ровно два versioned сценари
 - **WHEN** раннее условие также повторилось в recent assistant text
 - **THEN** review показывает это и не утверждает, что memory была единственной причиной правильного ответа; работа механизма без ablation не является доказательством exclusive causal benefit
 
-### Requirement: Saved evidence supports offline review and compact video
+### Requirement: Saved evidence supports offline review and compact reports
 
 Runner SHALL сохранять manifest, per-turn pre/post memory, patches/decisions, selected/excluded history positions, actual retrieval input/vector/hits/gate, captured generation input/raw output/status/usage, оба validation results и commit outcome. Checkpoints до dispatch SHALL различать not_attempted/unknown; raw output SHALL сохраняться до validation. Expected facts/review SHALL NOT поступать модели. Evidence errors SHALL останавливать дальнейшие calls без ложного заявления rollback уже committed turn.
 
 Saved `report --video` SHALL работать без provider/key/index и компактно показывать для каждого сценария early U1/U2 constraints, U6, recent positions, memory before U6, contextual query, retrieved sources, grounded answer/citations и acceptance/review status. Vectors/raw JSON/full chunks SHALL оставаться вне compact report. Budget SHALL учитывать до 6 embeddings + 6 combined generations на сценарий, до 24 calls на два; restore/report/extraction/rewrite/judge/count/retry calls SHALL быть нулевыми. Android demo SHALL учитываться отдельно.
 
-#### Scenario: Video report is generated offline
+#### Scenario: Compact report is generated offline
 - **WHEN** доступны saved artifacts завершённого или partial run, но provider/key/index недоступны
 - **THEN** report показывает подтверждённое evidence и явные unavailable/pending/failure поля без новых calls или синтеза успешных результатов

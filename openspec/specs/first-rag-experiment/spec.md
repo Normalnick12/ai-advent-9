@@ -106,7 +106,7 @@ Review SHALL различать retrieval failure (факт есть в pinned c
 
 CLI SHALL предоставлять `search`, `ask --mode direct|rag`, `eval`, `report` без FastAPI server и Android. Evidence SHALL сохранять run/config, frozen expectations, Top-5 scores/provenance/full texts, actual inputs, ответы/status/usage и actual call counts; manual review SHALL храниться отдельно от исходных observations. `report` SHALL читать сохранённые данные без API key, provider calls, исходного SQLite и рабочих source files, без перезаписи raw evidence. Вывод одного вопроса SHALL показывать QUESTION → RETRIEVED TOP-5 → DIRECT ANSWER → RAG ANSWER → EXPECTED FACTS / REVIEW; итоговая таблица SHALL охватывать все десять вопросов с difficulty и статусом review. Report SHALL явно отмечать чтение сохранённого запуска.
 
-#### Scenario: Video is recorded from saved evidence
+#### Scenario: Saved evidence can be reviewed offline
 - **WHEN** пользователь открывает report одного вопроса, Q10 и сводку без ключа и доступа к provider
 - **THEN** видны фактические тексты, scores, provenance, answers и review без новых embeddings/generation
 
